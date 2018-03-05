@@ -107,31 +107,36 @@ HistoContainer::HistoContainer(const std::string& csName = "") : csName_(csName)
 
 }
 
+void HistoContainer::setVar(const NTupleReader& tr)
+{
+    met                 = tr.getVar<double>(           "met");
+    metphi              = tr.getVar<double>(           "metphi");    
+    ht                  = tr.getVar<double>(           "HTTopTag");
+    vtxSize             = tr.getVar<int>(              "vtxSize");
+    cntCSVS             = tr.getVar<int>(              "cntCSVSTopTag");
+    ttr                 = tr.getVar<TopTaggerResults*>("ttrMVA");    
+    cutMuVec            = tr.getVec<TLorentzVector>(   "cutMuVec");
+    cutElecVec          = tr.getVec<TLorentzVector>(   "cutElecVec");    
+    cntNJetsPt30Eta24   = tr.getVar<int>(              "cntNJetsPt30Eta24TopTag");    
+    vTops               = tr.getVec<TLorentzVector>(   "vTopsNewMVA");    
+    genTops             = tr.getVec<TLorentzVector>(   "genTops");
+    genTopsRecoMatch    = tr.getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
+    vTopsNCandNewMVA    = tr.getVec<int>(              "vTopsNCandNewMVA");
+    vTopsMatchNewMVA    = tr.getVec<int>(              "vTopsMatchNewMVABool");
+    bestCandLV          = tr.getVar<TLorentzVector>(   "bestTopMassLV");
+    bestTopMass         = tr.getVar<double>(           "bestTopMass");
+    bestTopMassTopTag   = tr.getVar<bool>(             "bestTopMassTopTag");
+    bestTopMassGenMatch = tr.getVar<bool>(             "bestTopMassGenMatch");
+}
+
 void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom* trand)
 {
-    const double& met    = tr.getVar<double>("met");
-    const double& metphi = tr.getVar<double>("metphi");
-    
-    const double& ht                   = tr.getVar<double>("HTTopTag");
-    const int&    vtxSize              = tr.getVar<int>("vtxSize");
-    const int&    cntCSVS              = tr.getVar<int>("cntCSVSTopTag");
-    const TopTaggerResults* ttr        = tr.getVar<TopTaggerResults*>("ttrMVA");
-    
-    const std::vector<TLorentzVector>& cutMuVec = tr.getVec<TLorentzVector>("cutMuVec");
-    const std::vector<TLorentzVector>& cutElecVec = tr.getVec<TLorentzVector>("cutElecVec");
-    
-    const int& cntNJetsPt30Eta24 = tr.getVar<int>("cntNJetsPt30Eta24TopTag");
-    
-    const std::vector<TLorentzVector>& vTops        = tr.getVec<TLorentzVector>("vTopsNewMVA");
-    
-    
+    setVar(tr);
+
     hMET->Fill(met, eWeight);
     hNJets->Fill(cntNJetsPt30Eta24, eWeight);
     hNBJets->Fill(cntCSVS, eWeight);
     hNVertices->Fill(vtxSize,eWeight);
-    
-    const std::vector<TLorentzVector>& genTops = tr.getVec<TLorentzVector>("genTops");
-    const std::vector<TLorentzVector>& genTopsRecoMatch = tr.getVec<TLorentzVector>("vTopsGenMatchTriNewMVA");
     
     //plots for gen efficiency 
     for(const TLorentzVector& genTop : genTops)
@@ -149,8 +154,6 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     }
     
     //fakerate histograms 
-    const auto& vTopsNCandNewMVA = tr.getVec<int>("vTopsNCandNewMVA");
-    const auto& vTopsMatchNewMVA = tr.getVec<int>("vTopsMatchNewMVABool");
     for(unsigned int i = 0; i < vTopsNCandNewMVA.size(); ++i)
     {
         if(vTopsNCandNewMVA[i] == 3 && !vTopsMatchNewMVA[i])
@@ -163,21 +166,20 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     }
     
     //SF plots
-    if(tr.getVar<double>("bestTopMass") > 0.0)
+    if(bestTopMass > 0.0)
     {
-        const TLorentzVector& bestCandLV = tr.getVar<TLorentzVector>("bestTopMassLV");
         bestTopCandPt->Fill(bestCandLV.Pt(), eWeight);
         bestTopCandMass->Fill(bestCandLV.M(), eWeight);
         bestTopCandEta->Fill(bestCandLV.Eta(), eWeight);
                           
-        if(tr.getVar<bool>("bestTopMassTopTag"))
+        if(bestTopMassTopTag)
     	{
     	    bestTopPt->Fill(bestCandLV.Pt(), eWeight);
 	    bestTopMass->Fill(bestCandLV.M(), eWeight);
 	    bestTopEta->Fill(bestCandLV.Eta(), eWeight);
     	}
     
-        if(tr.getVar<bool>("bestTopMassGenMatch"))
+        if(bestTopMassGenMatch)
     	{
     	    bestTopGenPt->Fill(bestCandLV.Pt(), eWeight);
 	    bestTopGenMass->Fill(bestCandLV.M(), eWeight);
@@ -362,7 +364,6 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
 
 void HistoContainer::save(TFile *f)
 {
-    f->cd();
-  
-    for(TH1* hist : histos) hist->Write();
+    f->cd();  
+    for(TH1* hist : histos_) hist->Write();
 }

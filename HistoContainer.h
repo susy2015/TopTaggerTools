@@ -33,15 +33,34 @@
 class HistoContainer
 {
 private:
-    std::vector<TH1*> histos;
+    std::vector<TH1*> histos_;
     std::string csName_;
+
+    const double& met;
+    const double& metphi;
+    const double& ht;
+    const int& vtxSize;
+    const int& cntCSVS;
+    const TopTaggerResults* ttr;
+    const std::vector<TLorentzVector>& cutMuVec;
+    const std::vector<TLorentzVector>& cutElecVec;
+    const int& cntNJetsPt30Eta24;
+    const std::vector<TLorentzVector>& vTops;
+    const std::vector<TLorentzVector>& genTops;
+    const std::vector<TLorentzVector>& genTopsRecoMatch;
+    const auto& vTopsNCandNewMVA;
+    const auto& vTopsMatchNewMVA;
+    const TLorentzVector& bestCandLV;
+    const double& bestTopMass;
+    const bool& bestTopMassTopTag;
+    const bool& bestTopMassGenMatch;
 
     template<typename H, typename... Args>
     H* bookHisto(const std::string& name, Args... args)
     {
         H* hptr = new H((csName_ + name).c_str(), (csName_ + name).c_str(), args...);
         hptr->Sumw2();
-        histos.push_back(static_cast<TH1*>(hptr));
+        histos_.push_back(static_cast<TH1*>(hptr));
         return hptr;
     }
 
@@ -81,6 +100,7 @@ public:
     TH2 *massTemplateGen3MatchByPt;
 
     HistoContainer(const std::string& csName);
+    void setVar(const NTupleReader& tr);
     void fill(const NTupleReader& tr, const double& eWeight, TRandom* trand);
     void save(TFile *f);
 
