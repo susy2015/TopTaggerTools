@@ -1,3 +1,6 @@
+#ifndef HISTOCONTAINER_H
+#define HISTOCONTAINER_H
+
 #include "../../SusyAnaTools/Tools/NTupleReader.h"
 #include "../../SusyAnaTools/Tools/samples.h"
 #include "../../SusyAnaTools/Tools/SATException.h"
@@ -81,3 +84,6 @@ public:
     void fill(const NTupleReader& tr, const double& eWeight, TRandom* trand);
     void save(TFile *f);
 
+};
+
+#endif
