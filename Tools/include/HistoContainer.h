@@ -1,10 +1,10 @@
 #ifndef HISTOCONTAINER_H
 #define HISTOCONTAINER_H
 
-#include "../../SusyAnaTools/Tools/NTupleReader.h"
-#include "../../SusyAnaTools/Tools/samples.h"
-#include "../../SusyAnaTools/Tools/SATException.h"
-#include "derivedTupleVariables.h"
+#include "../../../SusyAnaTools/Tools/NTupleReader.h"
+#include "../../../SusyAnaTools/Tools/samples.h"
+#include "../../../SusyAnaTools/Tools/SATException.h"
+#include "../../../ZInvisible/Tools/derivedTupleVariables.h"
 #include "baselineDef.h"
 #include "BTagCorrector.h"
 #include "TTbarCorrector.h"
@@ -36,24 +36,24 @@ private:
     std::vector<TH1*> histos_;
     std::string csName_;
 
-    const double* met;
-    const double* metphi;
-    const double* ht;
-    const int* vtxSize;
-    const int* cntCSVS;
-    const TopTaggerResults* ttr;
-    const std::vector<TLorentzVector>* cutMuVec;
-    const std::vector<TLorentzVector>* cutElecVec;
-    const int* cntNJetsPt30Eta24;
-    const std::vector<TLorentzVector>* vTops;
-    const std::vector<TLorentzVector>* genTops;
-    const std::vector<TLorentzVector>* genTopsRecoMatch;
-    const auto* vTopsNCandNewMVA;
-    const auto* vTopsMatchNewMVA;
-    const TLorentzVector* bestCandLV;
-    const double* bestTopMass;
-    const bool* bestTopMassTopTag;
-    const bool* bestTopMassGenMatch;
+    const double* met_;
+    const double* metphi_;
+    const double* ht_;
+    const int* vtxSize_;
+    const int* cntCSVS_;
+    const TopTaggerResults* ttr_;
+    const std::vector<TLorentzVector>* cutMuVec_;
+    const std::vector<TLorentzVector>* cutElecVec_;
+    const int* cntNJetsPt30Eta24_;
+    const std::vector<TLorentzVector>* vTops_;
+    const std::vector<TLorentzVector>* genTops_;
+    const std::vector<TLorentzVector>* genTopsRecoMatch_;
+    const std::vector<int>* vTopsNCandNewMVA_;
+    const std::vector<int>* vTopsMatchNewMVA_;
+    const TLorentzVector* bestCandLV_;
+    const double* bestTopMass_;
+    const bool* bestTopMassTopTag_;
+    const bool* bestTopMassGenMatch_;
 
     template<typename H, typename... Args>
     H* bookHisto(const std::string& name, Args... args)
@@ -65,14 +65,14 @@ private:
     }
 
 public:
-    TH1* hMET;
-    TH1* hNJets;
-    TH1* hNBJets;
-    TH1* hNVertices;
-    TH1* hTopMass;
-    TH1* hTopP;
-    TH1* hTopPt;
-    TH1* hDiTopMass;
+    TH1 *hMET;
+    TH1 *hNJets;
+    TH1 *hNBJets;
+    TH1 *hNVertices;
+    TH1 *hTopMass;
+    TH1 *hTopP;
+    TH1 *hTopPt;
+    TH1 *hDiTopMass;
     TH1 *topPt, *topMass, *topEta;
     TH1 *topCandPt, *topCandMass, *topCandEta;
     TH1 *genTopPt, *genTopMass, *genTopEta;

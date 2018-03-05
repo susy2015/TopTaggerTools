@@ -1,18 +1,18 @@
-#include "HistoContainer.h"
+#include "../include/HistoContainer.h"
 
-#include "../../SusyAnaTools/Tools/NTupleReader.h"
-#include "../../SusyAnaTools/Tools/samples.h"
-#include "../../SusyAnaTools/Tools/SATException.h"
-#include "derivedTupleVariables.h"
-#include "baselineDef.h"
-#include "BTagCorrector.h"
-#include "TTbarCorrector.h"
-#include "ISRCorrector.h"
-#include "PileupWeights.h"
-#include "customize.h"
-
-#include "TopTaggerResults.h"
-#include "Constituent.h"
+//#include "../../../SusyAnaTools/Tools/NTupleReader.h"
+//#include "../../../SusyAnaTools/Tools/samples.h"
+//#include "../../../SusyAnaTools/Tools/SATException.h"
+//#include "../../../ZInvisible/Tools/derivedTupleVariables.h"
+//#include "../../../ZInvisible/Tools/baselineDef.h"
+//#include "../../../ZInvisible/Tools/BTagCorrector.h"
+//#include "../../../ZInvisible/Tools/TTbarCorrector.h"
+//#include "../../../ZInvisible/Tools/ISRCorrector.h"
+//#include "../../../ZInvisible/Tools/PileupWeights.h"
+//#include "../../../ZInvisible/Tools/customize.h"
+//
+//#include "TopTaggerResults.h"
+//#include "Constituent.h"
 
 #include <iostream>
 #include <string>
@@ -109,44 +109,44 @@ HistoContainer::HistoContainer(const std::string& csName = "") : csName_(csName)
 
 void HistoContainer::setVar(const NTupleReader& tr)
 {
-    met                 = &tr.getVar<double>(           "met");
-    metphi              = &tr.getVar<double>(           "metphi");    
-    ht                  = &tr.getVar<double>(           "HTTopTag");
-    vtxSize             = &tr.getVar<int>(              "vtxSize");
-    cntCSVS             = &tr.getVar<int>(              "cntCSVSTopTag");
-    ttr                 = &tr.getVar<TopTaggerResults*>("ttrMVA");    
-    cutMuVec            = &tr.getVec<TLorentzVector>(   "cutMuVec");
-    cutElecVec          = &tr.getVec<TLorentzVector>(   "cutElecVec");    
-    cntNJetsPt30Eta24   = &tr.getVar<int>(              "cntNJetsPt30Eta24TopTag");    
-    vTops               = &tr.getVec<TLorentzVector>(   "vTopsNewMVA");    
-    genTops             = &tr.getVec<TLorentzVector>(   "genTops");
-    genTopsRecoMatch    = &tr.getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
-    vTopsNCandNewMVA    = &tr.getVec<int>(              "vTopsNCandNewMVA");
-    vTopsMatchNewMVA    = &tr.getVec<int>(              "vTopsMatchNewMVABool");
-    bestCandLV          = &tr.getVar<TLorentzVector>(   "bestTopMassLV");
-    bestTopMass         = &tr.getVar<double>(           "bestTopMass");
-    bestTopMassTopTag   = &tr.getVar<bool>(             "bestTopMassTopTag");
-    bestTopMassGenMatch = &tr.getVar<bool>(             "bestTopMassGenMatch");
+    met_                 = &tr.getVar<double>(           "met");
+    metphi_              = &tr.getVar<double>(           "metphi");    
+    ht_                  = &tr.getVar<double>(           "HTTopTag");
+    vtxSize_             = &tr.getVar<int>(              "vtxSize");
+    cntCSVS_             = &tr.getVar<int>(              "cntCSVSTopTag");
+    ttr_                 = tr.getVar<TopTaggerResults*>("ttrMVA");    
+    cutMuVec_            = &tr.getVec<TLorentzVector>(   "cutMuVec");
+    cutElecVec_          = &tr.getVec<TLorentzVector>(   "cutElecVec");    
+    cntNJetsPt30Eta24_   = &tr.getVar<int>(              "cntNJetsPt30Eta24TopTag");    
+    vTops_               = &tr.getVec<TLorentzVector>(   "vTopsNewMVA");    
+    genTops_             = &tr.getVec<TLorentzVector>(   "genTops");
+    genTopsRecoMatch_    = &tr.getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
+    vTopsNCandNewMVA_    = &tr.getVec<int>(              "vTopsNCandNewMVA");
+    vTopsMatchNewMVA_    = &tr.getVec<int>(              "vTopsMatchNewMVABool");
+    bestCandLV_          = &tr.getVar<TLorentzVector>(   "bestTopMassLV");
+    bestTopMass_         = &tr.getVar<double>(           "bestTopMass");
+    bestTopMassTopTag_   = &tr.getVar<bool>(             "bestTopMassTopTag");
+    bestTopMassGenMatch_ = &tr.getVar<bool>(             "bestTopMassGenMatch");
 }
 
 void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom* trand)
 {
     setVar(tr);
 
-    hMET->Fill(met, eWeight);
-    hNJets->Fill(cntNJetsPt30Eta24, eWeight);
-    hNBJets->Fill(cntCSVS, eWeight);
-    hNVertices->Fill(vtxSize,eWeight);
+    hMET->Fill(*met_, eWeight);
+    hNJets->Fill(*cntNJetsPt30Eta24_, eWeight);
+    hNBJets->Fill(*cntCSVS_, eWeight);
+    hNVertices->Fill(*vtxSize_,eWeight);
     
     //plots for gen efficiency 
-    for(const TLorentzVector& genTop : genTops)
+    for(const TLorentzVector& genTop : *genTops_)
     {
         genTopPt->Fill(genTop.Pt(), eWeight);
         genTopMass->Fill(genTop.M(), eWeight);
         genTopEta->Fill(genTop.Eta(), eWeight);
     }
     
-    for(const TLorentzVector& genTop : genTopsRecoMatch)
+    for(const TLorentzVector& genTop : *genTopsRecoMatch_)
     {
         genTopMatchPt->Fill(genTop.Pt(), eWeight);
         genTopMatchMass->Fill(genTop.M(), eWeight);
@@ -154,63 +154,63 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     }
     
     //fakerate histograms 
-    for(unsigned int i = 0; i < vTopsNCandNewMVA.size(); ++i)
+    for(unsigned int i = 0; i < vTopsNCandNewMVA_->size(); ++i)
     {
-        if(vTopsNCandNewMVA[i] == 3 && !vTopsMatchNewMVA[i])
+        if((*vTopsNCandNewMVA_)[i] == 3 && !(*vTopsMatchNewMVA_)[i])
     	{
-    	    fakerateMET->Fill(met, eWeight);
-	    fakerateNj->Fill(cntNJetsPt30Eta24, eWeight);
-	    fakerateNb->Fill(cntCSVS, eWeight);
+    	    fakerateMET->Fill(*met_, eWeight);
+	    fakerateNj->Fill(*cntNJetsPt30Eta24_, eWeight);
+	    fakerateNb->Fill(*cntCSVS_, eWeight);
 	    break;
     	}
     }
     
     //SF plots
-    if(bestTopMass > 0.0)
+    if(*bestTopMass_ > 0.0)
     {
-        bestTopCandPt->Fill(bestCandLV.Pt(), eWeight);
-        bestTopCandMass->Fill(bestCandLV.M(), eWeight);
-        bestTopCandEta->Fill(bestCandLV.Eta(), eWeight);
+        bestTopCandPt->Fill(bestCandLV_->Pt(), eWeight);
+        bestTopCandMass->Fill(bestCandLV_->M(), eWeight);
+        bestTopCandEta->Fill(bestCandLV_->Eta(), eWeight);
                           
-        if(bestTopMassTopTag)
+        if(*bestTopMassTopTag_)
     	{
-    	    bestTopPt->Fill(bestCandLV.Pt(), eWeight);
-	    bestTopMass->Fill(bestCandLV.M(), eWeight);
-	    bestTopEta->Fill(bestCandLV.Eta(), eWeight);
+    	    bestTopPt->Fill(bestCandLV_->Pt(), eWeight);
+	    bestTopMass->Fill(bestCandLV_->M(), eWeight);
+	    bestTopEta->Fill(bestCandLV_->Eta(), eWeight);
     	}
     
-        if(bestTopMassGenMatch)
+        if(*bestTopMassGenMatch_)
     	{
-    	    bestTopGenPt->Fill(bestCandLV.Pt(), eWeight);
-	    bestTopGenMass->Fill(bestCandLV.M(), eWeight);
-	    bestTopGenEta->Fill(bestCandLV.Eta(), eWeight);
+    	    bestTopGenPt->Fill(bestCandLV_->Pt(), eWeight);
+	    bestTopGenMass->Fill(bestCandLV_->M(), eWeight);
+	    bestTopGenEta->Fill(bestCandLV_->Eta(), eWeight);
     	}
         else
     	{
-    	    bestTopNotGenPt->Fill(bestCandLV.Pt(), eWeight);
-	    bestTopNotGenMass->Fill(bestCandLV.M(), eWeight);
-	    bestTopNotGenEta->Fill(bestCandLV.Eta(), eWeight);
+    	    bestTopNotGenPt->Fill(bestCandLV_->Pt(), eWeight);
+	    bestTopNotGenMass->Fill(bestCandLV_->M(), eWeight);
+	    bestTopNotGenEta->Fill(bestCandLV_->Eta(), eWeight);
     	}
     }
     
-    if(vTops.size() > 0)
+    if(vTops_->size() > 0)
     {
     
-        for(int tidx = 0; tidx < vTops.size(); tidx++)
+        for(int tidx = 0; tidx < vTops_->size(); tidx++)
     	{
-    	    hTopMass->Fill(vTops[tidx].M(),eWeight);
-	    hTopP->Fill(vTops[tidx].Rho(),eWeight);
-	    hTopPt->Fill(vTops[tidx].Perp(),eWeight);
+	    hTopMass->Fill((*vTops_)[tidx].M(),eWeight);
+	    hTopP->Fill((*vTops_)[tidx].Rho(),eWeight);
+	    hTopPt->Fill((*vTops_)[tidx].Perp(),eWeight);
     	}
     
-        if(vTops.size() == 2)
+        if(vTops_->size() == 2)
     	{
-    	    TLorentzVector diTop = vTops[0] + vTops[1];
+	    TLorentzVector diTop = (*vTops_)[0] + (*vTops_)[1];
 	    hDiTopMass->Fill(diTop.M(),eWeight);
     	}
     }
     
-    for(auto& top : ttr->getTops())
+    for(auto& top : ttr_->getTops())
     {
         massTemplateTop->Fill(top->p().M(), eWeight);
         massTemplateTopByPt->Fill(top->p().M(), top->p().Pt(), eWeight);
@@ -220,13 +220,13 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
         topEta->Fill(top->p().Eta(), eWeight);    
     }
     
-    for(auto& top : ttr->getTops())
+    for(auto& top : ttr_->getTops())
     {
         if(top->getNConstituents() == 3)
     	{
-    	    fakerateMET2->Fill(met, eWeight);
-	    fakerateNj2->Fill(cntNJetsPt30Eta24, eWeight);
-	    fakerateNb2->Fill(cntCSVS, eWeight);
+    	    fakerateMET2->Fill(*met_, eWeight);
+	    fakerateNj2->Fill(*cntNJetsPt30Eta24_, eWeight);
+	    fakerateNb2->Fill(*cntCSVS_, eWeight);
 	    break;
     	}
     }
@@ -235,7 +235,7 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
                       
     //Find b jets
     std::vector<const Constituent*> bjets;
-    for(const auto& constituent : ttr->getConstituents())
+    for(const auto& constituent : ttr_->getConstituents())
     {
         if(constituent.getBTagDisc() > 0.8484)
     	{
@@ -245,7 +245,7 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     
     //Find lepton (here it is assumed there is exactly 1 lepton)
     TLorentzVector lepton;
-    for(const auto& lep : cutMuVec)
+    for(const auto& lep : *cutMuVec_)
     {
         if(lep.Pt() > 20)
     	{
@@ -253,7 +253,7 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
 	    break;
     	}
     }
-    for(const auto& lep : cutElecVec)
+    for(const auto& lep : *cutElecVec_)
     {
         if(lep.Pt() > 20)
     	{
@@ -264,11 +264,11 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     
     //met TLorentz vector
     TLorentzVector MET;
-    MET.SetPtEtaPhiM(met, 0.0, metphi, 0);
+    MET.SetPtEtaPhiM(*met_, 0.0, *metphi_, 0);
     
     double bestSumPtVal = 99999.999;
     const TopObject* bestCand = nullptr;
-    for(auto& topCand : ttr->getTopCandidates())
+    for(auto& topCand : ttr_->getTopCandidates())
     {
         switch(topCand.getGenTopMatches().size())
     	{
@@ -329,7 +329,7 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
         bestTopCandSumMassByPt->Fill(bestCand->p().M(), bestCand->p().Pt(), eWeight);
         bestSumPt->Fill(bestSumPtVal, eWeight);
     
-        for(const auto& topPtr : ttr->getTops()) 
+        for(const auto& topPtr : ttr_->getTops()) 
     	{
     	    if(topPtr == bestCand) 
     	    {
@@ -339,17 +339,17 @@ void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom
     	}
     }
     
-    if(ttr->getTopCandidates().size() > 0)
+    if(ttr_->getTopCandidates().size() > 0)
     {
-        int nCand = trand->Integer(ttr->getTopCandidates().size());
+        int nCand = trand->Integer(ttr_->getTopCandidates().size());
     
-        const TopObject& topCand = ttr->getTopCandidates()[nCand];
+        const TopObject& topCand = ttr_->getTopCandidates()[nCand];
     
         randomTopCandPt->Fill(topCand.p().Pt(), eWeight);
         randomTopCandMass->Fill(topCand.p().M(), eWeight);;
         randomTopCandEta->Fill(topCand.p().Eta(), eWeight);;
               
-        for(const auto& topPtr : ttr->getTops()) 
+        for(const auto& topPtr : ttr_->getTops()) 
     	{
     	    if(topPtr == &topCand) 
     	    {
