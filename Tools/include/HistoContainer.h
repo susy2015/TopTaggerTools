@@ -1,32 +1,12 @@
 #ifndef HISTOCONTAINER_H
 #define HISTOCONTAINER_H
 
-//#include "../../../SusyAnaTools/Tools/NTupleReader.h"
-//#include "../../../SusyAnaTools/Tools/samples.h"
-//#include "../../../SusyAnaTools/Tools/SATException.h"
-//#include "../../../ZInvisible/Tools/derivedTupleVariables.h"
-//#include "baselineDef.h"
-//#include "BTagCorrector.h"
-//#include "TTbarCorrector.h"
-//#include "ISRCorrector.h"
-//#include "PileupWeights.h"
-//#include "customize.h"
-//
 #include "TopTaggerResults.h"
-//#include "Constituent.h"
-//
-//#include <iostream>
-//#include <string>
+
 #include <vector>
-//#include <getopt.h>
-//
-//#include "math.h"
-//
+
 #include "TH1.h"
 #include "TH2.h"
-//#include "TTree.h"
-//#include "TCanvas.h"
-//#include "TLegend.h"
 #include "TRandom3.h"
 #include "TFile.h"
 
