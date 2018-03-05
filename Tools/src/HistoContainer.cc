@@ -109,24 +109,24 @@ HistoContainer::HistoContainer(const std::string& csName = "") : csName_(csName)
 
 void HistoContainer::setVar(const NTupleReader& tr)
 {
-    met                 = tr.getVar<double>(           "met");
-    metphi              = tr.getVar<double>(           "metphi");    
-    ht                  = tr.getVar<double>(           "HTTopTag");
-    vtxSize             = tr.getVar<int>(              "vtxSize");
-    cntCSVS             = tr.getVar<int>(              "cntCSVSTopTag");
-    ttr                 = tr.getVar<TopTaggerResults*>("ttrMVA");    
-    cutMuVec            = tr.getVec<TLorentzVector>(   "cutMuVec");
-    cutElecVec          = tr.getVec<TLorentzVector>(   "cutElecVec");    
-    cntNJetsPt30Eta24   = tr.getVar<int>(              "cntNJetsPt30Eta24TopTag");    
-    vTops               = tr.getVec<TLorentzVector>(   "vTopsNewMVA");    
-    genTops             = tr.getVec<TLorentzVector>(   "genTops");
-    genTopsRecoMatch    = tr.getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
-    vTopsNCandNewMVA    = tr.getVec<int>(              "vTopsNCandNewMVA");
-    vTopsMatchNewMVA    = tr.getVec<int>(              "vTopsMatchNewMVABool");
-    bestCandLV          = tr.getVar<TLorentzVector>(   "bestTopMassLV");
-    bestTopMass         = tr.getVar<double>(           "bestTopMass");
-    bestTopMassTopTag   = tr.getVar<bool>(             "bestTopMassTopTag");
-    bestTopMassGenMatch = tr.getVar<bool>(             "bestTopMassGenMatch");
+    met                 = &tr.getVar<double>(           "met");
+    metphi              = &tr.getVar<double>(           "metphi");    
+    ht                  = &tr.getVar<double>(           "HTTopTag");
+    vtxSize             = &tr.getVar<int>(              "vtxSize");
+    cntCSVS             = &tr.getVar<int>(              "cntCSVSTopTag");
+    ttr                 = &tr.getVar<TopTaggerResults*>("ttrMVA");    
+    cutMuVec            = &tr.getVec<TLorentzVector>(   "cutMuVec");
+    cutElecVec          = &tr.getVec<TLorentzVector>(   "cutElecVec");    
+    cntNJetsPt30Eta24   = &tr.getVar<int>(              "cntNJetsPt30Eta24TopTag");    
+    vTops               = &tr.getVec<TLorentzVector>(   "vTopsNewMVA");    
+    genTops             = &tr.getVec<TLorentzVector>(   "genTops");
+    genTopsRecoMatch    = &tr.getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
+    vTopsNCandNewMVA    = &tr.getVec<int>(              "vTopsNCandNewMVA");
+    vTopsMatchNewMVA    = &tr.getVec<int>(              "vTopsMatchNewMVABool");
+    bestCandLV          = &tr.getVar<TLorentzVector>(   "bestTopMassLV");
+    bestTopMass         = &tr.getVar<double>(           "bestTopMass");
+    bestTopMassTopTag   = &tr.getVar<bool>(             "bestTopMassTopTag");
+    bestTopMassGenMatch = &tr.getVar<bool>(             "bestTopMassGenMatch");
 }
 
 void HistoContainer::fill(const NTupleReader& tr, const double& eWeight, TRandom* trand)
