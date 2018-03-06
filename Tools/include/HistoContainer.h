@@ -56,7 +56,6 @@ public:
     TH1 *genTopPt, *genTopMass, *genTopEta;
     TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
     TH1 *bestTopCandPt, *bestTopCandMass, *bestTopCandEta;
-    TH1 *bestTopCandSumPt, *bestTopCandSumMass, *bestTopCandSumEta;
     TH1 *bestTopGenPt, *bestTopGenMass, *bestTopGenEta;
     TH1 *bestTopNotGenPt, *bestTopNotGenMass, *bestTopNotGenEta;
     TH1 *bestTopPt, *bestTopMass, *bestTopEta;
@@ -69,8 +68,6 @@ public:
     TH1 *massTemplateTop, *massTemplateNotTop;
 
     TH2 *topCandMassByPt, *massTemplateTopByPt, *massTemplateNotTopByPt;
-    TH2 *bestTopCandSumMassByPt;
-    TH2 *bestTopCandSumMassRecoMatchByPt;
     TH2 *massTemplateGen0MatchByPt;
     TH2 *massTemplateGen1MatchByPt;
     TH2 *massTemplateGen2MatchByPt;
@@ -120,9 +117,6 @@ public:
         bestTopCandPt   = bookHisto<TH1D>("bestTopCandPt",   100,  0, 1000);
         bestTopCandMass = bookHisto<TH1D>("bestTopCandMass", 100,  0, 500);
         bestTopCandEta  = bookHisto<TH1D>("bestTopCandEta",  100, -5, 5);
-        bestTopCandSumPt   = bookHisto<TH1D>("bestTopCandSumPt",   100,  0, 1000);
-        bestTopCandSumMass = bookHisto<TH1D>("bestTopCandSumMass", 100,  0, 500);
-        bestTopCandSumEta  = bookHisto<TH1D>("bestTopCandSumEta",  100, -5, 5);
         bestTopGenPt   = bookHisto<TH1D>("bestTopGenPt",   100,  0, 1000);
         bestTopGenMass = bookHisto<TH1D>("bestTopGenMass", 100,  0, 500);
         bestTopGenEta  = bookHisto<TH1D>("bestTopGenEta",  100, -5, 5);
@@ -140,23 +134,21 @@ public:
         randomTopCandMassByPt = bookHisto<TH2D>("randomTopCandMassByPt", 100,  0, 500, 100, 0, 1000);
         
         fakerateMET = bookHisto<TH1D>("fakerateMET", 100,0, 1000);
-        fakerateNj  = bookHisto<TH1D>("fakerateNj", 21,-0.5, 20.5);
-        fakerateNb  = bookHisto<TH1D>("fakerateNb", 21,-0.5, 20.5);
- 	fakerateHT = bookHisto<TH1D>("fakerateHT", 100,0, 2000);
+        fakerateNj  = bookHisto<TH1D>("fakerateNj",  21,-0.5, 20.5);
+        fakerateNb  = bookHisto<TH1D>("fakerateNb",  21,-0.5, 20.5);
+ 	fakerateHT  = bookHisto<TH1D>("fakerateHT",  100,0, 2000);
 
         fakerateMET2 = bookHisto<TH1D>("fakerateMET2", 100,0, 1000);
-        fakerateNj2  = bookHisto<TH1D>("fakerateNj2", 21,-0.5, 20.5);
-        fakerateNb2  = bookHisto<TH1D>("fakerateNb2", 21,-0.5, 20.5);
-        fakerateHT2 = bookHisto<TH1D>("fakerateHT2", 100,0, 2000);
+        fakerateNj2  = bookHisto<TH1D>("fakerateNj2",  21,-0.5, 20.5);
+        fakerateNb2  = bookHisto<TH1D>("fakerateNb2",  21,-0.5, 20.5);
+        fakerateHT2  = bookHisto<TH1D>("fakerateHT2",  100,0, 2000);
 
         massTemplateTop = bookHisto<TH1D>("massTemplateTop", 100,  0, 500);
         massTemplateNotTop = bookHisto<TH1D>("massTemplateBG", 100,  0, 500);
         
-        topCandMassByPt = bookHisto<TH2D>("topCandMassByPt", 100,  0, 500, 100, 0, 1000);
-        bestTopCandSumMassByPt = bookHisto<TH2D>("bestTopCandSumMassByPt", 100,  0, 500, 100, 0, 1000);
-        bestTopCandSumMassRecoMatchByPt = bookHisto<TH2D>("bestTopCandSumMassRecoMatchByPt", 100,  0, 500, 100, 0, 1000);
-        massTemplateTopByPt = bookHisto<TH2D>("massTemplateTopByPt", 100,  0, 500, 100, 0, 1000);
-        massTemplateNotTopByPt = bookHisto<TH2D>("massTemplateBGByPt", 100,  0, 500, 100, 0, 1000);
+        topCandMassByPt        = bookHisto<TH2D>("topCandMassByPt",     100,  0, 500, 100, 0, 1000);
+        massTemplateTopByPt    = bookHisto<TH2D>("massTemplateTopByPt", 100,  0, 500, 100, 0, 1000);
+        massTemplateNotTopByPt = bookHisto<TH2D>("massTemplateBGByPt",  100,  0, 500, 100, 0, 1000);
 
         massTemplateGen0MatchByPt = bookHisto<TH2D>("massTemplateGen0MatchByPt", 100,  0, 500, 100, 0, 1000);
         massTemplateGen1MatchByPt = bookHisto<TH2D>("massTemplateGen1MatchByPt", 100,  0, 500, 100, 0, 1000);
@@ -178,13 +170,13 @@ public:
     {
         met_                 = &tr.template getVar<double>(           "met");
         metphi_              = &tr.template getVar<double>(           "metphi");    
-        ht_                  = &tr.template getVar<double>(           "HTTopTag");
+        ht_                  = &tr.template getVar<double>(           "HT");
         vtxSize_             = &tr.template getVar<int>(              "vtxSize");
-        cntCSVS_             = &tr.template getVar<int>(              "cntCSVSTopTag");
+        cntCSVS_             = &tr.template getVar<int>(              "cntCSVS");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA");    
         //cutMuVec_            = &tr.template getVec<TLorentzVector>(   "cutMuVec");
         //cutElecVec_          = &tr.template getVec<TLorentzVector>(   "cutElecVec");    
-        cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24TopTag");    
+        cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24");
         lepton_              = &tr.template getVar<TLorentzVector>(   "lepton");
         genTops_             = &tr.template getVec<TLorentzVector>(   "genTops");
         bestCandLV_          = &tr.template getVar<TLorentzVector>(   "bestTopMassLV");
@@ -404,23 +396,6 @@ public:
             }
 
             ++iCand;
-        }
-
-        if(bestCand)
-        {
-            bestTopCandSumPt->Fill(bestCand->p().Pt(), eWeight);
-            bestTopCandSumMass->Fill(bestCand->p().M(), eWeight);
-            bestTopCandSumEta->Fill(bestCand->p().Eta(), eWeight);
-            bestTopCandSumMassByPt->Fill(bestCand->p().M(), bestCand->p().Pt(), eWeight);
-
-            for(const auto& topPtr : ttr_->getTops())
-            {
-                if(topPtr == bestCand)
-                {
-                    bestTopCandSumMassRecoMatchByPt->Fill(bestCand->p().M(), bestCand->p().Pt(), eWeight);
-                    break;
-                }
-            }
         }
 
         if(randCandIndicies.size() > 0)
