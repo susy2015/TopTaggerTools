@@ -27,12 +27,8 @@ private:
     const std::vector<TLorentzVector>* cutMuVec_;
     const std::vector<TLorentzVector>* cutElecVec_;
     const int* cntNJetsPt30Eta24_;
-    const std::vector<TLorentzVector>* vTops_;
     const TLorentzVector* lepton_;
     const std::vector<TLorentzVector>* genTops_;
-    const std::vector<TLorentzVector>* genTopsRecoMatch_;
-    const std::vector<int>* vTopsNCandNewMVA_;
-    const std::vector<int>* vTopsMatchNewMVA_;
     const TLorentzVector* bestCandLV_;
     const double* bestTopMass_;
     const bool* bestTopMassTopTag_;
@@ -189,12 +185,8 @@ public:
         //cutMuVec_            = &tr.template getVec<TLorentzVector>(   "cutMuVec");
         //cutElecVec_          = &tr.template getVec<TLorentzVector>(   "cutElecVec");    
         cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24TopTag");    
-        vTops_               = &tr.template getVec<TLorentzVector>(   "vTopsNewMVA");    
         lepton_              = &tr.template getVar<TLorentzVector>(   "lepton");
         genTops_             = &tr.template getVec<TLorentzVector>(   "genTops");
-        genTopsRecoMatch_    = &tr.template getVec<TLorentzVector>(   "vTopsGenMatchTriNewMVA");    
-        vTopsNCandNewMVA_    = &tr.template getVec<int>(              "vTopsNCandNewMVA");
-        vTopsMatchNewMVA_    = &tr.template getVec<int>(              "vTopsMatchNewMVABool");
         bestCandLV_          = &tr.template getVar<TLorentzVector>(   "bestTopMassLV");
         bestTopMass_         = &tr.template getVar<double>(           "bestTopMass");
         bestTopMassTopTag_   = &tr.template getVar<bool>(             "bestTopMassTopTag");
@@ -219,26 +211,17 @@ public:
             genTopEta->Fill(genTop.Eta(), eWeight);
         }
         
-        for(const TLorentzVector& genTop : *genTopsRecoMatch_)
+        for(const auto& top : ttr_->getTops())
         {
-            genTopMatchPt->Fill(genTop.Pt(), eWeight);
-            genTopMatchMass->Fill(genTop.M(), eWeight);
-            genTopMatchEta->Fill(genTop.Eta(), eWeight);
+            const auto* genTop = top->getBestGenTopMatch();
+            if(genTop)
+            {
+                genTopMatchPt->Fill(genTop->Pt(), eWeight);
+                genTopMatchMass->Fill(genTop->M(), eWeight);
+                genTopMatchEta->Fill(genTop->Eta(), eWeight);
+            }
         }
         
-        //fakerate histograms                                                   
-        //for(unsigned int i = 0; i < vTopsNCandNewMVA->size(); ++i)
-        //{                                                       
-        //    if((*vTopsNCandNewMVA_)[i] == 3 && !(*vTopsMatchNewMVA_)[i])
-        //    {                                       
-        //        fakerateMET->Fill(*met_, eWeight);        
-        //        fakerateNj->Fill(*cntNJetsPt30Eta24_, eWeight);
-        //        fakerateNb->Fill(*cntCSVS_, eWeight);
-        //		  fakerateHT->Fill(*ht_, eWeight);	
-        //        break;  
-        //    }           
-        //}               
-
         //SF plots  
         if(*bestTopMass_ > 0.0)
         {
