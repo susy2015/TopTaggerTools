@@ -47,6 +47,7 @@ private:
 
 public:
     TH1 *hMET;
+    TH1 *hHT;
     TH1 *hNJets;
     TH1 *hNBJets;
     TH1 *hNVertices;
@@ -65,8 +66,8 @@ public:
     TH1 *bestTopPt, *bestTopMass, *bestTopEta;
     TH1 *randomTopCandPt,   *randomTopCandMass,   *randomTopCandEta;
     TH1 *randomTopPt, *randomTopMass, *randomTopEta;
-    TH1 *fakerateMET, *fakerateNj, *fakerateNb;
-    TH1 *fakerateMET2, *fakerateNj2, *fakerateNb2, *fakerateNvert2;
+    TH1 *fakerateMET, *fakerateNj, *fakerateNb, *fakerateHT;
+    TH1 *fakerateMET2, *fakerateNj2, *fakerateNb2, *fakerateNvert2, *fakerateHT2;
 
     TH1 *massTemplateTop, *massTemplateNotTop;
 
@@ -85,6 +86,7 @@ public:
         if(csName_.size() > 0) csName_ += "_";
     
         hMET       = bookHisto<TH1D>("MET",100,0, 1000);
+        hHT        = bookHisto<TH1D>("HT",100,0, 2000);
         hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
         hNBJets    = bookHisto<TH1D>("nBJets",21,-0.5, 20.5);
         hNVertices = bookHisto<TH1D>("nVertices",61,-0.5, 60.5);
@@ -133,10 +135,12 @@ public:
         fakerateMET = bookHisto<TH1D>("fakerateMET", 100,0, 1000);
         fakerateNj  = bookHisto<TH1D>("fakerateNj", 21,-0.5, 20.5);
         fakerateNb  = bookHisto<TH1D>("fakerateNb", 21,-0.5, 20.5);
+        fakerateHT = bookHisto<TH1D>("fakerateHT", 100,0, 2000);
     
         fakerateMET2 = bookHisto<TH1D>("fakerateMET2", 100,0, 1000);
         fakerateNj2  = bookHisto<TH1D>("fakerateNj2", 21,-0.5, 20.5);
         fakerateNb2  = bookHisto<TH1D>("fakerateNb2", 21,-0.5, 20.5);
+        fakerateHT2 = bookHisto<TH1D>("fakerateHT2", 100,0, 2000);
     
         massTemplateTop = bookHisto<TH1D>("massTemplateTop", 100,  0, 500);
         massTemplateNotTop = bookHisto<TH1D>("massTemplateBG", 100,  0, 500);
@@ -185,6 +189,7 @@ public:
         setVar(tr);
 
         hMET->Fill(*met_, eWeight);
+        hHT->Fill(*ht_, eWeight);
         hNJets->Fill(*cntNJetsPt30Eta24_, eWeight);
         hNBJets->Fill(*cntCSVS_, eWeight);
         hNVertices->Fill(*vtxSize_,eWeight);
@@ -212,6 +217,7 @@ public:
                 fakerateMET->Fill(*met_, eWeight);
                 fakerateNj->Fill(*cntNJetsPt30Eta24_, eWeight);
                 fakerateNb->Fill(*cntCSVS_, eWeight);
+                fakerateHT->Fill(*ht_, eWeight);
                 break;
             }
         }
@@ -278,6 +284,7 @@ public:
                 fakerateMET2->Fill(*met_, eWeight);
                 fakerateNj2->Fill(*cntNJetsPt30Eta24_, eWeight);
                 fakerateNb2->Fill(*cntCSVS_, eWeight);
+                fakerateHT2->Fill(*ht_, eWeight);
                 break;
             }
         }
