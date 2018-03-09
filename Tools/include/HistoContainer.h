@@ -37,7 +37,7 @@ private:
     template<typename H, typename... Args>
     H* bookHisto(const std::string& name, Args... args)
     {
-        H* hptr = new H((csName_ + name).c_str(), (csName_ + name).c_str(), args...);
+        H* hptr = new H(name.c_str(), name.c_str(), args...);
         hptr->Sumw2();
         histos_.push_back(static_cast<TH1*>(hptr));
         return hptr;
@@ -80,10 +80,8 @@ public:
     TH1 *hdPhiMin, *hdPhiMax;
     TH1 *hdPhiMinGenMatch, *hdPhiMaxGenMatch;
     
-    HistoContainer(const std::string& csName = "") : csName_(csName)
+    HistoContainer(const std::string& csName) : csName_(csName)
     {
-        if(csName_.size() > 0) csName_ += "_";
-        
         hMET       = bookHisto<TH1D>("MET",100,0, 1000);
         hHT        = bookHisto<TH1D>("HT",100,0, 2000);
         hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
@@ -285,6 +283,23 @@ public:
 
         //Find best candiate  
 
+        //met TLorentz vector  
+        TLorentzVector MET;
+        MET.SetPtEtaPhiM(*met_, 0.0, *metphi_, 0);
+
+        //double xi = MET.Px()*lepton_->Px() + MET.Py()*lepton_->Py();
+        //double mW = 80.385;
+        //double a = pow(lepton_->Pt(), 2);
+        //double b = -lepton_->Pz()*(mW*mW + 2*xi);
+        //double c = pow(lepton_->P(), 2) * pow(*met_, 2) - pow(xi + mW*mW/2.0, 2);
+        //double pnuzp = (-b + sqrt(b*b - 4*a*c))/(2*a);
+        //double pnuzm = (-b - sqrt(b*b - 4*a*c))/(2*a);
+        //
+        //TLorentzVector neutrinop(MET.X(), MET.Y(), pnuzp, 0.0);
+        //TLorentzVector neutrinom(MET.X(), MET.Y(), pnuzm, 0.0);
+        //
+        //std::cout << xi << "\t" << a << "\t" << b << "\t" << c << "\t" << pnuzp << "\t" << pnuzm << "\t" << (*lepton_ + neutrinop).M() << "\t" << (*lepton_ + neutrinom).M() <<  std::endl;
+
         //Find b jets         
         std::vector<const Constituent*> bjets;
         for(const Constituent& constituent : ttr_->getConstituents())
@@ -295,9 +310,6 @@ public:
             }
         }
 
-        //met TLorentz vector  
-        TLorentzVector MET;
-        MET.SetPtEtaPhiM(*met_, 0.0, *metphi_, 0);
 
         double bestSumPtVal = 99999.999;
         const TopObject* bestCand = nullptr;
@@ -308,11 +320,12 @@ public:
             //delta R and Nb requirements  
             bool passLepCand = lepton_->DeltaR(topCand.p()) > 2;
             int nBConstituents = topCand.getNBConstituents(0.8484);
-            if(passLepCand && nBConstituents == 1) randCandIndicies.push_back(iCand);
+            if(passLepCand && nBConstituents <= 1) randCandIndicies.push_back(iCand);
 
             //dPhi cut tests 
             double dPhiMin = 999.99;
             double dPhiMax = -999.99;
+            
             for(const auto* bjet : bjets)
             {
                 double dPhi = fabs(ROOT::Math::VectorUtil::DeltaR(*lepton_ + bjet->p() + MET, topCand.p()));
@@ -343,7 +356,7 @@ public:
                 }
             }
 
-            if(passLepCand && nBConstituents == 1)
+            if(passLepCand && nBConstituents <= 1)
             {
                 int nGenMatch = 0;
                 for(const auto& genMatch : topCand.getGenTopMatches())
@@ -422,13 +435,16 @@ public:
             }
         }
     }
-
-        void save(TFile *f)
-        {
-            f->cd();  
-            for(TH1* hist : histos_) hist->Write();
-        }
-        
+    
+    void save(TFile *f)
+    {
+        f->cd();
+        TDirectory *td = f->mkdir(csName_.c_str(), csName_.c_str());
+        td->cd();
+        for(TH1* hist : histos_) hist->Write();
+        f->cd();
+    }
+    
 };
 
 #endif
