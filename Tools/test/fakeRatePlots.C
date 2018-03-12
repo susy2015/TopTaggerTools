@@ -43,10 +43,13 @@ public:
         return error;
     }
   
-    void ratioTH1F(std::string fakerateVar, std::string Var, const char* file, std::string fakerate, std::string type, std::string xname, std::string yname)
+    void ratioTH1F(std::string fakerateVar, std::string Var, const char* file, std::string fakerate, std::string type, std::string xname, std::string yname, int join )
     {
         TH1F* fakeRateVar = defineTH1F(file,fakerateVar);
         TH1F* var         = defineTH1F(file,Var);
+        fakeRateVar->Rebin(join);
+        var->Rebin(join);
+
         TH1F* fakeRate    = (TH1F*)fakeRateVar->Clone(fakerate.c_str());
         for(int i=0; i < fakeRate->GetSize(); i++)
         {
@@ -65,18 +68,18 @@ public:
 
     void makeTH1F(std::string name, const char* rootFile, std::string type)
     {
-        ratioTH1F( name + "fakerateMET"     ,name + "MET"               ,rootFile ,name + "fakerateMET"              ,type ,"MET (GeV)"     ,"Fakerate"  );
-        ratioTH1F( name + "fakerateNj"      ,name + "nJets"             ,rootFile ,name + "fakerateNjets"            ,type ,"N_{Jets}"      ,"Fakerate"  );
-        ratioTH1F( name + "fakerateNb"      ,name + "nBJets"            ,rootFile ,name + "fakerateNbjets"           ,type ,"N_{BJets}"     ,"Fakerate"  );			     
-        ratioTH1F( name + "fakerateMET2"    ,name + "MET"               ,rootFile ,name + "fakerateMET2"             ,type ,"MET (GeV)"     ,"Fakerate"  );
-        ratioTH1F( name + "fakerateNj2"     ,name + "nJets"             ,rootFile ,name + "fakerateNjets2"           ,type ,"N Jets"        ,"Fakerate"  );
-        ratioTH1F( name + "fakerateNb2"     ,name + "nBJets"            ,rootFile ,name + "fakerateNbjets2"          ,type ,"N BJets"       ,"Fakerate"  );    			     
-        ratioTH1F( name + "randomTopPt"     ,name + "randomTopCandPt"   ,rootFile ,name + "fakerateRandomTopPt"      ,type ,"P_{T} (GeV)"   ,"Fakerate"  );
-        ratioTH1F( name + "randomTopMass"   ,name + "randomTopCandMass" ,rootFile ,name + "fakerateRandomTopMass"    ,type ,"Mass (GeV)"    ,"Fakerate"  );
-        ratioTH1F( name + "randomTopEta"    ,name + "randomTopCandEta"  ,rootFile ,name + "fakerateRandomTopEta"     ,type ,"#eta"          ,"Fakerate"  );    
-        ratioTH1F( name + "genTopMatchPt"   ,name + "genTopPt"          ,rootFile ,name + "efficiencyGenTopMatchPt"  ,type ,"P_{T} (GeV)"   ,"Efficiency");
-        ratioTH1F( name + "genTopMatchMass" ,name + "genTopMass"        ,rootFile ,name + "efficiencyGenTopMatchMass",type ,"Mass (GeV)"    ,"Efficiency");	
-        ratioTH1F( name + "genTopMatchEta"  ,name + "genTopEta"         ,rootFile ,name + "efficiencyGenTopMatchEta" ,type ,"#eta"          ,"Efficiency");
+        ratioTH1F( name + "fakerateMET"     ,name + "MET"               ,rootFile ,name + "fakerateMET"              ,type ,"MET (GeV)"     ,"Fakerate"  , 5);
+        ratioTH1F( name + "fakerateNj"      ,name + "nJets"             ,rootFile ,name + "fakerateNjets"            ,type ,"N_{Jets}"      ,"Fakerate"  , 1);
+        ratioTH1F( name + "fakerateNb"      ,name + "nBJets"            ,rootFile ,name + "fakerateNbjets"           ,type ,"N_{BJets}"     ,"Fakerate"  , 1);			     
+        ratioTH1F( name + "fakerateMET2"    ,name + "MET"               ,rootFile ,name + "fakerateMET2"             ,type ,"MET (GeV)"     ,"Fakerate"  , 5);
+        ratioTH1F( name + "fakerateNj2"     ,name + "nJets"             ,rootFile ,name + "fakerateNjets2"           ,type ,"N Jets"        ,"Fakerate"  , 1);
+        ratioTH1F( name + "fakerateNb2"     ,name + "nBJets"            ,rootFile ,name + "fakerateNbjets2"          ,type ,"N BJets"       ,"Fakerate"  , 1);    			     
+        ratioTH1F( name + "randomTopPt"     ,name + "randomTopCandPt"   ,rootFile ,name + "fakerateRandomTopPt"      ,type ,"P_{T} (GeV)"   ,"Fakerate"  , 5);
+        ratioTH1F( name + "randomTopMass"   ,name + "randomTopCandMass" ,rootFile ,name + "fakerateRandomTopMass"    ,type ,"Mass (GeV)"    ,"Fakerate"  , 1);
+        ratioTH1F( name + "randomTopEta"    ,name + "randomTopCandEta"  ,rootFile ,name + "fakerateRandomTopEta"     ,type ,"#eta"          ,"Fakerate"  , 2);    
+        ratioTH1F( name + "genTopMatchPt"   ,name + "genTopPt"          ,rootFile ,name + "efficiencyGenTopMatchPt"  ,type ,"P_{T} (GeV)"   ,"Efficiency", 5);
+        ratioTH1F( name + "genTopMatchMass" ,name + "genTopMass"        ,rootFile ,name + "efficiencyGenTopMatchMass",type ,"Mass (GeV)"    ,"Efficiency", 1);	
+        ratioTH1F( name + "genTopMatchEta"  ,name + "genTopEta"         ,rootFile ,name + "efficiencyGenTopMatchEta" ,type ,"#eta"          ,"Efficiency", 2);
     }
     
     FakeRatePlots(){}
@@ -85,16 +88,18 @@ public:
 };
 
 
-void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist)
+void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet)
 {
-    TCanvas *c = new TCanvas(name.c_str(),name.c_str(),1000,800);  
+    TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
     TLegend *l = new TLegend(0.68,0.8,0.99,0.9);
     gPad->SetTopMargin(0.1);
     gPad->SetBottomMargin(0.15);
     gPad->SetRightMargin(0.05);
     gPad->SetLeftMargin(0.16);
+
+    double max = std::max( mediumHist->GetMaximum(), simpleHist->GetMaximum() );
     
-    mediumHist->SetMaximum( 1.2*( mediumHist->GetMaximum() ) );
+    mediumHist->SetMaximum( 1.2*max );
     mediumHist->SetMinimum(0);
     mediumHist->SetTitleSize(0.002);
     mediumHist->SetTitleSize(0.05,"X");
@@ -117,10 +122,10 @@ void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist)
     l->AddEntry(simpleHist, "Simple   Top Tagger", "l");
     l->Draw();
     
-    c->SaveAs(("plots/" + name + ".png").c_str());        
+    c->SaveAs(("plots/" + dataSet + name + ".png").c_str());        
 }
 
-void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium)
+void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium, std::string dataSet)
 {
 
     char copy[128];
@@ -187,7 +192,7 @@ void runPlotter(const char* rootFileSimple, std::string filenameSimple, const ch
     ////////////////////////////////
     for(int i = 0; i < fakeratePlotsSimple.histos_.size(); i++)
     {
-        makePlots(fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i]);
+        makePlots(fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet);
     }
 }
 
@@ -195,13 +200,62 @@ int main()
 {
     TH1::AddDirectory(false);
 
-    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-               "joesGroup/MediumHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_mediumTopTagger.root"
+    ////Orginal cuts for Simple and Medium Top Tagger
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_mediumTopTagger.root",
+    //           "originalDiscCuts/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_mediumTopTagger.root",
+    //           "originalDiscCuts/"               
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_mediumTopTagger.root",
+    //           "originalDiscCuts/"               
+    //          );
+    //
+    //
+    ////95max_00017pt85 Medium Top Tagger cuts
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbar-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbar_95max_00017pt85_medium.root",
+    //           "95max_00017pt85_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_QCD-2018-3-12.root","efficiencyandFakeRatePlots_TT_QCD_95max_00017pt85_medium.root",
+    //           "95max_00017pt85_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbarSingleLep-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00017pt85_medium.root",
+    //           "95max_00017pt85_medium/"
+    //          );
+    //
+    //
+    ////95max_0004375pt775 Medium Top Tagger cuts
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
+    //           "95max_0004375pt775_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
+    //           "95max_0004375pt775_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbarSingleLep-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0004375pt775_medium.root",
+    //           "95max_0004375pt775_medium/"
+    //          );
+
+    //95max_0005pt7 Medium Top Tagger cuts
+    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+               "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbar-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbar_95max_0005pt7_medium.root",
+               "95max_0005pt7_medium/"
               );
-    runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-               "joesGroup/MediumHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_mediumTopTagger.root"
+    runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+               "joesGroup/mediumTopTagger_95max_0005pt7/TT_QCD-2018-3-12.root","efficiencyandFakeRatePlots_TT_QCD_95max_0005pt7_medium.root",
+               "95max_0005pt7_medium/"
               );
-    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-               "joesGroup/MediumHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_mediumTopTagger.root"
+    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+               "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbarSingleLep-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0005pt7_medium.root",
+               "95max_0005pt7_medium/"
               );
+
 }
