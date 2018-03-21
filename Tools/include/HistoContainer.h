@@ -164,7 +164,7 @@ public:
         hdPhiMaxGenMatch = bookHisto<TH1D>("dPhiMaxGenMatch", 100, 0, 3.1415);
     }
 
-    void setVar(const TUPLECLASS& tr)
+    void setStopVar(const TUPLECLASS& tr)
     {
         met_                 = &tr.template getVar<double>(           "met");
         metphi_              = &tr.template getVar<double>(           "metphi");    
@@ -172,8 +172,6 @@ public:
         vtxSize_             = &tr.template getVar<int>(              "vtxSize");
         cntCSVS_             = &tr.template getVar<int>(              "cntCSVS");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA");    
-        //cutMuVec_            = &tr.template getVec<TLorentzVector>(   "cutMuVec");
-        //cutElecVec_          = &tr.template getVec<TLorentzVector>(   "cutElecVec");    
         cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24");
         lepton_              = &tr.template getVar<TLorentzVector>(   "lepton");
         genTops_             = &tr.template getVec<TLorentzVector>(   "genTops");
@@ -183,9 +181,40 @@ public:
         bestTopMassGenMatch_ = &tr.template getVar<bool>(             "bestTopMassGenMatch");
     }
 
+    void setStealthVar(const TUPLECLASS& tr)
+    {
+        met_                 = *tr.MET;
+        metphi_              = *tr.METPhi;
+        ht_                  = *tr.HT;
+        vtxSize_             = *tr.NVtx;
+        //cntCSVS_             = *tr.;
+        //ttr_                 = *tr.;
+        //cntNJetsPt30Eta24_   = *tr.;
+        //lepton_              = *tr.;
+        //genTops_             = *tr.;
+        //bestCandLV_          = *tr.;
+        //bestTopMass_         = *tr.;
+        //bestTopMassTopTag_   = *tr.;
+        //bestTopMassGenMatch_ = *tr.;
+    }
+
+    ///Hack
+    ///Should be fix in simpleAnalyzer.C
     void fill(const TUPLECLASS& tr, const double& eWeight, TRandom* trand)
+    {
+        setStopVar(tr);
+        runFill(eWeight, trand);
+    }
+
+    void fill(const TUPLECLASS& tr, const double& eWeight)
+    {
+        TRandom* trand = new TRandom3();
+        setStealthVar(tr);
+        runFill(eWeight, trand);
+    }
+
+    void runFill(const double& eWeight, TRandom* trand)
     {    
-        setVar(tr);
 
         hMET->Fill(*met_, eWeight);
         hHT->Fill(*ht_, eWeight);
