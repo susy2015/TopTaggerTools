@@ -26,6 +26,7 @@ private:
     const TopTaggerResults* ttr_;
     const std::vector<TLorentzVector>* cutMuVec_;
     const std::vector<TLorentzVector>* cutElecVec_;
+    const std::vector<TLorentzVector>* tightPhotonsVec_;
     const int* cntNJetsPt30Eta24_;
     const TLorentzVector* lepton_;
     const std::vector<TLorentzVector>* genTops_;
@@ -49,18 +50,25 @@ public:
     TH1 *hNJets;
     TH1 *hNBJets;
     TH1 *hNVertices;
-    TH1 *topPt, *topMass, *topEta;
+    TH1 *hPhoton;
+    TH1 *hMETTagged;
+    TH1 *hHTTagged;
+    TH1 *hNJetsTagged;
+    TH1 *hNBJetsTagged;
+    TH1 *hNVerticesTagged;
+    TH1 *hPhotonTagged;
+    TH1 *topPt, *topP, *topMass, *topEta;
     TH1 *topCandPt, *topCandMass, *topCandEta;
-    TH1 *topPtGenMatch, *topMassGenMatch, *topEtaGenMatch;
+    TH1 *topPtGenMatch, *topPGenMatch, *topMassGenMatch, *topEtaGenMatch;
     TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch;
-    TH1 *genTopPt, *genTopMass, *genTopEta;
+    TH1 *genTopPt, *genTopP, *genTopMass, *genTopEta;
     TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
     TH1 *bestTopCandPt, *bestTopCandMass, *bestTopCandEta;
     TH1 *bestTopGenPt, *bestTopGenMass, *bestTopGenEta;
     TH1 *bestTopNotGenPt, *bestTopNotGenMass, *bestTopNotGenEta;
-    TH1 *bestTopPt, *bestTopMass, *bestTopEta;
+    TH1 *bestTopPt, *bestTopP, *bestTopMass, *bestTopEta;
     TH1 *randomTopCandPt,   *randomTopCandMass,   *randomTopCandEta;
-    TH1 *randomTopPt, *randomTopMass, *randomTopEta;
+    TH1 *randomTopPt, *randomTopP, *randomTopMass, *randomTopEta;
     TH2 *randomTopCandMassByPt, *randomTopMassByPt;
     TH1 *fakerateMET, *fakerateNj, *fakerateNb, *fakerateHT;
     TH1 *fakerateMET2, *fakerateNj2, *fakerateNb2, *fakerateNvert2, *fakerateHT2;
@@ -87,8 +95,17 @@ public:
         hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
         hNBJets    = bookHisto<TH1D>("nBJets",21,-0.5, 20.5);
         hNVertices = bookHisto<TH1D>("nVertices",61,-0.5, 60.5);
-        
+        hPhoton    = bookHisto<TH1D>("photon",100,0, 1000);
+
+        hMETTagged       = bookHisto<TH1D>("METTagged",100,0, 1000);
+        hHTTagged        = bookHisto<TH1D>("HTTagged",100,0, 2000);
+        hNJetsTagged     = bookHisto<TH1D>("nJetsTagged",21,-0.5, 20.5);
+        hNBJetsTagged    = bookHisto<TH1D>("nBJetsTagged",21,-0.5, 20.5);
+        hNVerticesTagged = bookHisto<TH1D>("nVerticesTagged",61,-0.5, 60.5);
+        hPhotonTagged    = bookHisto<TH1D>("photonTagged",100,0, 1000);
+
         topPt   = bookHisto<TH1D>("topPt",   100,  0, 1000);
+        topP    = bookHisto<TH1D>("topP",   100,  0, 1000);
         topMass = bookHisto<TH1D>("topMass", 100,  0, 500);
         topEta  = bookHisto<TH1D>("topEta",  100, -5, 5);
         topCandPt   = bookHisto<TH1D>("topCandPt",   100,  0, 1000);
@@ -96,6 +113,7 @@ public:
         topCandEta  = bookHisto<TH1D>("topCandEta",  100, -5, 5);
 
         topPtGenMatch   = bookHisto<TH1D>("topPtGenMatch",   100,  0, 1000);
+        topPGenMatch    = bookHisto<TH1D>("topPGenMatch",   100,  0, 1000);
         topMassGenMatch = bookHisto<TH1D>("topMassGenMatch", 100,  0, 500);
         topEtaGenMatch  = bookHisto<TH1D>("topEtaGenMatch",  100, -5, 5);
         topCandPtGenMatch   = bookHisto<TH1D>("topCandPtGenMatch",   100,  0, 1000);
@@ -103,6 +121,7 @@ public:
         topCandEtaGenMatch  = bookHisto<TH1D>("topCandEtaGenMatch",  100, -5, 5);
         
         genTopPt   = bookHisto<TH1D>("genTopPt",   100,  0, 1000);
+        genTopP    = bookHisto<TH1D>("genTopP",   100,  0, 1000);
         genTopMass = bookHisto<TH1D>("genTopMass", 100,  0, 500);
         genTopEta  = bookHisto<TH1D>("genTopEta",  100, -5, 5);
         genTopMatchPt   = bookHisto<TH1D>("genTopMatchPt",   100,  0, 1000);
@@ -110,6 +129,7 @@ public:
         genTopMatchEta  = bookHisto<TH1D>("genTopMatchEta",  100, -5, 5);
         
         bestTopPt   = bookHisto<TH1D>("bestTopPt",   100,  0, 1000);
+        bestTopP    = bookHisto<TH1D>("bestTopP",   100,  0, 1000);
         bestTopMass = bookHisto<TH1D>("bestTopMass", 100,  0, 500);
         bestTopEta  = bookHisto<TH1D>("bestTopEta",  100, -5, 5);
         bestTopCandPt   = bookHisto<TH1D>("bestTopCandPt",   100,  0, 1000);
@@ -123,6 +143,7 @@ public:
         bestTopNotGenEta  = bookHisto<TH1D>("bestTopNotGenEta",  100, -5, 5);
         
         randomTopPt   = bookHisto<TH1D>("randomTopPt",   100,  0, 1000);
+        randomTopP    = bookHisto<TH1D>("randomTopP",   100,  0, 1000);
         randomTopMass = bookHisto<TH1D>("randomTopMass", 100,  0, 500);
         randomTopEta  = bookHisto<TH1D>("randomTopEta",  100, -5, 5);
         randomTopCandPt   = bookHisto<TH1D>("randomTopCandPt",   100,  0, 1000);
@@ -171,7 +192,10 @@ public:
         ht_                  = &tr.template getVar<double>(           "HT");
         vtxSize_             = &tr.template getVar<int>(              "vtxSize");
         cntCSVS_             = &tr.template getVar<int>(              "cntCSVS");
-        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA");    
+        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
+        //cutMuVec_            = &tr.template getVec<TLorentzVector>(   "cutMuVec");
+        //cutElecVec_          = &tr.template getVec<TLorentzVector>(   "cutElecVec");    
+        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>(   "tightPhotons");  
         cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24");
         lepton_              = &tr.template getVar<TLorentzVector>(   "lepton");
         genTops_             = &tr.template getVec<TLorentzVector>(   "genTops");
@@ -222,10 +246,24 @@ public:
         hNBJets->Fill(*cntCSVS_, eWeight);
         hNVertices->Fill(*vtxSize_,eWeight);
 
+        if((*tightPhotonsVec_).size() > 0) hPhoton->Fill((*tightPhotonsVec_)[0].Pt(),eWeight);
+
+        if(ttr_->getTops().size() > 0){
+
+            hMETTagged->Fill(*met_, eWeight);
+            hHTTagged->Fill(*ht_, eWeight);
+            hNJetsTagged->Fill(*cntNJetsPt30Eta24_, eWeight);
+            hNBJetsTagged->Fill(*cntCSVS_, eWeight);
+            hNVerticesTagged->Fill(*vtxSize_,eWeight);
+            if((*tightPhotonsVec_).size() > 0) hPhotonTagged->Fill((*tightPhotonsVec_)[0].Pt(),eWeight);
+
+        }
+
         //plots for gen efficiency 
         for(const TLorentzVector& genTop : *genTops_)
         {
             genTopPt->Fill(genTop.Pt(), eWeight);
+            genTopP->Fill(genTop.P(), eWeight);
             genTopMass->Fill(genTop.M(), eWeight);
             genTopEta->Fill(genTop.Eta(), eWeight);
         }
@@ -251,6 +289,7 @@ public:
             if(*bestTopMassTopTag_)
             {
                 bestTopPt->Fill(bestCandLV_->Pt(), eWeight);
+                bestTopP->Fill(bestCandLV_->P(), eWeight);
                 bestTopMass->Fill(bestCandLV_->M(), eWeight);
                 bestTopEta->Fill(bestCandLV_->Eta(), eWeight);
             }
@@ -275,12 +314,14 @@ public:
             massTemplateTopByPt->Fill(top->p().M(), top->p().Pt(), eWeight);
 
             topPt->Fill(top->p().Pt(), eWeight);
+            topP->Fill(top->p().P(), eWeight);
             topMass->Fill(top->p().M(), eWeight);
             topEta->Fill(top->p().Eta(), eWeight);
 
             if(top->getBestGenTopMatch() != nullptr)
             {
                 topPtGenMatch->Fill(top->p().Pt(), eWeight);
+                topPGenMatch->Fill(top->p().P(), eWeight);
                 topMassGenMatch->Fill(top->p().M(), eWeight);
                 topEtaGenMatch->Fill(top->p().Eta(), eWeight);
             }
@@ -456,6 +497,7 @@ public:
                 if(topPtr == &topCand)
                 {
                     randomTopPt->Fill(topCand.p().Pt(), eWeight);
+                    randomTopP->Fill(topCand.p().P(), eWeight);
                     randomTopMass->Fill(topCand.p().M(), eWeight);
                     randomTopEta->Fill(topCand.p().Eta(), eWeight);
                     randomTopMassByPt->Fill(topCand.p().M(), topCand.p().Pt(), eWeight);
