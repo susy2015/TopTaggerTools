@@ -49,6 +49,7 @@ public:
     TH1 *hHT;
     TH1 *hNJets;
     TH1 *hNBJets;
+    TH1 *hNTops;
     TH1 *hNVertices;
     TH1 *hPhoton;
     TH1 *hMETTagged;
@@ -94,6 +95,7 @@ public:
         hHT        = bookHisto<TH1D>("HT",100,0, 2000);
         hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
         hNBJets    = bookHisto<TH1D>("nBJets",21,-0.5, 20.5);
+        hNTops     = bookHisto<TH1D>("nTops",6,-0.5, 5.5);
         hNVertices = bookHisto<TH1D>("nVertices",61,-0.5, 60.5);
         hPhoton    = bookHisto<TH1D>("photon",100,0, 1000);
 
@@ -244,6 +246,7 @@ public:
         hHT->Fill(*ht_, eWeight);
         hNJets->Fill(*cntNJetsPt30Eta24_, eWeight);
         hNBJets->Fill(*cntCSVS_, eWeight);
+        hNTops->Fill(ttr_->getTops().size(), eWeight);
         hNVertices->Fill(*vtxSize_,eWeight);
 
         if((*tightPhotonsVec_).size() > 0) hPhoton->Fill((*tightPhotonsVec_)[0].Pt(),eWeight);
