@@ -1,7 +1,7 @@
 #ifndef HISTOCONTAINER_H
 #define HISTOCONTAINER_H
 
-#include "TopTaggerResults.h"
+#include "TopTagger/TopTagger/include/TopTaggerResults.h"
 
 #include <vector>
 
@@ -11,12 +11,14 @@
 #include "TRandom3.h"
 #include "TFile.h"
 
+
 template<typename TUPLECLASS>
 class HistoContainer
 {
 private:
     std::vector<TH1*> histos_;
     std::string csName_;
+    TRandom* trand_;
 
     const double* met_;
     const double* metphi_;
@@ -89,8 +91,10 @@ public:
     TH1 *hdPhiMin, *hdPhiMax;
     TH1 *hdPhiMinGenMatch, *hdPhiMaxGenMatch;
     
-    HistoContainer(const std::string& csName) : csName_(csName)
+    HistoContainer(const std::string& csName) : csName_(csName), trand_(nullptr)
     {
+        trand_ = new TRandom3();
+
         hMET       = bookHisto<TH1D>("MET",100,0, 1000);
         hHT        = bookHisto<TH1D>("HT",100,0, 2000);
         hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
@@ -187,6 +191,11 @@ public:
         hdPhiMaxGenMatch = bookHisto<TH1D>("dPhiMaxGenMatch", 100, 0, 3.1415);
     }
 
+    ~HistoContainer()
+    {
+        delete trand_;
+    }
+
     void setStopVar(const TUPLECLASS& tr)
     {
         met_                 = &tr.template getVar<double>(           "met");
@@ -224,8 +233,7 @@ public:
         //bestTopMassGenMatch_ = *tr.;
     }
 
-    ///Hack
-    ///Should be fix in simpleAnalyzer.C
+    ///Hack: Need a better way to tell stealth from stop group
     void fill(const TUPLECLASS& tr, const double& eWeight, TRandom* trand)
     {
         setStopVar(tr);
@@ -234,14 +242,12 @@ public:
 
     void fill(const TUPLECLASS& tr, const double& eWeight)
     {
-        TRandom* trand = new TRandom3();
         setStealthVar(tr);
-        runFill(eWeight, trand);
+        runFill(eWeight, trand_);
     }
 
     void runFill(const double& eWeight, TRandom* trand)
     {    
-
         hMET->Fill(*met_, eWeight);
         hHT->Fill(*ht_, eWeight);
         hNJets->Fill(*cntNJetsPt30Eta24_, eWeight);
