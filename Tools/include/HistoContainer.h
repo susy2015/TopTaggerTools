@@ -223,7 +223,7 @@ public:
         metphi_              = &tr.template getVar<double>("METPhi");    
         ht_                  = &tr.template getVar<double>("HT");
         vtxSize_             = &tr.template getVar<int>("NVtx");
-        cntCSVS_             = &tr.template getVar<int>("BJets_pt30");
+        cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr"); 
         cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
         lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
