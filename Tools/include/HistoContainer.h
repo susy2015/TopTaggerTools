@@ -26,16 +26,16 @@ private:
     const int* vtxSize_;
     const int* cntCSVS_;
     const TopTaggerResults* ttr_;
-    const std::vector<TLorentzVector>* cutMuVec_;
-    const std::vector<TLorentzVector>* cutElecVec_;
-    const std::vector<TLorentzVector>* tightPhotonsVec_;
     const int* cntNJetsPt30Eta24_;
     const TLorentzVector* lepton_;
-    const std::vector<TLorentzVector>* genTops_;
     const TLorentzVector* bestCandLV_;
     const double* bestTopMass_;
     const bool* bestTopMassTopTag_;
     const bool* bestTopMassGenMatch_;
+    const std::vector<TLorentzVector>* cutMuVec_;
+    const std::vector<TLorentzVector>* cutElecVec_;
+    const std::vector<TLorentzVector>* tightPhotonsVec_;
+    const std::vector<TLorentzVector>* genTops_;
 
     template<typename H, typename... Args>
     H* bookHisto(const std::string& name, Args... args)
@@ -198,51 +198,71 @@ public:
 
     void setStopVar(const TUPLECLASS& tr)
     {
-        met_                 = &tr.template getVar<double>(           "met");
-        metphi_              = &tr.template getVar<double>(           "metphi");    
-        ht_                  = &tr.template getVar<double>(           "HT");
-        vtxSize_             = &tr.template getVar<int>(              "vtxSize");
-        cntCSVS_             = &tr.template getVar<int>(              "cntCSVS");
+        met_                 = &tr.template getVar<double>("met");
+        metphi_              = &tr.template getVar<double>("metphi");    
+        ht_                  = &tr.template getVar<double>("HT");
+        vtxSize_             = &tr.template getVar<int>("vtxSize");
+        cntCSVS_             = &tr.template getVar<int>("cntCSVS");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
-        //cutMuVec_            = &tr.template getVec<TLorentzVector>(   "cutMuVec");
-        //cutElecVec_          = &tr.template getVec<TLorentzVector>(   "cutElecVec");    
-        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>(   "tightPhotons");  
-        cntNJetsPt30Eta24_   = &tr.template getVar<int>(              "cntNJetsPt30Eta24");
-        lepton_              = &tr.template getVar<TLorentzVector>(   "lepton");
-        genTops_             = &tr.template getVec<TLorentzVector>(   "genTops");
-        bestCandLV_          = &tr.template getVar<TLorentzVector>(   "bestTopMassLV");
-        bestTopMass_         = &tr.template getVar<double>(           "bestTopMass");
-        bestTopMassTopTag_   = &tr.template getVar<bool>(             "bestTopMassTopTag");
-        bestTopMassGenMatch_ = &tr.template getVar<bool>(             "bestTopMassGenMatch");
+        cntNJetsPt30Eta24_   = &tr.template getVar<int>("cntNJetsPt30Eta24");
+        lepton_              = &tr.template getVar<TLorentzVector>("lepton");
+        bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLV");
+        bestTopMass_         = &tr.template getVar<double>("bestTopMass");
+        bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
+        bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
+
+        //cutMuVec_            = &tr.template getVec<TLorentzVector>("cutMuVec");
+        //cutElecVec_          = &tr.template getVec<TLorentzVector>("cutElecVec");    
+        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");  
+        genTops_             = &tr.template getVec<TLorentzVector>("genTops");
     }
 
     void setStealthVar(const TUPLECLASS& tr)
     {
-        met_                 = *tr.MET;
-        metphi_              = *tr.METPhi;
-        ht_                  = *tr.HT;
-        vtxSize_             = *tr.NVtx;
-        //cntCSVS_             = *tr.;
-        //ttr_                 = *tr.;
-        //cntNJetsPt30Eta24_   = *tr.;
-        //lepton_              = *tr.;
-        //genTops_             = *tr.;
-        //bestCandLV_          = *tr.;
-        //bestTopMass_         = *tr.;
-        //bestTopMassTopTag_   = *tr.;
-        //bestTopMassGenMatch_ = *tr.;
+        met_                 = &tr.template getVar<double>("MET");
+        metphi_              = &tr.template getVar<double>("METPhi");    
+        ht_                  = &tr.template getVar<double>("HT");
+        vtxSize_             = &tr.template getVar<int>("NVtx");
+        cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
+        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr"); 
+        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
+        lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
+        bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLV");
+        bestTopMass_         = &tr.template getVar<double>("bestTopMass");
+        bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
+        bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
+
+        //cutMuVec_            = &tr.template getVec<TLorentzVector>("cutMuVec");
+        //cutElecVec_          = &tr.template getVec<TLorentzVector>("cutElecVec");    
+        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");  
+        genTops_             = &tr.template getVec<TLorentzVector>("hadtops");
     }
 
-    ///Hack: Need a better way to tell stealth from stop group
     void fill(const TUPLECLASS& tr, const double& eWeight, TRandom* trand)
     {
-        setStopVar(tr);
+        if ( tr.checkBranch("met") )
+        {
+            setStopVar(tr);
+        }
+        else if( tr.checkBranch("MET") )
+        {
+            setStealthVar(tr);
+        }
+
         runFill(eWeight, trand);
     }
 
     void fill(const TUPLECLASS& tr, const double& eWeight)
     {
-        setStealthVar(tr);
+        if ( tr.checkBranch("met") )
+        {
+            setStopVar(tr);
+        }
+        else if( tr.checkBranch("MET") )
+        {
+            setStealthVar(tr);
+        }
+
         runFill(eWeight, trand_);
     }
 
