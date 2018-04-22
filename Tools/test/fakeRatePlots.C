@@ -1,4 +1,3 @@
-//#include "../include/Eff_FakeRatePlots.h"
 #include "Eff_FakeRatePlots.h"
 
 #include "TROOT.h"
@@ -10,6 +9,7 @@
 #include <TLegend.h>
 #include <TCanvas.h>
 #include "TF1.h"
+#include "TSystem.h"
 
 #include <iostream>
 #include <string>
@@ -18,7 +18,7 @@
 #include <cstdio>
 #include <cstring>
 
-void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet)
+void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet)
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -36,7 +36,7 @@ void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist, std::string d
 
     //Define the top and bottom TPad
     double up_height     = 0.75;  // please tune so that the upper figures size will meet your requirement
-    double dw_correction = 1.0;//40;
+    double dw_correction = 1.0;   //40;
     double dw_height     = (1.0 - up_height)*dw_correction;
     TPad *pad_up = new TPad("pad_up1","pad_up1",0.0, 1.0 - up_height, 1.0,       1.0);
     TPad *pad_dw = new TPad("pad_dw1","pad_dw1",0.0, 0.0,             1.0, dw_height);
@@ -124,13 +124,13 @@ void makePlots(std::string name, TH1* simpleHist, TH1* mediumHist, std::string d
     TF1 *line = new TF1( (name+dataSet+"Line").c_str(),"1",-2000,2000);
     line->SetLineColor(kRed);
     line->Draw("same");
-    
-    c->SaveAs( ("plots/" + dataSet + name + ".png").c_str() );        
+
+    gSystem -> Exec( ("mkdir -p plots/" + dataSet + outFile).c_str() ) ;    
+    c->SaveAs( ( "plots/" + dataSet + name + ".png" ).c_str() );        
 }
 
 void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium, std::string dataSet)
 {
-
     char copy[128];
     strcpy(copy, rootFileSimple);    
     char* type1;
@@ -195,7 +195,7 @@ void runPlotter(const char* rootFileSimple, std::string filenameSimple, const ch
     ////////////////////////////////
     for(int i = 0; i < fakeratePlotsSimple.histos_.size(); i++)
     {
-        makePlots(fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet);
+        makePlots(fakeratePlotsSimple.outFile_[i], fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet);
     }
 }
 
@@ -204,88 +204,108 @@ int main()
     TH1::AddDirectory(false);
 
     ////Orginal cuts for Simple and Medium Top Tagger
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_TTbar-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbar_mediumTopTagger.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_TTbar-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbar_mediumTopTagger.root",
     //           "originalDiscCuts/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_QCD-2018-3-9.root", "efficiencyandFakeRatePlots_TT_QCD_mediumTopTagger.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_QCD-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_mediumTopTagger.root",
     //           "originalDiscCuts/"               
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "efficiencyandFakeRatePlots_TT_TTbarSingleLep_mediumTopTagger.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/MediumHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_mediumTopTagger.root",
     //           "originalDiscCuts/"               
     //          );
     //
     //
     ////95max_00017pt85 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbar-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbar_95max_00017pt85_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_00017pt85_medium.root",
     //           "95max_00017pt85_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_QCD-2018-3-13.root","efficiencyandFakeRatePlots_TT_QCD_95max_00017pt85_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_00017pt85_medium.root",
     //           "95max_00017pt85_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                 ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbarSingleLep-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00017pt85_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00017pt85_medium.root",
     //           "95max_00017pt85_medium/"
     //          );
     //
     //
     ////95max_0004375pt775 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
     //           "95max_0004375pt775_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
     //           "95max_0004375pt775_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbarSingleLep-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0004375pt775_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbarSingleLep-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0004375pt775_medium.root",
     //           "95max_0004375pt775_medium/"
     //          );
     //
     ////95max_0005pt7 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbar-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbar_95max_0005pt7_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0005pt7_medium.root",
     //           "95max_0005pt7_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_QCD-2018-3-12.root","efficiencyandFakeRatePlots_TT_QCD_95max_0005pt7_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0005pt7_medium.root",
     //           "95max_0005pt7_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbarSingleLep-2018-3-12.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0005pt7_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbarSingleLep-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0005pt7_medium.root",
     //           "95max_0005pt7_medium/"
     //          );
     //
     ////95max_00175pt3125 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbar-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbar_95max_00175pt3125_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_00175pt3125_medium.root",
     //           "95max_00175pt3125_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_QCD-2018-3-13.root","efficiencyandFakeRatePlots_TT_QCD_95max_00175pt3125_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_00175pt3125_medium.root",
     //           "95max_00175pt3125_medium/"
     //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbarSingleLep-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00175pt3125_medium.root",
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00175pt3125_medium.root",
     //           "95max_00175pt3125_medium/"
     //          );    
+    //
+    ////93max_000575pt7 Medium Top Tagger cuts
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_93max_000575pt7_medium.root",
+    //           "93max_000575pt7_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_93max_000575pt7_medium.root",
+    //           "93max_000575pt7_medium/"
+    //          );
+    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_93max_000575pt7_medium.root",
+    //           "93max_000575pt7_medium/"
+    //          );    
+    //
+    ////Comparing Joes nTuples to ours Medium TopTagger discCut = 0.95 discSlope = 0.0004375 discOffset = 0.775
+    //runPlotter("joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
+    //           "stealthGroup/TT/stealth_TT_mediumTT.root","outputRoot/efficiencyandFakeRatePlots_TT_Stealth_95max_0004375pt775_medium.root",
+    //           "95max_0004375pt775_medium/"
+    //          );
+    //runPlotter("joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
+    //           "stealthGroup/QCD/stealth_QCD_mediumTT.root","outputRoot/efficiencyandFakeRatePlots_QCD_Stealth_95max_0004375pt775_medium.root",
+    //           "95max_0004375pt775_medium/"
+    //          );
 
-    //93max_000575pt7 Medium Top Tagger cuts
-    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-               "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbar-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbar_93max_000575pt7_medium.root",
-               "93max_000575pt7_medium/"
+    //Comparing joes test top tagger to the full top tagger: WP 0.7
+    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
+               "joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root",
+               "0.7WP_joeTest/"
               );
-    runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-               "joesGroup/mediumTopTagger_93max_000575pt7/TT_QCD-2018-3-13.root","efficiencyandFakeRatePlots_TT_QCD_93max_000575pt7_medium.root",
-               "93max_000575pt7_medium/"
+    runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",    
+               "joesGroup/joeTestTopTagger_0.7WP/TT_QCD.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root",
+               "0.7WP_joeTest/"
               );
-    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-               "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbarSingleLep-2018-3-13.root","efficiencyandFakeRatePlots_TT_TTbarSingleLep_93max_000575pt7_medium.root",
-               "93max_000575pt7_medium/"
-              );    
 }
