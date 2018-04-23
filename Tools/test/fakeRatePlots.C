@@ -18,7 +18,7 @@
 #include <cstdio>
 #include <cstring>
 
-void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet)
+void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet, std::string mediumLeg, std::string simpleLeg)
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -82,8 +82,8 @@ void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* medi
     l->SetBorderSize(0);
     l->SetFillStyle(0);
     l->SetTextSize(0.03);    
-    l->AddEntry(mediumHist, "Medium Top Tagger", "l");
-    l->AddEntry(simpleHist, "Simple   Top Tagger", "l");
+    l->AddEntry(mediumHist, (mediumLeg).c_str()   , "l");
+    l->AddEntry(simpleHist, (simpleLeg).c_str()   , "l");
     l->Draw();
 
     //Bottom TPad
@@ -125,11 +125,13 @@ void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* medi
     line->SetLineColor(kRed);
     line->Draw("same");
 
+    //std::cout<<"plots/" + dataSet + outFile<<std::endl;
     gSystem -> Exec( ("mkdir -p plots/" + dataSet + outFile).c_str() ) ;    
     c->SaveAs( ( "plots/" + dataSet + name + ".png" ).c_str() );        
 }
 
-void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium, std::string dataSet)
+void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium,
+                std::string dataSet, std::string mediumLeg = "Medium Top Tagger", std::string simpleLeg = "Simple   Top Tagger")
 {
     char copy[128];
     strcpy(copy, rootFileSimple);    
@@ -139,6 +141,8 @@ void runPlotter(const char* rootFileSimple, std::string filenameSimple, const ch
     type2 = strtok( nullptr, "-/" );
     char* type3;
     type3 = strtok( nullptr, "-/" );
+
+    std::cout<<type3<<std::endl;
     
     ///////////////////////////////
     //      Simple TopTagger
@@ -195,7 +199,7 @@ void runPlotter(const char* rootFileSimple, std::string filenameSimple, const ch
     ////////////////////////////////
     for(int i = 0; i < fakeratePlotsSimple.histos_.size(); i++)
     {
-        makePlots(fakeratePlotsSimple.outFile_[i], fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet);
+        makePlots(fakeratePlotsSimple.outFile_[i], fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet, mediumLeg, simpleLeg);
     }
 }
 
@@ -300,12 +304,12 @@ int main()
     //          );
 
     //Comparing joes test top tagger to the full top tagger: WP 0.7
-    runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-               "joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root",
-               "0.7WP_joeTest/"
+    runPlotter("joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root",
+               "joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root",
+               "0.7WP_joeTest_test/","Full TT 0.7 WP","JoeTest TT 0.7 WP"
               );
-    runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",    
-               "joesGroup/joeTestTopTagger_0.7WP/TT_QCD.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root",
-               "0.7WP_joeTest/"
+    runPlotter("joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root",    
+               "joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root",
+               "0.7WP_joeTest_test/","Full TT 0.7 WP","JoeTest TT 0.7 WP"
               );
 }
