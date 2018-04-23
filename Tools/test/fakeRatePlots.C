@@ -18,7 +18,16 @@
 #include <cstdio>
 #include <cstring>
 
-void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* mediumHist, std::string dataSet, std::string mediumLeg, std::string simpleLeg)
+class TaggerInfo
+{
+public:
+    std::string inputFile;
+    std::string outputFile;
+    std::string legName;
+};
+
+void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
+               const std::string& dataSet, const std::string& simpleLeg = "Simple   Top Tagger", const std::string& mediumLeg = "Medium Top Tagger")
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -128,13 +137,17 @@ void makePlots(std::string outFile, std::string name, TH1* simpleHist, TH1* medi
     //std::cout<<"plots/" + dataSet + outFile<<std::endl;
     gSystem -> Exec( ("mkdir -p plots/" + dataSet + outFile).c_str() ) ;    
     c->SaveAs( ( "plots/" + dataSet + name + ".png" ).c_str() );        
+
+    delete l;
+    delete pad_up;
+    delete pad_dw;
+    delete line;
 }
 
-void runPlotter(const char* rootFileSimple, std::string filenameSimple, const char* rootFileMedium, std::string filenameMedium,
-                std::string dataSet, std::string mediumLeg = "Medium Top Tagger", std::string simpleLeg = "Simple   Top Tagger")
+void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::string& dataSet)
 {
     char copy[128];
-    strcpy(copy, rootFileSimple);    
+    strcpy(copy, taggerInfo[0].inputFile.c_str() );    
     char* type1;
     type1 = strtok( copy, "-/" );
     char* type2;
@@ -142,64 +155,48 @@ void runPlotter(const char* rootFileSimple, std::string filenameSimple, const ch
     char* type3;
     type3 = strtok( nullptr, "-/" );
 
-    std::cout<<type3<<std::endl;
-    
-    ///////////////////////////////
-    //      Simple TopTagger
-    ///////////////////////////////
-    Eff_FakeRatePlots fakeratePlotsSimple;
-    fakeratePlotsSimple.makeTH1F("Lep0/", rootFileSimple, type3);
-    fakeratePlotsSimple.makeTH1F("Lep1/", rootFileSimple, type3);
+    /////////////////////////////////
+    ////   Looping over TaggerInfo
+    /////////////////////////////////
+    std::vector<Eff_FakeRatePlots*> vecPlots;
+    for(const auto& tI : taggerInfo)
+    {
+        Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
+        fakeratePlots->makeTH1F("Lep0/", tI.inputFile.c_str(), type3);
+        fakeratePlots->makeTH1F("Lep1/", tI.inputFile.c_str(), type3);
 
-    TFile *fSimple = new TFile(filenameSimple.c_str(),"RECREATE");
-    if(fSimple->IsZombie())
-    {
-        std::cout << "Cannot create " << filenameSimple << std::endl;
-        throw "File is zombie";
+        TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
+        if(f->IsZombie())
+        {
+            std::cout << "Cannot create " << tI.outputFile << std::endl;
+            throw "File is zombie";
+        }
+    
+        f->cd();
+    
+        for(int i = 0; i < fakeratePlots->histos_.size(); i++)
+        {
+            fakeratePlots->histos_[i]->Write();
+        }
+    
+        f->Write();
+        f->Close();
+
+        vecPlots.push_back(fakeratePlots);
     }
-    
-    fSimple->cd();
-    
-    std::cout<<"Filling Simple Top Tagger Histo ;) "<<std::endl;
-    for(int i = 0; i < fakeratePlotsSimple.histos_.size(); i++)
-    {
-        fakeratePlotsSimple.histos_[i]->Write();
-    }
-    
-    fSimple->Write();
-    fSimple->Close();      
-    
-    ///////////////////////////////
-    //      Medium TopTagger
-    ///////////////////////////////    
-    Eff_FakeRatePlots fakeratePlotsMedium;
-    fakeratePlotsMedium.makeTH1F("Lep0/", rootFileMedium, type3);
-    fakeratePlotsMedium.makeTH1F("Lep1/", rootFileMedium, type3);
-    
-    TFile *fMedium = new TFile(filenameMedium.c_str(),"RECREATE");
-    if(fMedium->IsZombie())
-    {
-        std::cout << "Cannot create " << filenameMedium << std::endl;
-        throw "File is zombie";
-    }
-    
-    fMedium->cd();
-    
-    std::cout<<"Filling Medium Top Tagger Histo ;) "<<std::endl;
-    for(int i = 0; i < fakeratePlotsMedium.histos_.size(); i++)
-    {
-        fakeratePlotsMedium.histos_[i]->Write();
-    }
-    
-    fMedium->Write();
-    fMedium->Close();      
-    
+
     ////////////////////////////////
     //       Making Plots
     ////////////////////////////////
-    for(int i = 0; i < fakeratePlotsSimple.histos_.size(); i++)
+    for(int i = 0; i < vecPlots[0]->histos_.size(); i++)
     {
-        makePlots(fakeratePlotsSimple.outFile_[i], fakeratePlotsSimple.histoName_[i], fakeratePlotsSimple.histos_[i], fakeratePlotsMedium.histos_[i], dataSet, mediumLeg, simpleLeg);
+        makePlots(vecPlots[0]->outFile_[i], vecPlots[0]->histoName_[i], vecPlots[0]->histos_[i], vecPlots[1]->histos_[i], dataSet, taggerInfo[0].legName, taggerInfo[1].legName);
+    }
+
+    //Cleaning up
+    for(auto p : vecPlots)
+    {
+        delete p;
     }
 }
 
@@ -303,13 +300,20 @@ int main()
     //           "95max_0004375pt775_medium/"
     //          );
 
+
     //Comparing joes test top tagger to the full top tagger: WP 0.7
-    runPlotter("joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root",
-               "joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root",
-               "0.7WP_joeTest_test/","Full TT 0.7 WP","JoeTest TT 0.7 WP"
-              );
-    runPlotter("joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root",    
-               "joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root",
-               "0.7WP_joeTest_test/","Full TT 0.7 WP","JoeTest TT 0.7 WP"
-              );
+    std::vector<TaggerInfo> joeTest_TTbarSingleLepT
+    {
+        {"joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root"    , "Full TT 0.7 WP"},
+        {"joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    };
+
+    std::vector<TaggerInfo> joeTest_QCD
+    {
+        {"joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root"   , "Full TT 0.7 WP"},
+        {"joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    };
+
+    runPlotter(joeTest_TTbarSingleLepT, "0.7WP_joeTest_test/");
+    runPlotter(joeTest_QCD, "0.7WP_joeTest_test/");
 }
