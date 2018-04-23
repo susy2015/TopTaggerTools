@@ -144,7 +144,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     delete line;
 }
 
-void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::string& dataSet)
+void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std::string>& selections, const std::string& dataSet)
 {
     char copy[128];
     strcpy(copy, taggerInfo[0].inputFile.c_str() );    
@@ -162,10 +162,10 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::string& da
     for(const auto& tI : taggerInfo)
     {
         Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
-        fakeratePlots->makeTH1F("Lep0/", tI.inputFile.c_str(), type3);
-        fakeratePlots->makeTH1F("Lep1/", tI.inputFile.c_str(), type3);
-        fakeratePlots->makeTH1F("QCD/",  tI.inputFile.c_str(), type3);
-        fakeratePlots->makeTH1F("QCDb/",  tI.inputFile.c_str(), type3);`
+        for(const auto& s : selections)
+        {
+            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3);
+        }
 
         TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
         if(f->IsZombie())
@@ -304,6 +304,7 @@ int main()
 
 
     //Comparing joes test top tagger to the full top tagger: WP 0.7
+    std::vector<std::string> selections = {"Lep0/", "Lep1/", "QCD/", "QCDb/"};
     std::vector<TaggerInfo> joeTest_TTbarSingleLepT
     {
         {"joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root"    , "Full TT 0.7 WP"},
@@ -316,6 +317,6 @@ int main()
         {"joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
     };
 
-    runPlotter(joeTest_TTbarSingleLepT, "0.7WP_joeTest_test/");
-    runPlotter(joeTest_QCD, "0.7WP_joeTest_test/");
+    runPlotter(joeTest_TTbarSingleLepT, selections, "0.7WP_joeTest_test/");
+    runPlotter(joeTest_QCD, selections, "0.7WP_joeTest_test/");
 }
