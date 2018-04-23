@@ -164,6 +164,8 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::string& da
         Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
         fakeratePlots->makeTH1F("Lep0/", tI.inputFile.c_str(), type3);
         fakeratePlots->makeTH1F("Lep1/", tI.inputFile.c_str(), type3);
+        fakeratePlots->makeTH1F("QCD/",  tI.inputFile.c_str(), type3);
+        fakeratePlots->makeTH1F("QCDb/",  tI.inputFile.c_str(), type3);`
 
         TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
         if(f->IsZombie())
