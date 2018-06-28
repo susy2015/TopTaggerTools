@@ -60,18 +60,19 @@ public:
     TH1 *hNBJetsTagged;
     TH1 *hNVerticesTagged;
     TH1 *hPhotonTagged;
-    TH1 *topPt, *topP, *topMass, *topEta;
-    TH1 *topCandPt, *topCandMass, *topCandEta;
+    TH1 *topPt, *topP, *topMass, *topEta, *topDisc, *topDiscGenMatch, *topDiscNotGenMatch;
+    TH1 *topCandPt, *topCandMass, *topCandEta, *topCandDisc;
     TH1 *topPtGenMatch, *topPGenMatch, *topMassGenMatch, *topEtaGenMatch;
-    TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch;
+    TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch, *topCandDiscGenMatch, *topCandDiscNotGenMatch;
+    TH1 *topCandMaxDisc;
     TH1 *genTopPt, *genTopP, *genTopMass, *genTopEta;
     TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
     TH1 *bestTopCandPt, *bestTopCandMass, *bestTopCandEta;
     TH1 *bestTopGenPt, *bestTopGenMass, *bestTopGenEta;
     TH1 *bestTopNotGenPt, *bestTopNotGenMass, *bestTopNotGenEta;
     TH1 *bestTopPt, *bestTopP, *bestTopMass, *bestTopEta;
-    TH1 *randomTopCandPt,   *randomTopCandMass,   *randomTopCandEta;
-    TH1 *randomTopPt, *randomTopP, *randomTopMass, *randomTopEta;
+    TH1 *randomTopCandPt,   *randomTopCandMass,   *randomTopCandEta, *randomTopCandDisc;
+    TH1 *randomTopPt, *randomTopP, *randomTopMass, *randomTopEta, *randomTopDisc;
     TH2 *randomTopCandMassByPt, *randomTopMassByPt;
     TH1 *fakerateMET, *fakerateNj, *fakerateNb, *fakerateHT;
     TH1 *fakerateMET2, *fakerateNj2, *fakerateNb2, *fakerateNvert2, *fakerateHT2;
@@ -114,9 +115,13 @@ public:
         topP    = bookHisto<TH1D>("topP",   100,  0, 1000);
         topMass = bookHisto<TH1D>("topMass", 100,  0, 500);
         topEta  = bookHisto<TH1D>("topEta",  100, -5, 5);
+        topDisc  = bookHisto<TH1D>("topDisc",  100, 0, 1);
+        topDiscGenMatch  = bookHisto<TH1D>("topDiscGenMatch",  100, 0, 1);
+        topDiscNotGenMatch  = bookHisto<TH1D>("topDiscNotGenMatch",  100, 0, 1);
         topCandPt   = bookHisto<TH1D>("topCandPt",   100,  0, 1000);
         topCandMass = bookHisto<TH1D>("topCandMass", 100,  0, 500);
         topCandEta  = bookHisto<TH1D>("topCandEta",  100, -5, 5);
+        topCandDisc = bookHisto<TH1D>("topCandDisc",  100, 0, 1);
 
         topPtGenMatch   = bookHisto<TH1D>("topPtGenMatch",   100,  0, 1000);
         topPGenMatch    = bookHisto<TH1D>("topPGenMatch",   100,  0, 1000);
@@ -125,6 +130,9 @@ public:
         topCandPtGenMatch   = bookHisto<TH1D>("topCandPtGenMatch",   100,  0, 1000);
         topCandMassGenMatch = bookHisto<TH1D>("topCandMassGenMatch", 100,  0, 500);
         topCandEtaGenMatch  = bookHisto<TH1D>("topCandEtaGenMatch",  100, -5, 5);
+        topCandDiscGenMatch = bookHisto<TH1D>("topCandDiscGenMatch",  100, 0, 1);
+        topCandDiscNotGenMatch = bookHisto<TH1D>("topCandDiscNotGenMatch",  100, 0, 1);
+        topCandMaxDisc = bookHisto<TH1D>("topCandMaxDisc",  100, 0, 1);
         
         genTopPt   = bookHisto<TH1D>("genTopPt",   100,  0, 1000);
         genTopP    = bookHisto<TH1D>("genTopP",   100,  0, 1000);
@@ -152,9 +160,11 @@ public:
         randomTopP    = bookHisto<TH1D>("randomTopP",   100,  0, 1000);
         randomTopMass = bookHisto<TH1D>("randomTopMass", 100,  0, 500);
         randomTopEta  = bookHisto<TH1D>("randomTopEta",  100, -5, 5);
+        randomTopDisc  = bookHisto<TH1D>("randomTopDisc",  100, 0, 1);
         randomTopCandPt   = bookHisto<TH1D>("randomTopCandPt",   100,  0, 1000);
         randomTopCandMass = bookHisto<TH1D>("randomTopCandMass", 100,  0, 500);
         randomTopCandEta  = bookHisto<TH1D>("randomTopCandEta",  100, -5, 5);
+        randomTopCandDisc = bookHisto<TH1D>("randomTopCandDisc",  100,  0, 1);
         randomTopMassByPt = bookHisto<TH2D>("randomTopMassByPt", 100,  0, 500, 100, 0, 1000);
         randomTopCandMassByPt = bookHisto<TH2D>("randomTopCandMassByPt", 100,  0, 500, 100, 0, 1000);
         
@@ -346,6 +356,7 @@ public:
             topP->Fill(top->p().P(), eWeight);
             topMass->Fill(top->p().M(), eWeight);
             topEta->Fill(top->p().Eta(), eWeight);
+            topDisc->Fill(top->getDiscriminator(), eWeight);
 
             if(top->getBestGenTopMatch() != nullptr)
             {
@@ -353,6 +364,11 @@ public:
                 topPGenMatch->Fill(top->p().P(), eWeight);
                 topMassGenMatch->Fill(top->p().M(), eWeight);
                 topEtaGenMatch->Fill(top->p().Eta(), eWeight);
+                topDiscGenMatch->Fill(top->getDiscriminator(), eWeight);
+            }
+            else
+            {
+                topDiscNotGenMatch->Fill(top->getDiscriminator(), eWeight);
             }
         }
 
@@ -414,6 +430,7 @@ public:
         const TopObject* bestCand = nullptr;
         std::vector<int> randCandIndicies;
         int iCand = 0;
+        double discMax = 0.0;
         for(auto& topCand : ttr_->getTopCandidates())
         {
             //delta R and Nb requirements  
@@ -455,7 +472,7 @@ public:
                 }
             }
 
-            if(passLepCand && nBConstituents <= 1)
+            if(true)//passLepCand && nBConstituents <= 1)
             {
                 int nGenMatch = 0;
                 for(const auto& genMatch : topCand.getGenTopMatches())
@@ -485,12 +502,21 @@ public:
                 topCandPt->Fill(topCand.p().Pt(), eWeight);
                 topCandMass->Fill(topCand.p().M(), eWeight);
                 topCandEta->Fill(topCand.p().Eta(), eWeight);
+                
+                double discriminator = topCand.getDiscriminator();
+                if(discriminator > discMax) discMax = discriminator;
+                topCandDisc->Fill(discriminator, eWeight);
 
                 if(topCand.getBestGenTopMatch() != nullptr)
                 {
                     topCandPtGenMatch->Fill(topCand.p().Pt(), eWeight);
                     topCandMassGenMatch->Fill(topCand.p().M(), eWeight);
                     topCandEtaGenMatch->Fill(topCand.p().Eta(), eWeight);
+                    topCandDiscGenMatch->Fill(discriminator, eWeight);
+                }
+                else
+                {
+                    topCandDiscNotGenMatch->Fill(discriminator, eWeight);
                 }
 
                 topCandMassByPt->Fill(topCand.p().M(), topCand.p().Pt(), eWeight);
@@ -509,6 +535,7 @@ public:
 
             ++iCand;
         }
+        topCandMaxDisc->Fill(discMax, eWeight);
 
         if(randCandIndicies.size() > 0)
         {
@@ -519,6 +546,7 @@ public:
             randomTopCandPt->Fill(topCand.p().Pt(), eWeight);
             randomTopCandMass->Fill(topCand.p().M(), eWeight);
             randomTopCandEta->Fill(topCand.p().Eta(), eWeight);
+            randomTopCandDisc->Fill(topCand.getDiscriminator(), eWeight);
             randomTopCandMassByPt->Fill(topCand.p().M(), topCand.p().Pt(), eWeight);;
 
             for(const auto& topPtr : ttr_->getTops())
@@ -529,6 +557,7 @@ public:
                     randomTopP->Fill(topCand.p().P(), eWeight);
                     randomTopMass->Fill(topCand.p().M(), eWeight);
                     randomTopEta->Fill(topCand.p().Eta(), eWeight);
+                    randomTopDisc->Fill(topCand.getDiscriminator(), eWeight);
                     randomTopMassByPt->Fill(topCand.p().M(), topCand.p().Pt(), eWeight);
                     break;
                 }
