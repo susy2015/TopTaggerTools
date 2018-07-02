@@ -59,6 +59,21 @@ public:
     TH1 *hNJetsTagged;
     TH1 *hNBJetsTagged;
     TH1 *hNVerticesTagged;
+    TH1 *hMETTaggedGen;
+    TH1 *hHTTaggedGen;
+    TH1 *hNJetsTaggedGen;
+    TH1 *hNBJetsTaggedGen;
+    TH1 *hNVerticesTaggedGen;
+    TH1 *hMETTaggedNotGen;
+    TH1 *hHTTaggedNotGen;
+    TH1 *hNJetsTaggedNotGen;
+    TH1 *hNBJetsTaggedNotGen;
+    TH1 *hNVerticesTaggedNotGen;
+    TH1 *hMETTagged2;
+    TH1 *hHTTagged2;
+    TH1 *hNJetsTagged2;
+    TH1 *hNBJetsTagged2;
+    TH1 *hNVerticesTagged2;
     TH1 *hPhotonTagged;
     TH1 *topPt, *topP, *topMass, *topEta, *topDisc, *topDiscGenMatch, *topDiscNotGenMatch;
     TH1 *topCandPt, *topCandMass, *topCandEta, *topCandDisc;
@@ -67,7 +82,11 @@ public:
     TH1 *topCandMaxDisc;
     TH1 *genTopPt, *genTopP, *genTopMass, *genTopEta;
     TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
+    TH1 *genTopEvtnJet, *genTopEvtMET, *genTopEvtHT, *genTopEvtnVert;
+    TH1 *genTopAcptEvtnJet, *genTopAcptEvtMET, *genTopAcptEvtHT, *genTopAcptEvtnVert;
+    TH1 *genTopMatchEvtnJet, *genTopMatchEvtMET, *genTopMatchEvtHT, *genTopMatchEvtnVert;
     TH1 *bestTopCandPt, *bestTopCandMass, *bestTopCandEta;
+    TH1 *bestTopCandAcptPt, *bestTopCandAcptMass, *bestTopCandAcptEta;
     TH1 *bestTopGenPt, *bestTopGenMass, *bestTopGenEta;
     TH1 *bestTopNotGenPt, *bestTopNotGenMass, *bestTopNotGenEta;
     TH1 *bestTopPt, *bestTopP, *bestTopMass, *bestTopEta;
@@ -111,6 +130,39 @@ public:
         hNVerticesTagged = bookHisto<TH1D>("nVerticesTagged",61,-0.5, 60.5);
         hPhotonTagged    = bookHisto<TH1D>("photonTagged",100,0, 1000);
 
+        hMETTagged2       = bookHisto<TH1D>("METTagged2",100,0, 1000);
+        hHTTagged2        = bookHisto<TH1D>("HTTagged2",100,0, 2000);
+        hNJetsTagged2     = bookHisto<TH1D>("nJetsTagged2",21,-0.5, 20.5);
+        hNBJetsTagged2    = bookHisto<TH1D>("nBJetsTagged2",21,-0.5, 20.5);
+        hNVerticesTagged2 = bookHisto<TH1D>("nVerticesTagged2",61,-0.5, 60.5);
+
+        hMETTaggedNotGen       = bookHisto<TH1D>("METTaggedNotGen",100,0, 1000);
+        hHTTaggedNotGen        = bookHisto<TH1D>("HTTaggedNotGen",100,0, 2000);
+        hNJetsTaggedNotGen     = bookHisto<TH1D>("nJetsTaggedNotGen",21,-0.5, 20.5);
+        hNBJetsTaggedNotGen    = bookHisto<TH1D>("nBJetsTaggedNotGen",21,-0.5, 20.5);
+        hNVerticesTaggedNotGen = bookHisto<TH1D>("nVerticesTaggedNotGen",61,-0.5, 60.5);
+
+        hMETTaggedGen       = bookHisto<TH1D>("METTaggedGen",100,0, 1000);
+        hHTTaggedGen        = bookHisto<TH1D>("HTTaggedGen",100,0, 2000);
+        hNJetsTaggedGen     = bookHisto<TH1D>("nJetsTaggedGen",21,-0.5, 20.5);
+        hNBJetsTaggedGen    = bookHisto<TH1D>("nBJetsTaggedGen",21,-0.5, 20.5);
+        hNVerticesTaggedGen = bookHisto<TH1D>("nVerticesTaggedGen",61,-0.5, 60.5);
+
+        genTopEvtMET     = bookHisto<TH1D>("genTopEvtMET",100,0, 1000);
+        genTopEvtHT      = bookHisto<TH1D>("genTopEvtHT",100,0, 2000);
+        genTopEvtnJet    = bookHisto<TH1D>("genTopEvtnJet",21,-0.5, 20.5);
+        genTopEvtnVert   = bookHisto<TH1D>("genTopEvtnVert",61,-0.5, 60.5);
+
+        genTopAcptEvtMET     = bookHisto<TH1D>("genTopAcptEvtMET",100,0, 1000);
+        genTopAcptEvtHT      = bookHisto<TH1D>("genTopAcptEvtHT",100,0, 2000);
+        genTopAcptEvtnJet    = bookHisto<TH1D>("genTopAcptEvtnJet",21,-0.5, 20.5);
+        genTopAcptEvtnVert   = bookHisto<TH1D>("genTopAcptEvtnVert",61,-0.5, 60.5);
+
+        genTopMatchEvtMET     = bookHisto<TH1D>("genTopMatchEvtMET",100,0, 1000);
+        genTopMatchEvtHT      = bookHisto<TH1D>("genTopMatchEvtHT",100,0, 2000);
+        genTopMatchEvtnJet    = bookHisto<TH1D>("genTopMatchEvtnJet",21,-0.5, 20.5);
+        genTopMatchEvtnVert   = bookHisto<TH1D>("genTopMatchEvtnVert",61,-0.5, 60.5);
+
         topPt   = bookHisto<TH1D>("topPt",   100,  0, 1000);
         topP    = bookHisto<TH1D>("topP",   100,  0, 1000);
         topMass = bookHisto<TH1D>("topMass", 100,  0, 500);
@@ -149,6 +201,9 @@ public:
         bestTopCandPt   = bookHisto<TH1D>("bestTopCandPt",   100,  0, 1000);
         bestTopCandMass = bookHisto<TH1D>("bestTopCandMass", 100,  0, 500);
         bestTopCandEta  = bookHisto<TH1D>("bestTopCandEta",  100, -5, 5);
+        bestTopCandAcptPt   = bookHisto<TH1D>("bestTopCandAcptPt",   100,  0, 1000);
+        bestTopCandAcptMass = bookHisto<TH1D>("bestTopCandAcptMass", 100,  0, 500);
+        bestTopCandAcptEta  = bookHisto<TH1D>("bestTopCandAcptEta",  100, -5, 5);
         bestTopGenPt   = bookHisto<TH1D>("bestTopGenPt",   100,  0, 1000);
         bestTopGenMass = bookHisto<TH1D>("bestTopGenMass", 100,  0, 500);
         bestTopGenEta  = bookHisto<TH1D>("bestTopGenEta",  100, -5, 5);
@@ -287,6 +342,17 @@ public:
 
         if((*tightPhotonsVec_).size() > 0) hPhoton->Fill((*tightPhotonsVec_)[0].Pt(),eWeight);
 
+        //We need to know if the identified top is gen matched, this is only useful in MC
+        bool genMatched = false;
+        for(const auto& top : ttr_->getTops())
+        {
+            const auto* genTop = top->getBestGenTopMatch();
+            if(genTop)
+            {
+                genMatched = true;
+            }
+        }
+
         if(ttr_->getTops().size() > 0){
 
             hMETTagged->Fill(*met_, eWeight);
@@ -298,24 +364,84 @@ public:
 
         }
 
+        if(ttr_->getTops().size() > 2){
+
+            hMETTagged2->Fill(*met_, eWeight);
+            hHTTagged2->Fill(*ht_, eWeight);
+            hNJetsTagged2->Fill(*cntNJetsPt30Eta24_, eWeight);
+            hNBJetsTagged2->Fill(*cntCSVS_, eWeight);
+            hNVerticesTagged2->Fill(*vtxSize_,eWeight);
+
+        }
+
+        if(ttr_->getTops().size() > 1 && genMatched){
+
+            hMETTaggedGen->Fill(*met_, eWeight);
+            hHTTaggedGen->Fill(*ht_, eWeight);
+            hNJetsTaggedGen->Fill(*cntNJetsPt30Eta24_, eWeight);
+            hNBJetsTaggedGen->Fill(*cntCSVS_, eWeight);
+            hNVerticesTaggedGen->Fill(*vtxSize_,eWeight);
+
+        }
+
+        if(ttr_->getTops().size() > 1 && !genMatched){
+
+            hMETTaggedNotGen->Fill(*met_, eWeight);
+            hHTTaggedNotGen->Fill(*ht_, eWeight);
+            hNJetsTaggedNotGen->Fill(*cntNJetsPt30Eta24_, eWeight);
+            hNBJetsTaggedNotGen->Fill(*cntCSVS_, eWeight);
+            hNVerticesTaggedNotGen->Fill(*vtxSize_,eWeight);
+
+        }
+
+        //bools for genTop event variable plots
+        bool genTopEvt      = false;
+        bool genTopAcptEvt  = false;
+        bool genTopMatchEvt = false;
+
         //plots for gen efficiency 
         for(const TLorentzVector& genTop : *genTops_)
         {
+            genTopEvt = true;
             genTopPt->Fill(genTop.Pt(), eWeight);
             genTopP->Fill(genTop.P(), eWeight);
             genTopMass->Fill(genTop.M(), eWeight);
             genTopEta->Fill(genTop.Eta(), eWeight);
+            if(fabs(genTop.Eta() < 2.0)) genTopAcptEvt = true;
         }
-        
+
         for(const auto& top : ttr_->getTops())
         {
             const auto* genTop = top->getBestGenTopMatch();
             if(genTop)
             {
+                genTopMatchEvt = true;
                 genTopMatchPt->Fill(genTop->Pt(), eWeight);
                 genTopMatchMass->Fill(genTop->M(), eWeight);
                 genTopMatchEta->Fill(genTop->Eta(), eWeight);
             }
+        }
+
+        //Fill genTop event variable plots
+        if(genTopEvt){
+            genTopEvtMET->Fill(*met_, eWeight);
+            genTopEvtHT->Fill(*ht_, eWeight);
+            genTopEvtnJet->Fill(*cntNJetsPt30Eta24_, eWeight);
+            genTopEvtnVert->Fill(*vtxSize_,eWeight);
+        }
+        
+        if(genTopAcptEvt){
+            genTopAcptEvtMET->Fill(*met_, eWeight);
+            genTopAcptEvtHT->Fill(*ht_, eWeight);
+            genTopAcptEvtnJet->Fill(*cntNJetsPt30Eta24_, eWeight);
+            genTopAcptEvtnVert->Fill(*vtxSize_,eWeight);
+        }
+        
+        if(genTopMatchEvt){
+            genTopMatchEvtMET->Fill(*met_, eWeight);
+            genTopMatchEvtHT->Fill(*ht_, eWeight);
+            genTopMatchEvtnJet->Fill(*cntNJetsPt30Eta24_, eWeight);
+            genTopMatchEvtnVert->Fill(*vtxSize_,eWeight);
         }
         
         //SF plots  
@@ -324,6 +450,12 @@ public:
             bestTopCandPt->Fill(bestCandLV_->Pt(), eWeight);
             bestTopCandMass->Fill(bestCandLV_->M(), eWeight);
             bestTopCandEta->Fill(bestCandLV_->Eta(), eWeight);
+        
+            if(fabs(bestCandLV_->Eta()) < 2.0){
+                bestTopCandAcptPt->Fill(bestCandLV_->Pt(), eWeight);
+                bestTopCandAcptMass->Fill(bestCandLV_->M(), eWeight);
+                bestTopCandAcptEta->Fill(bestCandLV_->Eta(), eWeight);
+            }        
 
             if(*bestTopMassTopTag_)
             {
