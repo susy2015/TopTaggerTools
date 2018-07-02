@@ -407,7 +407,7 @@ public:
             genTopP->Fill(genTop.P(), eWeight);
             genTopMass->Fill(genTop.M(), eWeight);
             genTopEta->Fill(genTop.Eta(), eWeight);
-            if(fabs(genTop.Eta() < 2.0)) genTopAcptEvt = true;
+            if(fabs(genTop.Eta()) < 2.0) genTopAcptEvt = true;
         }
 
         for(const auto& top : ttr_->getTops())
