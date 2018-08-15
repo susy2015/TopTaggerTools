@@ -88,7 +88,7 @@ public:
     TH1 *topCandPt, *topCandMass, *topCandEta, *topCandDisc;
     TH1 *topPtGenMatch, *topPGenMatch, *topMassGenMatch, *topEtaGenMatch;
     TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch, *topCandDiscGenMatch, *topCandDiscNotGenMatch;
-    TH1 *topCandMaxDisc;
+    TH1 *topCandMaxDisc, *topCandMaxGenMatchDisc;
     TH1 *genTopPt, *genTopP, *genTopMass, *genTopEta;
     TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
     TH1 *genTopEvtnJet, *genTopEvtMET, *genTopEvtHT, *genTopEvtHighestDisc, *genTopEvtnVert;
@@ -187,13 +187,13 @@ public:
         topP    = bookHisto<TH1D>("topP",   100,  0, 1000);
         topMass = bookHisto<TH1D>("topMass", 100,  0, 500);
         topEta  = bookHisto<TH1D>("topEta",  100, -5, 5);
-        topDisc  = bookHisto<TH1D>("topDisc",  1000,-1,1);
-        topDiscGenMatch  = bookHisto<TH1D>("topDiscGenMatch",  1000,-1,1);
-        topDiscNotGenMatch  = bookHisto<TH1D>("topDiscNotGenMatch",  1000,-1,1);
+        topDisc  = bookHisto<TH1D>("topDisc",  1000, -1, 1);
+        topDiscGenMatch  = bookHisto<TH1D>("topDiscGenMatch",  1000, -1, 1);
+        topDiscNotGenMatch  = bookHisto<TH1D>("topDiscNotGenMatch",  1000, -1, 1);
         topCandPt   = bookHisto<TH1D>("topCandPt",   100,  0, 1000);
         topCandMass = bookHisto<TH1D>("topCandMass", 100,  0, 500);
         topCandEta  = bookHisto<TH1D>("topCandEta",  100, -5, 5);
-        topCandDisc = bookHisto<TH1D>("topCandDisc",  1000,-1,1);
+        topCandDisc = bookHisto<TH1D>("topCandDisc",  1000, -1, 1);
 
         topPtGenMatch   = bookHisto<TH1D>("topPtGenMatch",   100,  0, 1000);
         topPGenMatch    = bookHisto<TH1D>("topPGenMatch",   100,  0, 1000);
@@ -202,9 +202,10 @@ public:
         topCandPtGenMatch   = bookHisto<TH1D>("topCandPtGenMatch",   100,  0, 1000);
         topCandMassGenMatch = bookHisto<TH1D>("topCandMassGenMatch", 100,  0, 500);
         topCandEtaGenMatch  = bookHisto<TH1D>("topCandEtaGenMatch",  100, -5, 5);
-        topCandDiscGenMatch = bookHisto<TH1D>("topCandDiscGenMatch",  1000,-1,1);
-        topCandDiscNotGenMatch = bookHisto<TH1D>("topCandDiscNotGenMatch",  1000,-1,1);
-        topCandMaxDisc = bookHisto<TH1D>("topCandMaxDisc",  1000,-1,1);
+        topCandDiscGenMatch = bookHisto<TH1D>("topCandDiscGenMatch",  1000, -1, 1);
+        topCandDiscNotGenMatch = bookHisto<TH1D>("topCandDiscNotGenMatch",  1000, -1, 1);
+        topCandMaxDisc = bookHisto<TH1D>("topCandMaxDisc",  1000, -1, 1);
+        topCandMaxGenMatchDisc = bookHisto<TH1D>("topCandMaxGenMatchDisc",  1000, -1, 1);
         
         genTopPt   = bookHisto<TH1D>("genTopPt",   100,  0, 1000);
         genTopP    = bookHisto<TH1D>("genTopP",   100,  0, 1000);
@@ -600,7 +601,7 @@ public:
         const TopObject* bestCand = nullptr;
         std::vector<int> randCandIndicies;
         int iCand = 0;
-        double discMax = 0.0;
+        double discMax = 0.0, discMaxGenMatch = 0.0;
         for(auto& topCand : ttr_->getTopCandidates())
         {
             //delta R and Nb requirements  
@@ -675,6 +676,7 @@ public:
                 
                 double discriminator = topCand.getDiscriminator();
                 if(discriminator > discMax) discMax = discriminator;
+                if(topCand.getBestGenTopMatch() != nullptr && discriminator > discMaxGenMatch) discMaxGenMatch = discriminator;
                 topCandDisc->Fill(discriminator, eWeight);
 
                 if(topCand.getBestGenTopMatch() != nullptr)
@@ -706,6 +708,7 @@ public:
             ++iCand;
         }
         topCandMaxDisc->Fill(discMax, eWeight);
+        topCandMaxGenMatchDisc->Fill(discMaxGenMatch, eWeight);
 
         if(randCandIndicies.size() > 0)
         {
