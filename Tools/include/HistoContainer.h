@@ -20,10 +20,10 @@ private:
     std::string csName_;
     TRandom* trand_;
 
-    const double* met_;
-    const double* metphi_;
-    const double* ht_;
-    const double* highestDisc_;
+    const float* met_;
+    const float* metphi_;
+    const float* ht_;
+    const float* highestDisc_;
     const int* vtxSize_;
     const int* cntCSVS_;
     const TopTaggerResults* ttr_;
@@ -31,7 +31,7 @@ private:
     const std::vector<TLorentzVector>* jets_;
     const TLorentzVector* lepton_;
     const TLorentzVector* bestCandLV_;
-    const double* bestTopMass_;
+    const float* bestTopMass_;
     const bool* bestTopMassTopTag_;
     const bool* bestTopMassGenMatch_;
     const std::vector<TLorentzVector>* cutMuVec_;
@@ -286,18 +286,18 @@ public:
 
     void setStopVar(const TUPLECLASS& tr)
     {
-        met_                 = &tr.template getVar<double>("met");
-        metphi_              = &tr.template getVar<double>("metphi");    
-        ht_                  = &tr.template getVar<double>("HT");
-        highestDisc_          = &tr.template getVar<double>("highestDisc");
+        met_                 = &tr.template getVar<float>("met");
+        metphi_              = &tr.template getVar<float>("metphi");    
+        ht_                  = &tr.template getVar<float>("HT");
+        highestDisc_          = &tr.template getVar<float>("highestDisc");
         vtxSize_             = &tr.template getVar<int>("vtxSize");
         cntCSVS_             = &tr.template getVar<int>("cntCSVS");
-        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
+        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA",true); 
         cntNJetsPt30Eta24_   = &tr.template getVar<int>("cntNJetsPt30Eta24");
         jets_                = &tr.template getVec<TLorentzVector>("jetsLVec");
         lepton_              = &tr.template getVar<TLorentzVector>("lepton");
         bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLV");
-        bestTopMass_         = &tr.template getVar<double>("bestTopMass");
+        bestTopMass_         = &tr.template getVar<float>("bestTopMass");
         bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
         bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
 
@@ -309,17 +309,17 @@ public:
 
     void setStealthVar(const TUPLECLASS& tr)
     {
-        met_                 = &tr.template getVar<double>("MET");
-        metphi_              = &tr.template getVar<double>("METPhi");    
-        ht_                  = &tr.template getVar<double>("HT");
-        highestDisc_         = &tr.template getVar<double>("highestDisc");
+        met_                 = &tr.template getVar<float>("MET");
+        metphi_              = &tr.template getVar<float>("METPhi");    
+        ht_                  = &tr.template getVar<float>("HT");
+        highestDisc_         = &tr.template getVar<float>("highestDisc");
         vtxSize_             = &tr.template getVar<int>("NVtx");
         cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr"); 
         cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
         lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
         bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLV");
-        bestTopMass_         = &tr.template getVar<double>("bestTopMass");
+        bestTopMass_         = &tr.template getVar<float>("bestTopMass");
         bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
         bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
 
@@ -329,7 +329,7 @@ public:
         genTops_             = &tr.template getVec<TLorentzVector>("hadtops");
     }
 
-    void fill(const TUPLECLASS& tr, const double& eWeight, TRandom* trand)
+    void fill(const TUPLECLASS& tr, const float& eWeight, TRandom* trand)
     {
         if ( tr.checkBranch("met") )
         {
@@ -343,7 +343,7 @@ public:
         runFill(eWeight, trand);
     }
 
-    void fill(const TUPLECLASS& tr, const double& eWeight)
+    void fill(const TUPLECLASS& tr, const float& eWeight)
     {
         if ( tr.checkBranch("met") )
         {
@@ -357,7 +357,7 @@ public:
         runFill(eWeight, trand_);
     }
 
-    void runFill(const double& eWeight, TRandom* trand)
+    void runFill(const float& eWeight, TRandom* trand)
     {
         jet1pT->Fill((*jets_)[0].Pt(), eWeight);
         jet2pT->Fill((*jets_)[1].Pt(), eWeight);
@@ -573,13 +573,13 @@ public:
         TLorentzVector MET;
         MET.SetPtEtaPhiM(*met_, 0.0, *metphi_, 0);
 
-        //double xi = MET.Px()*lepton_->Px() + MET.Py()*lepton_->Py();
-        //double mW = 80.385;
-        //double a = pow(lepton_->Pt(), 2);
-        //double b = -lepton_->Pz()*(mW*mW + 2*xi);
-        //double c = pow(lepton_->P(), 2) * pow(*met_, 2) - pow(xi + mW*mW/2.0, 2);
-        //double pnuzp = (-b + sqrt(b*b - 4*a*c))/(2*a);
-        //double pnuzm = (-b - sqrt(b*b - 4*a*c))/(2*a);
+        //float xi = MET.Px()*lepton_->Px() + MET.Py()*lepton_->Py();
+        //float mW = 80.385;
+        //float a = pow(lepton_->Pt(), 2);
+        //float b = -lepton_->Pz()*(mW*mW + 2*xi);
+        //float c = pow(lepton_->P(), 2) * pow(*met_, 2) - pow(xi + mW*mW/2.0, 2);
+        //float pnuzp = (-b + sqrt(b*b - 4*a*c))/(2*a);
+        //float pnuzm = (-b - sqrt(b*b - 4*a*c))/(2*a);
         //
         //TLorentzVector neutrinop(MET.X(), MET.Y(), pnuzp, 0.0);
         //TLorentzVector neutrinom(MET.X(), MET.Y(), pnuzm, 0.0);
@@ -597,11 +597,11 @@ public:
         }
 
 
-        double bestSumPtVal = 99999.999;
+        float bestSumPtVal = 99999.999;
         const TopObject* bestCand = nullptr;
         std::vector<int> randCandIndicies;
         int iCand = 0;
-        double discMax = 0.0, discMaxGenMatch = 0.0;
+        float discMax = 0.0, discMaxGenMatch = 0.0;
         for(auto& topCand : ttr_->getTopCandidates())
         {
             //delta R and Nb requirements  
@@ -610,12 +610,12 @@ public:
             if(passLepCand && nBConstituents <= 1) randCandIndicies.push_back(iCand);
 
             //dPhi cut tests 
-            double dPhiMin = 999.99;
-            double dPhiMax = -999.99;
+            float dPhiMin = 999.99;
+            float dPhiMax = -999.99;
             
             for(const auto* bjet : bjets)
             {
-                double dPhi = fabs(ROOT::Math::VectorUtil::DeltaR(*lepton_ + bjet->p() + MET, topCand.p()));
+                float dPhi = fabs(ROOT::Math::VectorUtil::DeltaR(*lepton_ + bjet->p() + MET, topCand.p()));
                 for(const auto* constituent : topCand.getConstituents())
                 {
                     if(bjet == constituent) continue;
@@ -674,7 +674,7 @@ public:
                 topCandMass->Fill(topCand.p().M(), eWeight);
                 topCandEta->Fill(topCand.p().Eta(), eWeight);
                 
-                double discriminator = topCand.getDiscriminator();
+                float discriminator = topCand.getDiscriminator();
                 if(discriminator > discMax) discMax = discriminator;
                 if(topCand.getBestGenTopMatch() != nullptr && discriminator > discMaxGenMatch) discMaxGenMatch = discriminator;
                 topCandDisc->Fill(discriminator, eWeight);
