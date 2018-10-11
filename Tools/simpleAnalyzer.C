@@ -216,6 +216,11 @@ int main(int argc, char* argv[])
             JECSys = -1;
             break;
 
+//        case 's':
+//            runStealth = true;
+//            std::cout << "Running stealth verison" << std::endl;
+//            break;
+
         case 'D':
             dataSets = optarg;
             std::cout << "Running over the " << dataSets << " data sets." << std::endl;
@@ -284,13 +289,16 @@ int main(int argc, char* argv[])
 
     std::cout << "Sample location: " << sampleloc << std::endl;
 
+    //AnaSamples::SampleSet        ss("sampleSets.txt", AnaSamples::luminosity, runOnCondor);
+    //for(auto& sample : ss) std::cout << sample.first << std::endl;
     AnaSamples::SampleSet        ss("sampleSets.txt", runOnCondor, AnaSamples::luminosity);
     AnaSamples::SampleCollection sc("sampleCollections.txt", ss);
+    //for(auto& sample : sc) std::cout << sample.first << std::endl;
 
-    //if(dataSets.find("Data") != std::string::npos){
-    //   std::cout << "This looks like a data n-tuple. No weighting will be applied." << std::endl;
-    //   doWgt = false;
-    //}
+    if(dataSets.find("Data") != std::string::npos){
+       std::cout << "This looks like a data n-tuple. No weighting will be applied." << std::endl;
+       doWgt = false;
+    }
 
     if(dataSets.find("TT") != std::string::npos){
        std::cout << "This looks like a TTbar sample. Applying TTbar weighting" << std::endl;
@@ -306,7 +314,7 @@ int main(int argc, char* argv[])
 
     int events = 0, eventsPhoton = 0, eventsQCD = 0, eventsLowHTQCD = 0, eventsTaggedLowHTQCD = 0, events1L = 0, events2L = 0, eventsTTbar1l = 0, eventsTTbar2l = 0, eventsTTbarNol = 0, fevents = 0;
 
-    HistoContainer<NTupleReader> hists0Lep("Lep0"), hists1Lep("Lep1"), histsTTbar("ttbar"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsLowHTQCD("lowHTQCD"), histsPhoton("photon"), histsDilepton("dilepton"), histsSimpleSemiLept("simpleSemiLep"), histsTTbar1l("histsTTbar1l"), histsTTbar2l("histsTTbar2l"), histsTTbar1lnoMET("histsTTbar1lnoMET"), histsTTbar2lnoMET("histsTTbar2lnoMET"), histsTTbarNol("histsTTbarNol");
+    HistoContainer<NTupleReader> hists0Lep("Lep0"), hists1Lep("Lep1"), histsTTbar("ttbar"), histsTTbarNob("ttbarNob"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsPhoton("photon"), histsDilepton("dilepton"), histsSimpleSemiLept("simpleSemiLep"), histsTTbar1l("histsTTbar1l"), histsTTbar2l("histsTTbar2l"), histsTTbar1lnoMET("histsTTbar1lnoMET"), histsTTbar2lnoMET("histsTTbar2lnoMET"), histsTTbarNol("histsTTbarNol");
 
     TRandom* trand = new TRandom3();
 
@@ -316,9 +324,12 @@ int main(int argc, char* argv[])
 
     try
     {
+
+        std::cout << "Let's load some datasets" << std::endl;
         //for(auto& fs : sc[dataSets])
         auto& fs = ss[dataSets];
         {
+            std::cout << "Filling in the TChain" << std::endl;
             TChain *t = new TChain(fs.treePath.c_str());
             fs.addFilesToChain(t, startFile, nFiles);
 
@@ -329,17 +340,26 @@ int main(int argc, char* argv[])
             //BaselineVessel myBLV(*static_cast<NTupleReader*>(nullptr), "TopTag", "");
             //plotterFunctions::SystematicPrep sysPrep;
             plotterFunctions::PrepareTopCRSelection prepTopCR(JECSys);
+            //std::cout <<"plotterFunctions::PrepareTopCRSelection prepTopCR(JECSys);" << std::endl;
             plotterFunctions::PrepareTopVars prepareTopVars("TopTagger.cfg",JECSys);
+            //std::cout << "plotterFunctions::PrepareTopVars prepareTopVars(TopTagger.cfg,JECSys);" << std::endl;
+            plotterFunctions::AliasStealthVars setUpStealth;
+            //std::cout << "plotterFunctions::AliasStealthVars setUpStealth;" << std::endl;
             plotterFunctions::TriggerInfo triggerInfo(false, false);
+            //std::cout << "plotterFunctions::TriggerInfo triggerInfo(false, false);" << std::endl;
 
-            //BTagCorrector bTagCorrector("allINone_bTagEff.root", "", false);
+            BTagCorrector bTagCorrector("allINone_bTagEff.root", "", false, fs.tag);
             TTbarCorrector ttbarCorrector(false, "");
             ISRCorrector ISRcorrector("allINone_ISRJets.root","","");
             Pileup_Sys pileup("PileupHistograms_0121_69p2mb_pm4p6.root");
 
+            std::cout << "Preparing NTupleReader" << std::endl;
             NTupleReader tr(t);
+            std::cout << "NTupleReader created" << std::endl;
 
+            std::cout << "Set Convert Vectors" << std::endl;
             tr.setConvertFloatingPointVectors(true, true, true);
+            std::cout << "Set Convert scalars" << std::endl;
             tr.setConvertFloatingPointScalars(true, true, true);
 
             //Add some 'alias's
@@ -352,22 +372,42 @@ int main(int argc, char* argv[])
                 tr.setPrefix("prodJetsNoLep_");
             }
 
+            std::cout << "Let's register functions." << std::endl;
+
+            if(false)
+//            if(runStealth)
+            {
+                setUpStealth.addAllAlias(tr);
+                std::cout << "Register setUpStealth" << std::endl;
+                tr.registerFunction(setUpStealth);
+            }
+            else
+            {
+                std::cout << "Register pileup" << std::endl;
+                tr.registerFunction(pileup);
+            }
+            std::cout << "Register filterEvents" << std::endl;
             tr.registerFunction(filterEvents);
+            std::cout << "Register prepTopCR" << std::endl;
             tr.registerFunction(prepTopCR);
             //tr.registerFunction(sysPrep);
+            std::cout << "Register prepareTopVars" << std::endl;
             tr.registerFunction(prepareTopVars);
+            std::cout << "Register triggerInfo" << std::endl;
             tr.registerFunction(triggerInfo);
             //std::cout << "We are going to register bTagCorrector" << std::endl;
             //tr.registerFunction(bTagCorrector);
+            std::cout << "register ttbarCorrector" << std::endl;
             tr.registerFunction(ttbarCorrector);
+            std::cout << "REgister ISRcorrector" << std::endl;
             tr.registerFunction(ISRcorrector);
-            tr.registerFunction(pileup);
-            //std::cout << "Finished registering functions" << std::endl;
+            //tr.registerFunction(pileup);
+            std::cout << "Finished registering functions" << std::endl;
             float fileWgt = fs.getWeight();
 
             const int printInterval = 1000;
             int printNumber = 0;
-            //std::cout << "Start looping over events" << std::endl;
+            std::cout << "Start looping over events now." << std::endl;
             while(tr.getNextEvent())
             {
                 //std::cout << "Entered loop" << std::endl;
@@ -429,7 +469,7 @@ int main(int argc, char* argv[])
                 const bool&   passSingleLep20      = tr.getVar<bool>("passSingleLep20");
                 const bool&   passLep20            = tr.getVar<bool>("passLep20");
                 const bool&   passSingleLep30      = tr.getVar<bool>("passSingleLep30");
-                const bool&   passSingleMu30       = tr.getVar<bool>("passSingleMu30");
+                const bool&   passSingleMu40       = tr.getVar<bool>("passSingleMu40");
                 const bool&   passLeptonVeto       = tr.getVar<bool>("passLeptVeto");
                 const bool&   passdPhis            = tr.getVar<bool>("passdPhis");
                 const float& ht                   = tr.getVar<float>("HT");
@@ -600,6 +640,30 @@ int main(int argc, char* argv[])
                     histsSimpleSemiLept.fill(tr, eWeight, trand);
                 }
 
+                //High HT QCD control sample
+                if( (!isData || passHighHtTrigger)
+                    && passNoiseEventFilter
+                    && passLeptonVeto
+                    && nbCSV >= 1
+                    && cntNJetsPt30Eta24 >= 4
+                    && (ht > 1000)
+                    )
+                {
+                    histsQCDb.fill(tr, eWeight, trand);
+                }
+
+                //High HT QCD control sample
+                if( (!isData || passHighHtTrigger)
+                    && passNoiseEventFilter
+                    && passLeptonVeto
+                    && nbCSV >= 1
+                    && cntNJetsPt30Eta24 >= 4
+                    && (ht > 1000)
+                    )
+                {
+                    histsQCDb.fill(tr, eWeight, trand);
+                }
+
                 //photon control sample
                 if( (!isData || passPhotonTrigger)
                     && passNoiseEventFilter
@@ -710,10 +774,40 @@ int main(int argc, char* argv[])
                     histsTTbar2lnoMET.fill(tr, eWeight, trand);
                 }
 
+                //semileptonic ttbar enriched control sample MET triggered
+                if( (!isData || passSearchTrigger)
+                    && passNoiseEventFilter
+                    && passSingleLep20
+                    && cntNJetsPt30Eta24 >= 4
+                    && passdPhis
+                    && deltaPhiLepMET < 0.8
+                    && mTLep < 100
+                    && (ht > 250)
+                    && (met > 250)
+                    )
+                {
+                    histsTTbarNob.fill(tr, eWeight, trand);
+                }
+
+                //semileptonic ttbar enriched control sample MET triggered
+                if( (!isData || passSearchTrigger)
+                    && passNoiseEventFilter
+                    && passSingleLep20
+                    && cntNJetsPt30Eta24 >= 4
+                    && passdPhis
+                    && deltaPhiLepMET < 0.8
+                    && mTLep < 100
+                    && (ht > 250)
+                    && (met > 250)
+                    )
+                {
+                    histsTTbarNob.fill(tr, eWeight, trand);
+                }
+
                 //semileptonic ttbar enriched control sample Mu triggered
                 if( (!isData || passMuTrigger)
                     && passNoiseEventFilter
-                    && passSingleMu30
+                    && passSingleMu40
                     && nbCSV >= 1
                     && cntNJetsPt30Eta24 >= 4
                     && passdPhis
@@ -820,7 +914,9 @@ int main(int argc, char* argv[])
         histsQCD.save(f);
         histsLowHTQCD.save(f);
         histsSimpleSemiLept.save(f);
+        histsQCDb.save(f);
         histsTTbar.save(f);
+        histsTTbarNob.save(f);
         histsTTbarLep.save(f);
         histsPhoton.save(f);
         histsDilepton.save(f);
