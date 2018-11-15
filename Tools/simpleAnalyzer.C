@@ -4,7 +4,7 @@
 
 #include "../../TopTaggerTools/Tools/include/HistoContainer.h"
 
-#include "../../ZInvisible/Tools/derivedTupleVariables.h"
+#include "derivedTupleVariables.h"
 #include "baselineDef.h"
 #include "BTagCorrector.h"
 #include "TTbarCorrector.h"
@@ -358,7 +358,7 @@ int main(int argc, char* argv[])
             std::cout << "NTupleReader created" << std::endl;
 
             std::cout << "Set Convert Vectors" << std::endl;
-            tr.setConvertFloatingPointVectors(true, true, true);
+            tr.setConvertFloatingPointVectors(true, true, true, true);
             std::cout << "Set Convert scalars" << std::endl;
             tr.setConvertFloatingPointScalars(true, true, true);
 
@@ -493,6 +493,9 @@ int main(int argc, char* argv[])
                 const TopTaggerResults *ttr_                 =  tr.getVar<TopTaggerResults*>("ttrMVA",true);
 
                 const float isData = !tr.checkBranch("genDecayLVec");
+
+                //const float& bestCSV = tr.getVar<float>("bestCSV");
+                //std::cout << "bestCSV: " << bestCSV << std::endl;
 
                 float eWeight = fileWgt;
 
