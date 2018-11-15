@@ -1,5 +1,7 @@
 TTbar, TTbarInc
 TTbarSingleLep, TTbarSingleLepT, TTbarSingleLepTbar
+TTbarZ, TTbarSingleLepT-Z
+TTbar2017, TTbar-2017
 TTbarDiLep, TTbarDiLep
 TTbarHT, TTbar_HT-600to800, TTbar_HT-800to1200, TTbar_HT-1200to2500, TTbar_HT-2500toInf
 TTbarNoHad, TTbarSingleLepT, TTbarSingleLepTbar, TTbarDiLep
