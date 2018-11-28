@@ -145,10 +145,13 @@ int main(int argc, char* argv[])
         {"Supress Noise Filter", no_argument, 0, 'f'},
         {"Override Stored weight", no_argument, 0, 'r'},
         {"No TTbar or Btag corrections", no_argument, 0, 'a'},
+        {"Apply tight TopTag reweighting", no_argument, 0, 'R'},
         {"Use prodjetNolep branches",no_argument, 0, 'z'},
         {"no event weighting", no_argument, 0, 'd'},
         {"jecUnc up",          no_argument, 0, 'u'},
         {"jecUnc down",        no_argument, 0, 'b'}, 
+        {"bTagUnc up",         no_argument, 0, 'U'},
+        {"bTagUnc down",       no_argument, 0, 'B'}, 
         {"dataSets",     required_argument, 0, 'D'},
         {"numFiles",     required_argument, 0, 'N'},
         {"startFile",    required_argument, 0, 'M'},
@@ -157,13 +160,13 @@ int main(int argc, char* argv[])
         {"output",       required_argument, 0, 'O'}
     };
 
-    bool runOnCondor = false, enableTTbar = false, doWgt = true, enableStored = false, overrideStored = false, noCorr = false, useAltBranch = false, noNoiseFilter = false, onlyTTbarAllHad = false, onlyTTbarSingleLep = false, onlyTTbarDiLep = false;
+    bool runOnCondor = false, enableTTbar = false, doWgt = true, enableStored = false, overrideStored = false, noCorr = false, useAltBranch = false, noNoiseFilter = false, onlyTTbarAllHad = false, onlyTTbarSingleLep = false, onlyTTbarDiLep = false, topReWeight = false;
     int nFiles = -1, startFile = 0, nEvts = -1, tF = -1;
     std::string dataSets = "Signal_T2tt_mStop850_mLSP100", filename = "example.root";
 
-    int JECSys = 0;
+    int JECSys = 0, bTagSys = 0;
 
-    while((opt = getopt_long(argc, argv, "ctsfrazdubD:N:M:E:T:O:", long_options, &option_index)) != -1)
+    while((opt = getopt_long(argc, argv, "ctsfraRzdubUBD:N:M:E:T:O:", long_options, &option_index)) != -1)
     {
         switch(opt)
         {
@@ -198,6 +201,11 @@ int main(int argc, char* argv[])
             std::cout << "Disabled Btag and TTbar corrections." << std::endl;
             break;
 
+        case 'R':
+            topReWeight = true;
+            std::cout << "Applying Top Tag reweighting." << std::endl;
+            break;
+
        case 'z':
             useAltBranch = true;
             std::cout << "Using Alternate Branches." << std::endl;
@@ -214,6 +222,14 @@ int main(int argc, char* argv[])
 
         case 'b':
             JECSys = -1;
+            break;
+
+        case 'U':
+            bTagSys = 1;
+            break;
+
+        case 'B':
+            bTagSys = -1;
             break;
 
 //        case 's':
@@ -266,6 +282,9 @@ int main(int argc, char* argv[])
 
     if(JECSys == 1) std::cout << "JEC uncertainty up." << std::endl;
     if(JECSys == -1) std::cout << "JEC uncertainty down." << std::endl;
+
+    if(bTagSys == 1) std::cout << "bTag uncertainty up." << std::endl;
+    if(bTagSys == -1) std::cout << "bTag uncertainty down." << std::endl;
 
     std::string sampleloc = AnaSamples::fileDir;
     //if running on condor override all optional settings
@@ -396,7 +415,7 @@ int main(int argc, char* argv[])
             std::cout << "Register triggerInfo" << std::endl;
             tr.registerFunction(triggerInfo);
             //std::cout << "We are going to register bTagCorrector" << std::endl;
-            //tr.registerFunction(bTagCorrector);
+            tr.registerFunction(bTagCorrector);
             std::cout << "register ttbarCorrector" << std::endl;
             tr.registerFunction(ttbarCorrector);
             std::cout << "REgister ISRcorrector" << std::endl;
@@ -506,7 +525,10 @@ int main(int argc, char* argv[])
                 {
                     const float& puWF               = tr.getVar<float>("_PUweightFactor");
                     //std::cout << "Calculate btag WF" << std::endl;
-                    //const float& bTagWF             = tr.getVar<float>("bTagSF_EventWeightSimple_Central");
+                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
+                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
+                                                                                        "bTagSF_EventWeightSimple_Central")));
+
                     const float& stored_weight      = tr.getVar<float>("stored_weight");
                     if(enableTTbar & !noCorr)
                     {
@@ -523,9 +545,15 @@ int main(int argc, char* argv[])
 
                     muTrigEff = tr.getVar<float>("muTrigWgt");
 
-                    eWeight *= puWF;
+                    eWeight *= puWF * triggerWF;
 
-                    //if(!noCorr) eWeight *= bTagWF;
+                    if(!noCorr) eWeight *= bTagWF;
+
+                    if(ttr_->getTops().size() > 0 && topReWeight){
+                        for(int t = 0; t < ttr_->getTops().size(); t++){
+                            eWeight *= .954;
+                        }
+                    }
                 }
                 //std::cout << " eWeight passed to fillHisto: " << eWeight << std::endl;
 
