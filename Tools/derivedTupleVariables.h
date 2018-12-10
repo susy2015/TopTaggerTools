@@ -1,3 +1,5 @@
+#define TUPLE_NEW
+
 #ifndef DERIVEDTUPLEVARIABLES_H
 #define DERIVEDTUPLEVARIABLES_H
 
@@ -1671,8 +1673,12 @@ namespace plotterFunctions
                 unsigned int hbheIsoNoiseFilter = isfastsim? 1:tr->getVar<unsigned int>("HBHEIsoNoiseFilter");
                 int ecalTPFilter = tr->getVar<int>("EcalDeadCellTriggerPrimitiveFilter");
 
+#ifdef TUPLE_OLD
                 int jetIDFilter = isfastsim? 1:tr->getVar<int>("looseJetID");
-//                int jetIDFilter = isfastsim? 1:tr->getVar<int>("AK4looseJetID");
+#endif
+#ifdef TUPLE_NEW
+                int jetIDFilter = isfastsim? 1:tr->getVar<int>("AK4looseJetID");
+#endif
                 // new filters
                 const unsigned int & BadPFMuonFilter = tr->getVar<unsigned int>("BadPFMuonFilter");
                 bool passBadPFMuonFilter = (&BadPFMuonFilter) != nullptr? tr->getVar<unsigned int>("BadPFMuonFilter") !=0 : true;
@@ -1719,9 +1725,12 @@ namespace plotterFunctions
             }            
 
 //            const std::vector<TLorentzVector>& jetsLVec  = tr.getVec<TLorentzVector>("jetsLVec");
-            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
-//            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
-
+#ifdef TUPLE_OLD  
+            //const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
+#endif
+#ifdef TUPLE_NEW  
+            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
+#endif
 	    const float& stored_weight = tr.getVar<float>("stored_weight");
 
             int cntCSVS = AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
@@ -2109,7 +2118,7 @@ namespace plotterFunctions
         {
             tr.addAlias("Jets","jetsLVec");
             tr.addAlias("MET","met");
-            tr.addAlias("Jets_bDiscriminatorCSV","recoJetsBtag_0");
+            //tr.addAlias("Jets_bDiscriminatorCSV","recoJetsBtag_0");
             tr.addAlias("Weight","stored_weight");
             tr.addAlias("METPhi","metphi");
             tr.addAlias("GenParticles","genDecayLVec");
@@ -2195,8 +2204,12 @@ namespace plotterFunctions
                 //std::cout << "Jet pT before JEC unc: " << jetsLVecTemp[i].Pt() << ", Jet pT after JEC unc: " << jetsLVec[i].Pt() << std::endl;
             }
 
-            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
-//            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
+#ifdef TUPLE_OLD
+            //const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
+#endif
+#ifdef TUPLE_NEW
+            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
+#endif
             const std::vector<float>& qgLikelihood      = tr.getVec<float>("qgLikelihood");
             
             //AK8 variables 

@@ -1,3 +1,5 @@
+#define TUPLE_NEW
+
 #include "../../SusyAnaTools/Tools/NTupleReader.h"
 #include "../../SusyAnaTools/Tools/samples.h"
 #include "../../SusyAnaTools/Tools/SATException.h"
@@ -440,8 +442,8 @@ int main(int argc, char* argv[])
                 //std::cout << run << "::" << lumi << "::" << event << std::endl;
                 //std::cout << "Let's print the event numbers" << std::endl;
 
-//                tr.printTupleMembers();
-//                return 0;
+                //tr.printTupleMembers();
+                //return 0;
 
                 //std::cout << "Let's print the event numbers" << std::endl;
 
@@ -560,11 +562,13 @@ int main(int argc, char* argv[])
                 //check on overall event weight
                 //if(eWeight > 50.0 || eWeight < 1/50.0) continue;
                 
-
-                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("recoJetsBtag_0");
+#ifdef TUPLE_OLD
+                //const std::vector<float>& recoJetsBtag     = tr.getVec<float>("recoJetsBtag_0");
+#endif
                 //std::cout << "Do we get this far?" << std::endl;
-//                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("recoJetsCSVv2");
-
+#ifdef TUPLE_NEW
+                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("recoJetsCSVv2");
+#endif
                 //Find lepton (here it is assumed there is exactly 1 lepton)
                 TLorentzVector lepton;
                 float mTLep = 999.9;
