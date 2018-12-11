@@ -13,6 +13,8 @@ ZinvAllMC,  DYJetsToLL_HT_2500toInf, DYJetsToLL_HT_1200to2500, DYJetsToLL_HT_800
 
 TTbarAll, TTbarInc, TTbarSingleLepT, TTbarSingleLepTbar, TTbarDiLep
 
+TTbar2017, TTbarSingleLepT2017, TTbarSingleLepTbar2017, TTbarDiLep2017
+
 TTbarExt, TTbarInc, TTbarSingleLepT, TTbarSingleLepTbar, TTbarDiLep, TTbar_HT-600to800, TTbar_HT-800to1200, TTbar_HT-1200to2500, TTbar_HT-2500toInf
 
 WJetsToLNuInc, WJetsToLNu_Inc

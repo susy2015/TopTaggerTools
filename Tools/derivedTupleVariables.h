@@ -1743,8 +1743,12 @@ namespace plotterFunctions
 
             const float& metphi = tr.getVar<float>("metphi");
 
-//            const std::vector<TLorentzVector>& gammaLVec = tr.getVec<TLorentzVector>("photonLVec");
+#ifdef TUPLE_NEW
+            const std::vector<TLorentzVector>& gammaLVec = tr.getVec<TLorentzVector>("photonLVec");
+#endif
+#ifdef TUPLE_OLD
             const std::vector<TLorentzVector>& gammaLVec = tr.getVec<TLorentzVector>("gammaLVec");
+#endif
             const std::vector<int>& tightPhotonID = tr.getVec<int>("tightPhotonID");
 
             std::vector<TLorentzVector> *tightPhotons = new std::vector<TLorentzVector>();
@@ -2299,7 +2303,7 @@ namespace plotterFunctions
 //            myConstAK4Inputs->addSupplamentalVector("DeepFlavorc",                          tr.getVec<float>("DeepFlavorc"));
 //            myConstAK4Inputs->addSupplamentalVector("DeepFlavoruds",                        tr.getVec<float>("DeepFlavoruds"));
 //            myConstAK4Inputs->addSupplamentalVector("DeepFlavorg",                          tr.getVec<float>("DeepFlavorg"));
-//            myConstAK4Inputs->addSupplamentalVector("CvsL",                                 tr.getVec<float>("CvsL"));
+            myConstAK4Inputs->addSupplamentalVector("CvsL",                                 tr.getVec<float>("CversusL"));
 //            myConstAK4Inputs->addSupplamentalVector("CvsB",                                 tr.getVec<float>("CvsB"));
             //myConstAK4Inputs->addSupplamentalVector("CombinedSvtx",                         tr.getVec<float>("CombinedSvtx"));
             //myConstAK4Inputs->addSupplamentalVector("JetProba",                             tr.getVec<float>("JetProba_0"));
