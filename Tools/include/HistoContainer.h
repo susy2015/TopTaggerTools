@@ -1,7 +1,7 @@
 #ifndef HISTOCONTAINER_H
 #define HISTOCONTAINER_H
 
-#include "TopTagger/TopTagger/include/TopTaggerResults.h"
+#include "TopTagger/TopTagger/interface/TopTaggerResults.h"
 
 #include <vector>
 
