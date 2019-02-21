@@ -198,3 +198,7 @@ MYMETA.yml
 nytprof.out
 pm_to_blib
 
+##other files to ignore
+config.status
+configure
+*.cache/
