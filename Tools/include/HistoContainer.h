@@ -1,7 +1,7 @@
 #ifndef HISTOCONTAINER_H
 #define HISTOCONTAINER_H
 
-#include "TopTagger/TopTagger/include/TopTaggerResults.h"
+#include "TopTagger/TopTagger/interface/TopTaggerResults.h"
 
 #include <vector>
 
@@ -292,7 +292,7 @@ public:
         highestDisc_          = &tr.template getVar<float>("highestDisc");
         vtxSize_             = &tr.template getVar<int>("vtxSize");
         cntCSVS_             = &tr.template getVar<int>("cntCSVS");
-        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA",true); 
+        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
         cntNJetsPt30Eta24_   = &tr.template getVar<int>("cntNJetsPt30Eta24");
         jets_                = &tr.template getVec<TLorentzVector>("jetsLVec");
         lepton_              = &tr.template getVar<TLorentzVector>("lepton");
