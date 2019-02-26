@@ -190,75 +190,53 @@ namespace plotterFunctions
 
         void triggerInfo(NTupleReader& tr)
         {
-            const std::vector<std::string>& triggerNames = tr.getVec<std::string>("TriggerNames");
-            const std::vector<int>& passTrigger          = tr.getVec<int>("PassTrigger");
-
             bool passMuTrigger = false;
             bool passElecTrigger = false;
             bool passMETMHTTrigger = false;
-
-	    const std::string muTrigName = "HLT_Mu50_v";//"HLT_Mu45_eta2p1_v";
-	    const std::string elecTrigName = "HLT_floatEle33_CaloIdL_GsfTrkIdVL_MW_v";
-            const std::string metmhtTrigName = "HLT_PFMET110_PFMHT110_IDTight_v";
-
             bool passSearchTrigger = false, passHighHtTrigger = false, passPhotonTrigger = false;
-            for(int it = 0; it < triggerNames.size(); ++it)
+
+            if( tr.getVar<bool>("HLT_PFMET170_NoiseCleaned") ||
+                tr.getVar<bool>("HLT_PFMET170_JetIdCleaned") ||
+                tr.getVar<bool>("HLT_PFMET170_HBHECleaned") ||
+                tr.getVar<bool>("HLT_PFMET100_PFMHT100_IDTight") ||
+                tr.getVar<bool>("HLT_PFMET110_PFMHT110_IDTight") ||
+                tr.getVar<bool>("HLT_PFMET120_PFMHT120_IDTight") ||
+                tr.getVar<bool>("HLT_PFMET130_PFMHT130_IDTight") ||
+                tr.getVar<bool>("HLT_PFMET140_PFMHT140_IDTight") ||
+                tr.getVar<bool>("HLT_PFMET150_PFMHT150_IDTight") ||
+                tr.getVar<bool>("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight") ||
+                tr.getVar<bool>("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight") ||
+                tr.getVar<bool>("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight")
+                )
             {
-                if( triggerNames[it].find("HLT_PFMET170_NoiseCleaned_v")             != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET170_JetIdCleaned_v")             != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET170_HBHECleaned_v")              != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET100_PFMHT100_IDTight_v")         != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET110_PFMHT110_IDTight_v")         != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET120_PFMHT120_IDTight_v")         != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET130_PFMHT130_IDTight_v")         != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET140_PFMHT140_IDTight_v")         != std::string::npos || 
-                    triggerNames[it].find("HLT_PFMET150_PFMHT150_IDTight_v")         != std::string::npos ||
-                    triggerNames[it].find("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_v") != std::string::npos ||
-                    triggerNames[it].find("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v") != std::string::npos ||
-                    triggerNames[it].find("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v") != std::string::npos
-                    )
-                {
-                    if( passTrigger[it] ) 
-                    {
-                        passSearchTrigger = true;
-                    }
-                }
+                passSearchTrigger = true;
+            }
 
-                if( triggerNames[it].find("HLT_PFHT750_4JetPt50_v") != std::string::npos ||
-                    triggerNames[it].find("HLT_PFHT800_v")          != std::string::npos ||
-                    triggerNames[it].find("HLT_PFHT900_v")          != std::string::npos ||
-                    triggerNames[it].find("HLT_PFJet450_v")         != std::string::npos
-                    )
-                {
-                    if( passTrigger[it] ) 
-                    {
-                        passHighHtTrigger = true;
-                    }                    
-                }
+            if( tr.getVar<bool>("HLT_PFHT750_4JetPt50") ||
+                tr.getVar<bool>("HLT_PFHT800") ||
+                tr.getVar<bool>("HLT_PFHT900") ||
+                tr.getVar<bool>("HLT_PFJet450")
+                )
+            {
+                passHighHtTrigger = true;
+            }
 
-                if( triggerNames[it].find("HLT_Photon175_v")                != std::string::npos ||
-                    triggerNames[it].find("HLT_Photon75_v")                 != std::string::npos ||
-                    triggerNames[it].find("HLT_Photon90_CaloIdL_PFHT500_v") != std::string::npos ||
-                    triggerNames[it].find("HLT_Photon90_v")                 != std::string::npos
-                    )
-                {
-                    if( passTrigger[it] ) 
-                    {
-                        passPhotonTrigger = true;
-                    }                    
-                }
+            if( tr.getVar<bool>("HLT_Photon175") ||
+                tr.getVar<bool>("HLT_Photon75") ||
+                tr.getVar<bool>("HLT_Photon90_CaloIdL_PFHT500") ||
+                tr.getVar<bool>("HLT_Photon90")
+                )
+            {
+                passPhotonTrigger = true;
+            }
 
-                if( triggerNames[it].find("HLT_IsoMu24_v")              != std::string::npos ||
-                    triggerNames[it].find("HLT_IsoTkMu24_v")            != std::string::npos ||
-                    triggerNames[it].find("HLT_Mu50_v")                 != std::string::npos ||
-                    triggerNames[it].find("HLT_Mu55_v")                 != std::string::npos
-                    )
-                {
-                    if( passTrigger[it] ) 
-                    {
-                        passMuTrigger = true;
-                    }                    
-                }
+            if( tr.getVar<bool>("HLT_IsoMu24") ||
+                tr.getVar<bool>("HLT_IsoTkMu24") ||
+                tr.getVar<bool>("HLT_Mu50") ||
+                tr.getVar<bool>("HLT_Mu55")
+                )
+            {
+                passMuTrigger = true;
             }
 
             tr.registerDerivedVar("passMuTrigger",     passMuTrigger);
@@ -271,9 +249,9 @@ namespace plotterFunctions
 
         void triggerInfoMC(NTupleReader& tr)
         {
-            const float& met                            = tr.getVar<float>("met");
+            const float& met                            = tr.getVar<float>("MET_pt");
             const float& ht                             = tr.getVar<float>("HT");
-            const std::vector<TLorentzVector>& cutMuVec  = tr.getVec<TLorentzVector>("muonsLVec");
+            const std::vector<TLorentzVector>& cutMuVec  = tr.getVec_LVFromNano<float>("Muon");
 
 	    // MC trigger efficiencies
 	    float triggerEff = GetTriggerEffWeight(met,ht);
@@ -354,49 +332,40 @@ namespace plotterFunctions
             try
             {
                 bool passDataSpec = true;
-                if( tr->getVar<unsigned int>("run") >= 100000 ){ // hack to know if it's data or MC...
-                    int goodVerticesFilter = tr->getVar<int>("goodVerticesFilter");
-                    // new filters
-                    const int & globalTightHalo2016Filter = tr->getVar<int>("globalTightHalo2016Filter");
-                    bool passglobalTightHalo2016Filter = (&globalTightHalo2016Filter) != nullptr? tr->getVar<int>("globalTightHalo2016Filter") !=0 : true;
+                if( tr->getVar<unsigned int>("Run") >= 100000 ){ // hack to know if it's data or MC...
 
-                    int eeBadScFilter = tr->getVar<int>("eeBadScFilter");
+                    auto& goodVertexFilter = tr->getVar<bool>("Flag_goodVertices");
+                    auto& globalTightHalo2016Filter = tr->getVar<bool>("Flag_globalTightHalo2016Filter");
+                    auto& eeBadScFilter = tr->getVar<bool>("Flag_eeBadScFilter");
 
-                    passDataSpec = goodVerticesFilter && eeBadScFilter && passglobalTightHalo2016Filter;
+                    passDataSpec = goodVertexFilter && globalTightHalo2016Filter && eeBadScFilter;
                 }
 
-                unsigned int hbheNoiseFilter = isfastsim? 1:tr->getVar<unsigned int>("HBHENoiseFilter");
-                unsigned int hbheIsoNoiseFilter = isfastsim? 1:tr->getVar<unsigned int>("HBHEIsoNoiseFilter");
-                int ecalTPFilter = tr->getVar<int>("EcalDeadCellTriggerPrimitiveFilter");
-
-#ifdef TUPLE_OLD
-                int jetIDFilter = isfastsim? 1:tr->getVar<int>("looseJetID");
-#endif
-#ifdef TUPLE_NEW
-                int jetIDFilter = isfastsim? 1:tr->getVar<int>("AK4looseJetID");
-#endif
-                // new filters
-                const unsigned int & BadPFMuonFilter = tr->getVar<unsigned int>("BadPFMuonFilter");
-                bool passBadPFMuonFilter = (&BadPFMuonFilter) != nullptr? tr->getVar<unsigned int>("BadPFMuonFilter") !=0 : true;
-
-                const unsigned int & BadChargedCandidateFilter = tr->getVar<unsigned int>("BadChargedCandidateFilter");
-                bool passBadChargedCandidateFilter = (&BadChargedCandidateFilter) != nullptr? tr->getVar<unsigned int>("BadChargedCandidateFilter") !=0 : true;
-
-                bool passMETratioFilter = tr->getVar<float>("calomet")!=0 ? tr->getVar<float>("met")/tr->getVar<float>("calomet") < 5 : true;
-
-                //std::cout << (passDataSpec ? " TRUE" : "FALSE") << " " << (hbheNoiseFilter ? " TRUE" : "FALSE") << " " << (hbheIsoNoiseFilter ? " TRUE" : "FALSE") << " "
-                //          << (ecalTPFilter ? " TRUE" : "FALSE") << " " << (jetIDFilter ? " TRUE" : "FALSE") << " " << (passBadPFMuonFilter ? " TRUE" : "FALSE") << " "
-                //          << (passBadChargedCandidateFilter ? " TRUE" : "FALSE") << " " << (passMETratioFilter ? " TRUE" : "FALSE") <<std::endl;
-
-                return passDataSpec && hbheNoiseFilter && hbheIsoNoiseFilter && ecalTPFilter && jetIDFilter && passBadPFMuonFilter && passBadChargedCandidateFilter && passMETratioFilter;
-            }
-            catch (std::string var)
-            {
-                if(tr->isFirstEvent()) 
+                //Check that all jets pass loose jet ID
+                auto& jetID = tr->getVec<int>("Jet_jetId");
+                bool passJetIDFilter = true;
+                for(auto& id : jetID)
                 {
-                    printf("NTupleReader::getTupleObj(const std::string var):  Variable not found: \"%s\"!!!\n", var.c_str());
-                    printf("Running with PHYS14 Config\n");
+                    if(!(id & 0x1)) // bit 0 is for loose ID, bit 1 for tight
+                    {
+                        passJetIDFilter = false;
+                        break;
+                    }
                 }
+
+                bool passMETratioFilter = tr->getVar<float>("CaloMET_pt")!=0 ? tr->getVar<float>("MET_pt")/tr->getVar<float>("CaloMET_pt") < 5 : true;
+
+                auto& HBHENoiseFilter = tr->getVar<bool>("Flag_HBHENoiseFilter");
+                auto& HBHENoiseIsoFilter = tr->getVar<bool>("Flag_HBHENoiseIsoFilter");
+                auto& EcalDeadCellTriggerPrimitiveFilter = tr->getVar<bool>("Flag_EcalDeadCellTriggerPrimitiveFilter");
+                auto& BadPFMuonFilter = tr->getVar<bool>("Flag_BadPFMuonFilter");
+                auto& BadChargedCandidateFilter = tr->getVar<bool>("Flag_BadChargedCandidateFilter");
+
+                return passDataSpec && passJetIDFilter && HBHENoiseFilter && HBHENoiseIsoFilter && EcalDeadCellTriggerPrimitiveFilter && BadPFMuonFilter && BadChargedCandidateFilter && passMETratioFilter;
+            }
+            catch(...)
+            {
+                std::cout << "PAMIC: Some filter variable is not found, ignoring event filters!!!!" << std::endl;
             }
             return true;
         }
@@ -408,10 +377,10 @@ namespace plotterFunctions
 
             bool handleSys = true;
 
-            const std::vector<TLorentzVector>& jetsLVecTemp = tr.getVec<TLorentzVector>("jetsLVec");
-            const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("recoJetsJecUnc");
+            const std::vector<TLorentzVector>& jetsLVecTemp = tr.getVec_LVFromNano<float>("Jet");
+//            const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("recoJetsJecUnc");
 
-            if(jetsLVecTemp.size() != recoJetsJecUnc.size()) handleSys = false; //If this is data, we can't do anything
+//            if(jetsLVecTemp.size() != recoJetsJecUnc.size()) handleSys = false; //If this is data, we can't do anything
 
             std::vector<TLorentzVector> jetsLVec;
             for(int ijet=0; ijet<jetsLVecTemp.size(); ++ijet)
@@ -420,31 +389,17 @@ namespace plotterFunctions
                 else {jetsLVec.push_back( jetsLVecTemp[ijet] );}
             }            
 
-//            const std::vector<TLorentzVector>& jetsLVec  = tr.getVec<TLorentzVector>("jetsLVec");
-#ifdef TUPLE_OLD  
-            //const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
-#endif
-#ifdef TUPLE_NEW  
-            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
-#endif
-	    const float& stored_weight = tr.getVar<float>("stored_weight");
+            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagCSVV2");
+
+	    const float& stored_weight = tr.getVar<float>("genWeight");
 
             int cntCSVS = AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
 
-            float bestCSV = -999;
-            for(int i = 0; i < recoJetsBtag.size(); i++){
-                bestCSV = (bestCSV > recoJetsBtag[i] ? bestCSV : recoJetsBtag[i]);
-            }
-            tr.registerDerivedVar("bestCSV",bestCSV);
+            const float& metphi = tr.getVar<float>("MET_phi");
 
-            const float& metphi = tr.getVar<float>("metphi");
 
-#ifdef TUPLE_NEW
-            const std::vector<TLorentzVector>& gammaLVec = tr.getVec<TLorentzVector>("photonLVec");
-#endif
-#ifdef TUPLE_OLD
-            const std::vector<TLorentzVector>& gammaLVec = tr.getVec<TLorentzVector>("gammaLVec");
-#endif
+            const std::vector<TLorentzVector>& gammaLVec = tr.getVec_LVFromNano<float>("Photon");
+
             const std::vector<int>& tightPhotonID = tr.getVec<int>("tightPhotonID");
 
             std::vector<TLorentzVector> *tightPhotons = new std::vector<TLorentzVector>();
