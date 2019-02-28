@@ -37,9 +37,6 @@ namespace plotterFunctions
     class TriggerInfo
     {
     private:
-	int indexMuTrigger;
-	int indexElecTrigger;
-        int indexMETMHTTrigger;
         bool miniTuple_, noMC_;
 
 	float GetMuonTriggerEff(const float& muEta) 
@@ -190,53 +187,58 @@ namespace plotterFunctions
 
         void triggerInfo(NTupleReader& tr)
         {
-            bool passMuTrigger = false;
-            bool passElecTrigger = false;
-            bool passMETMHTTrigger = false;
-            bool passSearchTrigger = false, passHighHtTrigger = false, passPhotonTrigger = false;
+            bool passMuTrigger     = true;
+            bool passElecTrigger   = true;
+            bool passMETMHTTrigger = true;
+            bool passSearchTrigger = true;
+            bool passHighHtTrigger = true;
+            bool passPhotonTrigger = true;
 
-            if( tr.getVar<bool>("HLT_PFMET170_NoiseCleaned") ||
-                tr.getVar<bool>("HLT_PFMET170_JetIdCleaned") ||
-                tr.getVar<bool>("HLT_PFMET170_HBHECleaned") ||
-                tr.getVar<bool>("HLT_PFMET100_PFMHT100_IDTight") ||
-                tr.getVar<bool>("HLT_PFMET110_PFMHT110_IDTight") ||
-                tr.getVar<bool>("HLT_PFMET120_PFMHT120_IDTight") ||
-                tr.getVar<bool>("HLT_PFMET130_PFMHT130_IDTight") ||
-                tr.getVar<bool>("HLT_PFMET140_PFMHT140_IDTight") ||
-                tr.getVar<bool>("HLT_PFMET150_PFMHT150_IDTight") ||
-                tr.getVar<bool>("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight") ||
-                tr.getVar<bool>("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight") ||
-                tr.getVar<bool>("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight")
-                )
+            if(!tr.checkBranch("GenPart_pt"))
             {
-                passSearchTrigger = true;
-            }
+                if( tr.getVar<bool>("HLT_PFMET170_NoiseCleaned") ||
+                    tr.getVar<bool>("HLT_PFMET170_JetIdCleaned") ||
+                    tr.getVar<bool>("HLT_PFMET170_HBHECleaned") ||
+                    tr.getVar<bool>("HLT_PFMET100_PFMHT100_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMET110_PFMHT110_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMET120_PFMHT120_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMET130_PFMHT130_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMET140_PFMHT140_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMET150_PFMHT150_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight") ||
+                    tr.getVar<bool>("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight")
+                    )
+                {
+                    passSearchTrigger = true;
+                }
 
-            if( tr.getVar<bool>("HLT_PFHT750_4JetPt50") ||
-                tr.getVar<bool>("HLT_PFHT800") ||
-                tr.getVar<bool>("HLT_PFHT900") ||
-                tr.getVar<bool>("HLT_PFJet450")
-                )
-            {
-                passHighHtTrigger = true;
-            }
+                if( tr.getVar<bool>("HLT_PFHT750_4JetPt50") ||
+                    tr.getVar<bool>("HLT_PFHT800") ||
+                    tr.getVar<bool>("HLT_PFHT900") ||
+                    tr.getVar<bool>("HLT_PFJet450")
+                    )
+                {
+                    passHighHtTrigger = true;
+                }
 
-            if( tr.getVar<bool>("HLT_Photon175") ||
-                tr.getVar<bool>("HLT_Photon75") ||
-                tr.getVar<bool>("HLT_Photon90_CaloIdL_PFHT500") ||
-                tr.getVar<bool>("HLT_Photon90")
-                )
-            {
-                passPhotonTrigger = true;
-            }
+                if( tr.getVar<bool>("HLT_Photon175") ||
+                    tr.getVar<bool>("HLT_Photon75") ||
+                    tr.getVar<bool>("HLT_Photon90_CaloIdL_PFHT500") ||
+                    tr.getVar<bool>("HLT_Photon90")
+                    )
+                {
+                    passPhotonTrigger = true;
+                }
 
-            if( tr.getVar<bool>("HLT_IsoMu24") ||
-                tr.getVar<bool>("HLT_IsoTkMu24") ||
-                tr.getVar<bool>("HLT_Mu50") ||
-                tr.getVar<bool>("HLT_Mu55")
-                )
-            {
-                passMuTrigger = true;
+                if( tr.getVar<bool>("HLT_IsoMu24") ||
+                    tr.getVar<bool>("HLT_IsoTkMu24") ||
+                    tr.getVar<bool>("HLT_Mu50") ||
+                    tr.getVar<bool>("HLT_Mu55")
+                    )
+                {
+                    passMuTrigger = true;
+                }
             }
 
             tr.registerDerivedVar("passMuTrigger",     passMuTrigger);
@@ -287,9 +289,6 @@ namespace plotterFunctions
     public:
 	TriggerInfo(bool miniTuple = false, bool noMC = false)
 	{
-	    indexMuTrigger = -1;
-	    indexElecTrigger = -1;
-            indexMETMHTTrigger = -1;
             miniTuple_ = miniTuple;
             noMC_ = noMC;
 	}
@@ -332,7 +331,7 @@ namespace plotterFunctions
             try
             {
                 bool passDataSpec = true;
-                if( tr->getVar<unsigned int>("Run") >= 100000 ){ // hack to know if it's data or MC...
+                if( tr->getVar<unsigned int>("run") >= 100000 ){ // hack to know if it's data or MC...
 
                     auto& goodVertexFilter = tr->getVar<bool>("Flag_goodVertices");
                     auto& globalTightHalo2016Filter = tr->getVar<bool>("Flag_globalTightHalo2016Filter");
@@ -358,8 +357,8 @@ namespace plotterFunctions
                 auto& HBHENoiseFilter = tr->getVar<bool>("Flag_HBHENoiseFilter");
                 auto& HBHENoiseIsoFilter = tr->getVar<bool>("Flag_HBHENoiseIsoFilter");
                 auto& EcalDeadCellTriggerPrimitiveFilter = tr->getVar<bool>("Flag_EcalDeadCellTriggerPrimitiveFilter");
-                auto& BadPFMuonFilter = tr->getVar<bool>("Flag_BadPFMuonFilter");
-                auto& BadChargedCandidateFilter = tr->getVar<bool>("Flag_BadChargedCandidateFilter");
+                auto& BadPFMuonFilter = tr->getVar<unsigned char>("Flag_BadPFMuonFilter");
+                auto& BadChargedCandidateFilter = tr->getVar<unsigned char>("Flag_BadChargedCandidateFilter");
 
                 return passDataSpec && passJetIDFilter && HBHENoiseFilter && HBHENoiseIsoFilter && EcalDeadCellTriggerPrimitiveFilter && BadPFMuonFilter && BadChargedCandidateFilter && passMETratioFilter;
             }
@@ -377,111 +376,128 @@ namespace plotterFunctions
 
             bool handleSys = true;
 
-            const std::vector<TLorentzVector>& jetsLVecTemp = tr.getVec_LVFromNano<float>("Jet");
-//            const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("recoJetsJecUnc");
+            const std::vector<TLorentzVector>& jetsLVecNominal = tr.getVec_LVFromNano<float>("Jet");
 
-//            if(jetsLVecTemp.size() != recoJetsJecUnc.size()) handleSys = false; //If this is data, we can't do anything
+            std::vector<TLorentzVector>& jetsLVec = tr.createDerivedVec<TLorentzVector>("jetsLVec");
+            jetsLVec.reserve(jetsLVecNominal.size());
 
-            std::vector<TLorentzVector> jetsLVec;
-            for(int ijet=0; ijet<jetsLVecTemp.size(); ++ijet)
+            if(tr.checkBranch("Jet_jecUncertTotal"))
             {
-                if(handleSys){jetsLVec.push_back( jetsLVecTemp[ijet] * (1 + (JECSys * recoJetsJecUnc[ijet])));}
-                else {jetsLVec.push_back( jetsLVecTemp[ijet] );}
-            }            
+                const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("Jet_jecUncertTotal");
 
-            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagCSVV2");
+                for(int ijet=0; ijet<jetsLVecNominal.size(); ++ijet)
+                {
+                    if(handleSys)
+                    {
+                        jetsLVec.push_back( jetsLVecNominal[ijet] * (1 + (JECSys * recoJetsJecUnc[ijet])));
+                    }
+                    else
+                    {
+                        jetsLVec.push_back( jetsLVecNominal[ijet] );
+                    }
+                }
+            }
+            else
+            {
+                handleSys = false; //If this is data, we shouldn't do anything
+            }
 
-	    const float& stored_weight = tr.getVar<float>("genWeight");
+            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagDeepB");
+
+	    const float& stored_weight = tr.getVar<float>("Generator_weight");
 
             int cntCSVS = AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
 
+            const float& met    = tr.getVar<float>("MET_pt");
             const float& metphi = tr.getVar<float>("MET_phi");
 
+            TLorentzVector metLV;
+            metLV.SetPtEtaPhiM(met, 0.0, metphi, 0.0);
 
             const std::vector<TLorentzVector>& gammaLVec = tr.getVec_LVFromNano<float>("Photon");
 
-            const std::vector<int>& tightPhotonID = tr.getVec<int>("tightPhotonID");
+            const std::vector<int>& photonID = tr.getVec<int>("Photon_cutBased");
 
-            std::vector<TLorentzVector> *tightPhotons = new std::vector<TLorentzVector>();
+            std::vector<TLorentzVector>& tightPhotons = tr.createDerivedVec<TLorentzVector>("tightPhotons");
 
-            //std::cout << "Comparing the length of the tightPhotonID and gammaLVec vectors: " << tightPhotonID.size() << " " << gammaLVec.size() << std::endl;
-
-            int sizeP = (tightPhotonID.size() < gammaLVec.size() ? tightPhotonID.size() : gammaLVec.size());
-
-            for(int i = 0; i < sizeP; ++i)
+            for(int i = 0; i < tightPhotons.size(); ++i)
             {
-                if(tightPhotonID[i])
+                if(photonID[i] == 3) // check for tight ID
                 {
-                    tightPhotons->push_back(gammaLVec[i]);
+                    tightPhotons.push_back(gammaLVec[i]);
                 }
             }
 
-            tr.registerDerivedVec("tightPhotons", tightPhotons);
-            tr.registerDerivedVar("passPhoton200", (tightPhotons->size() > 0) && ((*tightPhotons)[0].Pt() > 200));
+            tr.registerDerivedVar("passPhoton200", (tightPhotons.size() > 0) && (tightPhotons[0].Pt() > 200));
 
-            const std::vector<TLorentzVector>& muonsLVec    = tr.getVec<TLorentzVector>("muonsLVec");
-            //const std::vector<float>& muonsRelIso          = tr.getVec<float>("muonsRelIso");
-            const std::vector<float>& muonsMiniIso         = tr.getVec<float>("muonsMiniIso");
-            const std::vector<float>& muonsMTlep           = tr.getVec<float>("muonsMtw");
-            std::string muonsFlagIDLabel = "muonsFlagMedium";
-            const std::vector<int> & muonsFlagIDVec = muonsFlagIDLabel.empty()? std::vector<int>(muonsMiniIso.size(), 1):tr.getVec<int>(muonsFlagIDLabel.c_str());
+            const std::vector<TLorentzVector>& muonsLVec    = tr.getVec_LVFromNano<float>("Muon");
+            const std::vector<float>& muonsMiniIso          = tr.getVec<float>("Muon_miniPFRelIso_all");
+            const std::vector<unsigned char>& muonsMediumID         = tr.getVec<unsigned char>("Muon_mediumId");
 
-            std::vector<TLorentzVector>* cutMuVec = new std::vector<TLorentzVector>();
-            std::vector<float> *cutMuMTlepVec = new std::vector<float>();
+            std::vector<float> muonsMTlep(muonsLVec.size());
+            for(int i = 0; i < muonsMTlep.size(); ++i)
+            {
+                muonsMTlep[i] = (muonsLVec[i] + metLV).Mt();
+            }
+
+            std::vector<TLorentzVector>& cutMuVec = tr.createDerivedVec<TLorentzVector>("cutMuVec");
+            std::vector<float>& cutMuMTlepVec = tr.createDerivedVec<float>("cutMuMTlepVec");
             for(int i = 0; i < muonsLVec.size(); ++i)
             {
-                if(AnaFunctions::passMuon( muonsLVec[i], muonsMiniIso[i], 0.0, muonsFlagIDVec[i], AnaConsts::muonsMiniIsoArr))
+                if(AnaFunctions::passMuon( muonsLVec[i], muonsMiniIso[i]/muonsLVec[i].Pt(), 0.0, muonsMediumID[i], AnaConsts::muonsMiniIsoArr))
                 {
-                    cutMuVec->push_back(muonsLVec[i]);
-                    cutMuMTlepVec->push_back(muonsMTlep[i]);
+                    cutMuVec.push_back(muonsLVec[i]);
+                    cutMuMTlepVec.push_back(muonsMTlep[i]);
                 }
             }
 
-            tr.registerDerivedVec("cutMuVec", cutMuVec);
-            tr.registerDerivedVec("cutMuMTlepVec", cutMuMTlepVec);
+            const std::vector<TLorentzVector> elesLVec     = tr.getVec_LVFromNano<float>("Electron");
+            const std::vector<float>& elesMiniIso          = tr.getVec<float>("Electron_miniPFRelIso_all");
+            const std::vector<int>& elesCharge           = tr.getVec<int>("Electron_charge");
+            
+            std::vector<float>  elesMTlep(elesLVec.size());
+            for(int i = 0; i < elesMTlep.size(); ++i)
+            {
+                elesMTlep[i] = (elesLVec[i] + metLV).Mt();
+            }
 
-            const std::vector<TLorentzVector, std::allocator<TLorentzVector> > elesLVec = tr.getVec<TLorentzVector>("elesLVec");
-            const std::vector<float>& elesMiniIso          = tr.getVec<float>("elesMiniIso");
-            const std::vector<float>& elesCharge           = tr.getVec<float>("elesCharge");
-            const std::vector<unsigned int>& elesisEB       = tr.getVec<unsigned int>("elesisEB");
-            const std::vector<float>&  elesMTlep           = tr.getVec<float>("elesMtw");
-            std::string elesFlagIDLabel = "elesFlagVeto";
-            const std::vector<int> & elesFlagIDVec = elesFlagIDLabel.empty()? std::vector<int>(elesMiniIso.size(), 1):tr.getVec<int>(elesFlagIDLabel.c_str());
+            const std::vector<int> & elesFlagIDVec = tr.getVec<int>("Electron_cutBasedNoIso");
 
             //electron selection
-            std::vector<TLorentzVector>* cutElecVec = new std::vector<TLorentzVector>();
-            std::vector<float> *cutElecMTlepVec = new std::vector<float>();
+            std::vector<TLorentzVector>& cutElecVec = tr.createDerivedVec<TLorentzVector>("cutElecVec");
+            std::vector<float>& cutElecMTlepVec = tr.createDerivedVec<float>("cutElecMTlepVec");
             for(int i = 0; i < elesLVec.size(); ++i)
             {
-                if(AnaFunctions::passElectron(elesLVec[i], elesMiniIso[i], -1, elesisEB[i], elesFlagIDVec[i], AnaConsts::elesMiniIsoArr))
+                if(AnaFunctions::passElectron(elesLVec[i], elesMiniIso[i]/elesLVec[i].Pt(), -1, elesFlagIDVec[i] >= 3, AnaConsts::elesMiniIsoArr))
                 {
-                    cutElecVec->push_back(elesLVec[i]);
-                    cutElecMTlepVec->push_back(elesMTlep[i]);
+                    cutElecVec.push_back(elesLVec[i]);
+                    cutElecMTlepVec.push_back(elesMTlep[i]);
                 }
             }
 
-            tr.registerDerivedVec("cutElecVec", cutElecVec);
-            tr.registerDerivedVec("cutElecMTlepVec", cutElecMTlepVec);
-
             //// Calculate number of leptons
-            int nMuons = AnaFunctions::countMuons(muonsLVec, muonsMiniIso, muonsMTlep, muonsFlagIDVec, AnaConsts::muonsMiniIsoArr);
-            const AnaConsts::IsoAccRec muonsMiniIsoArr20GeV = {   -1,       2.4,      20,     -1,       0.2,     -1  };
-            int nMuons_20GeV = AnaFunctions::countMuons(muonsLVec, muonsMiniIso, muonsMTlep, muonsFlagIDVec, muonsMiniIsoArr20GeV);
-            const AnaConsts::IsoAccRec muonsMiniIsoArr30GeV = {   -1,       2.4,      30,     -1,       0.2,     -1  };
-            int nMuons_30GeV = AnaFunctions::countMuons(muonsLVec, muonsMiniIso, muonsMTlep, muonsFlagIDVec, muonsMiniIsoArr30GeV);
-            const AnaConsts::IsoAccRec muonsMiniIsoArr40GeV = {   -1,       2.4,      40,     -1,       0.2,     -1  };
-            int nMuons_40GeV = AnaFunctions::countMuons(muonsLVec, muonsMiniIso, muonsMTlep, muonsFlagIDVec, muonsMiniIsoArr40GeV);
-            const AnaConsts::IsoAccRec muonsMiniIsoArr50GeV = {   -1,       2.4,      50,     -1,       0.2,     -1  };
-            int nMuons_50GeV = AnaFunctions::countMuons(muonsLVec, muonsMiniIso, muonsMTlep, muonsFlagIDVec, muonsMiniIsoArr50GeV);
-            int nElectrons = AnaFunctions::countElectrons(elesLVec, elesMiniIso, elesMTlep, elesisEB,  elesFlagIDVec, AnaConsts::elesMiniIsoArr);
-            const AnaConsts::ElecIsoAccRec elesMiniIsoArr20 = {   -1,       2.5,      20,     -1,     0.10,     0.10,     -1  };
-            int nElectrons20 = AnaFunctions::countElectrons(elesLVec, elesMiniIso, elesMTlep, elesisEB, elesFlagIDVec, elesMiniIsoArr20);
-            const AnaConsts::ElecIsoAccRec elesMiniIsoArr30 = {   -1,       2.5,      30,     -1,     0.10,     0.10,     -1  };
-            int nElectrons30 = AnaFunctions::countElectrons(elesLVec, elesMiniIso, elesMTlep, elesisEB, elesFlagIDVec, elesMiniIsoArr30);
-            int nIsoTrks; 
-            if( tr.checkBranch("loose_isoTrksLVec") )
+            int nMuons = 0, nMuons_20GeV = 0, nMuons_30GeV = 0, nMuons_40GeV = 0, nMuons_50GeV = 0;
+            for(auto& muon : cutMuVec)
             {
-                nIsoTrks = AnaFunctions::countIsoTrks(tr.getVec<TLorentzVector>("loose_isoTrksLVec"), tr.getVec<float>("loose_isoTrks_iso"), tr.getVec<float>("loose_isoTrks_mtw"), tr.getVec<int>("loose_isoTrks_pdgId"));
+                ++nMuons;
+                if(muon.Pt() > 20) ++nMuons_20GeV;
+                if(muon.Pt() > 30) ++nMuons_30GeV;
+                if(muon.Pt() > 40) ++nMuons_40GeV;
+                if(muon.Pt() > 50) ++nMuons_50GeV;
+            }
+            int nElectrons = 0, nElectrons20 = 0, nElectrons30 = 0;
+            for(auto& elec : cutElecVec)
+            {
+                ++nElectrons;
+                if(elec.Pt() > 20) ++nElectrons20;
+                if(elec.Pt() > 30) ++nElectrons30;
+            }
+
+
+            int nIsoTrks; 
+            if( tr.checkBranch("IsoTrack_pt") )
+            {
+                nIsoTrks = 0;//AnaFunctions::countIsoTrks(tr.getVec_LVFromNano<float>("IsoTrack"), tr.getVec<float>("loose_isoTrks_iso"), tr.getVec<float>("loose_isoTrks_mtw"), tr.getVec<int>("loose_isoTrks_pdgId"));
             }
             else
             {
@@ -495,10 +511,10 @@ namespace plotterFunctions
 
             float Mmumu = -999.9;
             bool passfloatMuon = false;
-            if(cutMuVec->size() >= 2)
+            if(cutMuVec.size() >= 2)
             {
-                Mmumu = ((*cutMuVec)[0] + (*cutMuVec)[1]).M();
-                passfloatMuon = (*cutMuVec)[0].Pt() > 30 && (*cutMuVec)[1].Pt() > 20 && Mmumu > 81 && Mmumu < 101;
+                Mmumu = (cutMuVec[0] + cutMuVec[1]).M();
+                passfloatMuon = cutMuVec[0].Pt() > 30 && cutMuVec[1].Pt() > 20 && Mmumu > 81 && Mmumu < 101;
             }
 
 
@@ -564,15 +580,10 @@ namespace plotterFunctions
     {
     private:
 
-        int indexMuTrigger, indexElecTrigger, indexHTMHTTrigger, indexMuHTTrigger;
         int JECSys = 0;
         std::shared_ptr<TopTagger> ttMVA;
         TopCat topMatcher_;
-        std::shared_ptr<TFile> WMassCorFile;
-        std::shared_ptr<TF1> puppisd_corrGEN;
-        std::shared_ptr<TF1> puppisd_corrRECO_cen;
-        std::shared_ptr<TF1> puppisd_corrRECO_for;
-        
+
         std::mt19937 generator;
         std::uniform_int_distribution<int> distribution;
 
@@ -582,49 +593,12 @@ namespace plotterFunctions
 
             bool handleSys = true;
 
-            const std::vector<TLorentzVector>& jetsLVecTemp = tr.getVec<TLorentzVector>("jetsLVec");
-            const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("recoJetsJecUnc");
+            const std::vector<TLorentzVector>& jetsLVec = tr.getVec<TLorentzVector>("jetsLVec");
 
-            if(jetsLVecTemp.size() != recoJetsJecUnc.size()) handleSys = false; //If this is data, we can't do anything
 
-            //std::cout << "handleSys is " << handleSys << std::endl;
-            //std::cout << "JECSys is " << JECSys << std::endl;
-
-            std::vector<TLorentzVector> jetsLVec;
-            for(int ijet=0; ijet<jetsLVecTemp.size(); ++ijet)
-            {
-                if(handleSys){
-                    jetsLVec.push_back( jetsLVecTemp[ijet] * (1 + (JECSys * recoJetsJecUnc[ijet])));
-                    //std::cout << "Reco Jets uncertainty " << recoJetsJecUnc[ijet] << std::endl;
-                }else{jetsLVec.push_back( jetsLVecTemp[ijet] );}
-            }            
-
-            for(int i = 0; i < jetsLVecTemp.size(); i++){
-                //std::cout << "Jet pT before JEC unc: " << jetsLVecTemp[i].Pt() << ", Jet pT after JEC unc: " << jetsLVec[i].Pt() << std::endl;
-            }
-
-#ifdef TUPLE_OLD
-            //const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsBtag_0");
-#endif
-#ifdef TUPLE_NEW
-            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("recoJetsCSVv2");
-#endif
-            const std::vector<float>& qgLikelihood      = tr.getVec<float>("qgLikelihood");
+            const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagDeepB");
+            const std::vector<float>& qgLikelihood      = tr.getVec<float>("Jet_qgl");
             
-            //AK8 variables 
-            //const std::vector<float>& puppitau1    = tr.getVec<float>("puppitau1");
-            //const std::vector<float>& puppitau2    = tr.getVec<float>("puppitau2");
-            //const std::vector<float>& puppitau3    = tr.getVec<float>("puppitau3");
-            //const std::vector<float>& puppisoftDropMass = tr.getVec<float>("puppisoftDropMass");
-            //const std::vector<TLorentzVector>& puppiJetsLVec  = tr.getVec<TLorentzVector>("puppiJetsLVec");
-            //const std::vector<TLorentzVector>& puppiSubJetsLVec  = tr.getVec<TLorentzVector>("puppiSubJetsLVec");
-            //const std::vector<float>& puppiSubJetsBdisc = tr.getVec<float>("puppiSubJetsBdisc");
-            //const std::vector<float>& puppiSubJetstotalMult = tr.getVec<float>("puppiSubJetstotalMult");
-            //const std::vector<float>& puppiSubJetsptD = tr.getVec<float>("puppiSubJetsptD");
-            //const std::vector<float>& puppiSubJetsaxis1 = tr.getVec<float>("puppiSubJetsaxis1");
-            //const std::vector<float>& puppiSubJetsaxis2 = tr.getVec<float>("puppiSubJetsaxis2");
-                        
-
             //Helper function to turn int vectors into float vectors
             auto convertTofloatandRegister = [](NTupleReader& tr, const std::string& name)
             {
@@ -636,27 +610,24 @@ namespace plotterFunctions
             
             //New Tagger starts here
             ttUtility::ConstAK4Inputs<float> *myConstAK4Inputs = nullptr;
-            //ttUtility::ConstAK8Inputs<float> *myConstAK8Inputs = nullptr;
+
             std::vector<TLorentzVector> *genTops;
-            std::vector<std::vector<const TLorentzVector*>> hadGenTopDaughters;
             std::vector<Constituent> constituentsMVA;
-            if(tr.checkBranch("genDecayLVec"))
+
+            if(tr.checkBranch("GenPart"))
             {
-                const std::vector<TLorentzVector>& genDecayLVec = tr.getVec<TLorentzVector>("genDecayLVec");
-                const std::vector<int>& genDecayPdgIdVec        = tr.getVec<int>("genDecayPdgIdVec");
-                const std::vector<int>& genDecayIdxVec          = tr.getVec<int>("genDecayIdxVec");
-                const std::vector<int>& genDecayMomIdxVec       = tr.getVec<int>("genDecayMomIdxVec");
+                const std::vector<TLorentzVector>& genDecayLVec = tr.getVec_LVFromNano<float>("GenPart");
+                const std::vector<int>& genDecayPdgIdVec        = tr.getVec<int>("GenPart_pdgId");
+                const std::vector<int>& genDecayStatFlag        = tr.getVec<int>("GenPart_statusFlags");
+                const std::vector<int>& genDecayMomIdxVec       = tr.getVec<int>("GenPart_genPartIdxMother");
 
                 //prep input object (constituent) vector
-                genTops = new std::vector<TLorentzVector>(ttUtility::GetHadTopLVec(genDecayLVec, genDecayPdgIdVec, genDecayIdxVec, genDecayMomIdxVec));
-                for(const auto& top : *genTops)
-                {
-                    hadGenTopDaughters.push_back(ttUtility::GetTopdauLVec(top, genDecayLVec, genDecayPdgIdVec, genDecayIdxVec, genDecayMomIdxVec));
-                }
+                auto genMatchingInfo = ttUtility::GetTopdauGenLVecFromNano(genDecayLVec, genDecayPdgIdVec, genDecayStatFlag, genDecayMomIdxVec);
+                //lazy deep copy of a vector ... deal with this?
+                genTops = new std::vector<TLorentzVector>(genMatchingInfo.first);
 
-                myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, *genTops, hadGenTopDaughters);
+                myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, genMatchingInfo.first, genMatchingInfo.second);
 
-                //myConstAK8Inputs = new ttUtility::ConstAK8Inputs(puppiJetsLVec, puppitau1, puppitau2, puppitau3, puppisoftDropMass, puppiSubJetsLVec, puppiSubJetsBdisc, puppiSubJetstotalMult, puppiSubJetsptD, puppiSubJetsaxis1, puppiSubJetsaxis2, *genTops, hadGenTopDaughters);
             }
             else
             {
@@ -665,132 +636,43 @@ namespace plotterFunctions
                 
                 myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood);
                 
-                //myConstAK8Inputs = new ttUtility::ConstAK8Inputs(puppiJetsLVec, puppitau1, puppitau2, puppitau3, puppisoftDropMass, puppiSubJetsLVec, puppiSubJetsBdisc, puppiSubJetstotalMult, puppiSubJetsptD, puppiSubJetsaxis1, puppiSubJetsaxis2);
-                
             }
                 
-            myConstAK4Inputs->addSupplamentalVector("qgLikelihood",                         tr.getVec<float>("qgLikelihood"));
-            myConstAK4Inputs->addSupplamentalVector("qgPtD",                                tr.getVec<float>("qgPtD"));
-            myConstAK4Inputs->addSupplamentalVector("qgAxis1",                              tr.getVec<float>("qgAxis1"));
-            myConstAK4Inputs->addSupplamentalVector("qgAxis2",                              tr.getVec<float>("qgAxis2"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetschargedHadronEnergyFraction",  tr.getVec<float>("recoJetschargedHadronEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetschargedEmEnergyFraction",      tr.getVec<float>("recoJetschargedEmEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetsneutralEmEnergyFraction",      tr.getVec<float>("recoJetsneutralEmEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetsmuonEnergyFraction",           tr.getVec<float>("recoJetsmuonEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetsHFHadronEnergyFraction",       tr.getVec<float>("recoJetsHFHadronEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetsHFEMEnergyFraction",           tr.getVec<float>("recoJetsHFEMEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("recoJetsneutralEnergyFraction",        tr.getVec<float>("recoJetsneutralEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("PhotonEnergyFraction",                 tr.getVec<float>("PhotonEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("ElectronEnergyFraction",               tr.getVec<float>("ElectronEnergyFraction"));
-            myConstAK4Inputs->addSupplamentalVector("ChargedHadronMultiplicity",            tr.getVec<float>("ChargedHadronMultiplicity"));
-            myConstAK4Inputs->addSupplamentalVector("NeutralHadronMultiplicity",            tr.getVec<float>("NeutralHadronMultiplicity"));
-            myConstAK4Inputs->addSupplamentalVector("PhotonMultiplicity",                   tr.getVec<float>("PhotonMultiplicity"));
-            myConstAK4Inputs->addSupplamentalVector("ElectronMultiplicity",                 tr.getVec<float>("ElectronMultiplicity"));
-            myConstAK4Inputs->addSupplamentalVector("MuonMultiplicity",                     tr.getVec<float>("MuonMultiplicity"));
-            myConstAK4Inputs->addSupplamentalVector("DeepCSVb",                             tr.getVec<float>("DeepCSVb"));
-            myConstAK4Inputs->addSupplamentalVector("DeepCSVc",                             tr.getVec<float>("DeepCSVc"));
-            myConstAK4Inputs->addSupplamentalVector("DeepCSVl",                             tr.getVec<float>("DeepCSVl"));
-            myConstAK4Inputs->addSupplamentalVector("DeepCSVbb",                            tr.getVec<float>("DeepCSVbb"));
-            myConstAK4Inputs->addSupplamentalVector("DeepCSVcc",                            tr.getVec<float>("DeepCSVcc"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavorb",                          tr.getVec<float>("DeepFlavorb"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavorbb",                         tr.getVec<float>("DeepFlavorbb"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavorlepb",                       tr.getVec<float>("DeepFlavorlepb"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavorc",                          tr.getVec<float>("DeepFlavorc"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavoruds",                        tr.getVec<float>("DeepFlavoruds"));
-//            myConstAK4Inputs->addSupplamentalVector("DeepFlavorg",                          tr.getVec<float>("DeepFlavorg"));
-            myConstAK4Inputs->addSupplamentalVector("CvsL",                                 tr.getVec<float>("CversusL"));
-//            myConstAK4Inputs->addSupplamentalVector("CvsB",                                 tr.getVec<float>("CvsB"));
-            //myConstAK4Inputs->addSupplamentalVector("CombinedSvtx",                         tr.getVec<float>("CombinedSvtx"));
-            //myConstAK4Inputs->addSupplamentalVector("JetProba",                             tr.getVec<float>("JetProba_0"));
-            //myConstAK4Inputs->addSupplamentalVector("JetBprob",                             tr.getVec<float>("JetBprob"));
-            //myConstAK4Inputs->addSupplamentalVector("recoJetsBtag",                         tr.getVec<float>("recoJetsBtag_0"));
-            //myConstAK4Inputs->addSupplamentalVector("recoJetsCharge",                       tr.getVec<float>("recoJetsCharge_0"));
-            myConstAK4Inputs->addSupplamentalVector("qgMult",                               *convertTofloatandRegister(tr, "qgMult"));
-//            myConstAK4Inputs->addSupplamentalVector("qgMult",                               tr.getVec<float>("qgMult"));
+            myConstAK4Inputs->addSupplamentalVector("qgLikelihood",                         tr.getVec<float>("Jet_qgl"));
+            myConstAK4Inputs->addSupplamentalVector("qgPtD",                                tr.getVec<float>("Jet_qgptD"));
+            myConstAK4Inputs->addSupplamentalVector("qgAxis1",                              tr.getVec<float>("Jet_qgAxis1"));
+            myConstAK4Inputs->addSupplamentalVector("qgAxis2",                              tr.getVec<float>("Jet_qgAxis2"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetschargedHadronEnergyFraction",  tr.getVec<float>("Jet_chHEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetschargedEmEnergyFraction",      tr.getVec<float>("Jet_chEmEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetsneutralEmEnergyFraction",      tr.getVec<float>("Jet_neEmEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetsmuonEnergyFraction",           tr.getVec<float>("Jet_muEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetsHFHadronEnergyFraction",       tr.getVec<float>("Jet_hfHadEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetsHFEMEnergyFraction",           tr.getVec<float>("Jet_hfEMEF"));
+            myConstAK4Inputs->addSupplamentalVector("recoJetsneutralEnergyFraction",        tr.getVec<float>("Jet_neHEF"));
+            myConstAK4Inputs->addSupplamentalVector("PhotonEnergyFraction",                 tr.getVec<float>("Jet_phEF"));
+            myConstAK4Inputs->addSupplamentalVector("ElectronEnergyFraction",               tr.getVec<float>("Jet_elEF"));
+            myConstAK4Inputs->addSupplamentalVector("ChargedHadronMultiplicity",            tr.getVec<float>("Jet_chHadMult"));
+            myConstAK4Inputs->addSupplamentalVector("NeutralHadronMultiplicity",            tr.getVec<float>("Jet_neHadMult"));
+            myConstAK4Inputs->addSupplamentalVector("PhotonMultiplicity",                   tr.getVec<float>("Jet_phMult"));
+            myConstAK4Inputs->addSupplamentalVector("ElectronMultiplicity",                 tr.getVec<float>("Jet_elMult"));
+            myConstAK4Inputs->addSupplamentalVector("MuonMultiplicity",                     tr.getVec<float>("Jet_muMult"));
+            myConstAK4Inputs->addSupplamentalVector("DeepCSVb",                             tr.getVec<float>("Jet_deepCSVb"));
+            myConstAK4Inputs->addSupplamentalVector("DeepCSVc",                             tr.getVec<float>("Jet_deepCSVc"));
+            myConstAK4Inputs->addSupplamentalVector("DeepCSVl",                             tr.getVec<float>("Jet_deepCSVudsg"));
+            myConstAK4Inputs->addSupplamentalVector("DeepCSVbb",                            tr.getVec<float>("Jet_deepCSVbb"));
+            myConstAK4Inputs->addSupplamentalVector("CvsL",                                 tr.getVec<float>("Jet_CvsL"));
+            myConstAK4Inputs->addSupplamentalVector("qgMult",                               *convertTofloatandRegister(tr, "Jet_qgMult"));
 
-            //myConstAK8Inputs.setWMassCorrHistos(puppisd_corrGEN, puppisd_corrRECO_cen, puppisd_corrRECO_for);
-
-            //run new tagger
-            //New MVA resolved Tagger starts here
-/*
-            int run = tr.getVar<int>("run");
-            int lumi = tr.getVar<int>("lumi");
-            long event = tr.getVar<long>("event");
- 
-            std::cout << std::endl << run << ":" << lumi << ":" << event << " (run:lumi:event) " << std::endl;
-*/
-
-            constituentsMVA = ttUtility::packageConstituents(*myConstAK4Inputs);//, *myConstAK8Inputs);
+            constituentsMVA = ttUtility::packageConstituents(*myConstAK4Inputs);
             //run tagger
             ttMVA->runTagger(constituentsMVA);
 
             delete myConstAK4Inputs;
-            //delete myConstAK8Inputs;
 
             const TopTaggerResults& ttrMVA = ttMVA->getResults();
-            //std::cout << "Top Candidates: " << ttrMVA.getTopCandidates().size() << std::endl;
+
             const auto& candidateTops = ttrMVA.getTopCandidates();
-/*            for(int i = 0; i < candidateTops.size(); i++){
-                auto& top = candidateTops[i];
 
-                auto& j1 = top.getConstituents()[0]->p();
-                auto& j2 = top.getConstituents()[1]->p();
-                auto& j3 = top.getConstituents()[2]->p();
-
-                std::cout << "Top Candidate #" << i << " disc: " << top.getDiscriminator() << ", eta: " << top.p().Eta() << ", phi: " << top.p().Phi() << ", pT: " << top.p().Pt() << ", cand_m: " << top.p().M()
-                          << ", j12_m: " << (j1+j2).M() << ", j13_m: " << (j1+j3).M() << ", j23_m: " << (j2+j3).M() << std::endl;
-                for(int j = 0; j < candidateTops[i].getConstituents().size(); j++){
-                    auto& jet = top.getConstituents()[j];
-                    auto qgAxis1 = jet->getExtraVar("qgAxis1");
-                    auto qgAxis2 = jet->getExtraVar("qgAxis2");
-                    auto qgMult = jet->getExtraVar("qgMult");
-                    auto qgPtD = jet->getExtraVar("qgPtD");
-                    auto ChargedHadronMultiplicity = jet->getExtraVar("ChargedHadronMultiplicity");
-                    auto ElectronEnergyFraction = jet->getExtraVar("ElectronEnergyFraction");
-                    auto ElectronMultiplicity = jet->getExtraVar("ElectronMultiplicity");
-                    auto MuonMultiplicity = jet->getExtraVar("MuonMultiplicity");
-                    auto NeutralHadronMultiplicity = jet->getExtraVar("NeutralHadronMultiplicity");
-                    auto PhotonEnergyFraction = jet->getExtraVar("PhotonEnergyFraction");
-                    auto PhotonMultiplicity = jet->getExtraVar("PhotonMultiplicity");
-                    auto recoJetsHFEMEEnergyFraction = jet->getExtraVar("recoJetsHFEMEnergyFraction");
-                    auto recoJetsHFHadronEnergyFraction = jet->getExtraVar("recoJetsHFHadronEnergyFraction");
-                    auto recoJetschargedEmEnergyFraction = jet->getExtraVar("recoJetschargedEmEnergyFraction");
-                    auto recoJetschargedHadronEnergyFraction = jet->getExtraVar("recoJetschargedHadronEnergyFraction");
-                    auto recoJetsmuonEnergyFraction = jet->getExtraVar("recoJetsmuonEnergyFraction");
-                    auto recoJetsneutralEmEnergyFraction = jet->getExtraVar("recoJetsneutralEmEnergyFraction");
-                    auto recoJetsneutralEnergyFraction = jet->getExtraVar("recoJetsneutralEnergyFraction");
-                    auto DeepCSVb = jet->getExtraVar("DeepCSVb");
-                    auto DeepCSVbb = jet->getExtraVar("DeepCSVbb");
-                    auto DeepCSVc = jet->getExtraVar("DeepCSVc");
-                    auto DeepCSVcc = jet->getExtraVar("DeepCSVcc");
-                    auto DeepCSVl = jet->getExtraVar("DeepCSVl");
-                    std::cout << "Jet #" << j+1 << ") m:" << jet->p().M() << ", p: " << jet->p().P()
-                              << ", qgAxis1: " << qgAxis1
-                              << ", qgAxis2: " << qgAxis2
-                              << ", qgMult: " << qgMult
-                              << ", qgPtD: " << qgPtD
-                              << ", ChargedHadronMultiplicity: " << ChargedHadronMultiplicity
-                              << ", ElectronEnergyFraction: " << ElectronEnergyFraction
-                              << ", ElectronMultiplicity: " << ElectronMultiplicity
-                              << ", MuonMultiplicity: " << MuonMultiplicity
-                              << ", NeutralHadronMultiplicity: " << NeutralHadronMultiplicity
-                              << ", PhotonEnergyFraction: " << PhotonEnergyFraction
-                              << ", PhotonMultiplicity: " << PhotonMultiplicity
-                              << ", recoJetsHFEMEEnergyFraction: " << recoJetsHFEMEEnergyFraction
-                              << ", recoJetsHFHadronEnergyFraction: " << recoJetsHFHadronEnergyFraction
-                              << ", recoJetschargedEmEnergyFraction: " << recoJetschargedEmEnergyFraction
-                              << ", recoJetschargedHadronEnergyFraction: " << recoJetschargedHadronEnergyFraction
-                              << ", recoJetsmuonEnergyFraction: " << recoJetsmuonEnergyFraction
-                              << ", recoJetsneutralEmEnergyFraction: " << recoJetsneutralEmEnergyFraction
-                              << ", recoJetsneutralEnergyFraction: " << recoJetsneutralEnergyFraction
-                              << ", DeepCSVb: " << DeepCSVb
-                              << ", DeepCSVbb: " << DeepCSVbb
-                              << ", DeepCSVc: " << DeepCSVc
-                              << ", DeepCSVcc: " << DeepCSVcc
-                              << ", DeepCSVl: " << DeepCSVl << std::endl;
-                }
-                std::cout << std::endl;
-            }*/
             const auto& tops = ttrMVA.getTops();
 
             //get "best" top based upon on trijet mass 
@@ -865,39 +747,17 @@ namespace plotterFunctions
             tr.registerDerivedVar("randomTopCandNConst", randomTopCand?(randomTopCand->getNConstituents()):(-1));
             tr.registerDerivedVar("randomTopCandTopTag", randomTopCandTopTag);
             tr.registerDerivedVar("randomTopCandNotGenMatch", randomTopCandNotGenMatch);
-
-            //std::cout << "Finished prepareTopVar" << std::endl;
-
         }
 
 
     public:
-        PrepareTopVars(std::string taggerCfg = "TopTagger.cfg", int JECcorr = 0) : ttMVA(new TopTagger()), WMassCorFile(nullptr), puppisd_corrGEN(nullptr), puppisd_corrRECO_cen(nullptr), puppisd_corrRECO_for(nullptr), distribution(1,65000)
+        PrepareTopVars(std::string taggerCfg = "TopTagger.cfg") : ttMVA(new TopTagger()), distribution(1,65000)
 	{
-            //Let's get ready for JEC systematics, we will set a variable here, and the Jet collection is loaded we will look to see what to do.
-            if(JECcorr == -1){ JECSys = -1; }
-            else if(JECcorr == 1){ JECSys = 1;}
-            else{ JECSys = 0; } // If an invalid JECcorr value is pass, we will default to the regular behavior.
-
             ttMVA->setCfgFile(taggerCfg);
-
-            indexMuTrigger = indexElecTrigger = indexHTMHTTrigger = indexMuHTTrigger = -1;
-
-            std::string puppiCorr = "puppiCorr.root";
-            WMassCorFile.reset(TFile::Open(puppiCorr.c_str(),"READ"));
-            if (!WMassCorFile)
-                std::cout << "W mass correction file not found w mass!!!!!!! " << puppiCorr <<" Will not correct W mass" << std::endl;
-            else{
-                puppisd_corrGEN     .reset((TF1*)WMassCorFile->Get("puppiJECcorr_gen"));
-                puppisd_corrRECO_cen.reset((TF1*)WMassCorFile->Get("puppiJECcorr_reco_0eta1v3"));
-                puppisd_corrRECO_for.reset((TF1*)WMassCorFile->Get("puppiJECcorr_reco_1v3eta2v5"));
-            }
-
 	}
 
         ~PrepareTopVars()
         {
-            //if(tt) delete tt;
         }
 
 	void operator()(NTupleReader& tr)

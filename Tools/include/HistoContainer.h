@@ -286,11 +286,11 @@ public:
 
     void setStopVar(const TUPLECLASS& tr)
     {
-        met_                 = &tr.template getVar<float>("met");
-        metphi_              = &tr.template getVar<float>("metphi");    
+        met_                 = &tr.template getVar<float>("MET_pt");
+        metphi_              = &tr.template getVar<float>("MET_pt");    
         ht_                  = &tr.template getVar<float>("HT");
-        highestDisc_          = &tr.template getVar<float>("highestDisc");
-        vtxSize_             = &tr.template getVar<int>("vtxSize");
+        highestDisc_         = &tr.template getVar<float>("highestDisc");
+        vtxSize_             = &tr.template getVar<int>("PV_npvs");
         cntCSVS_             = &tr.template getVar<int>("cntCSVS");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
         cntNJetsPt30Eta24_   = &tr.template getVar<int>("cntNJetsPt30Eta24");
@@ -301,58 +301,22 @@ public:
         bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
         bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
 
-        //cutMuVec_            = &tr.template getVec<TLorentzVector>("cutMuVec");
-        //cutElecVec_          = &tr.template getVec<TLorentzVector>("cutElecVec");    
+        cutMuVec_            = &tr.template getVec<TLorentzVector>("cutMuVec");
+        cutElecVec_          = &tr.template getVec<TLorentzVector>("cutElecVec");    
         tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");  
         genTops_             = &tr.template getVec<TLorentzVector>("genTops");
     }
 
-    void setStealthVar(const TUPLECLASS& tr)
-    {
-        met_                 = &tr.template getVar<float>("MET");
-        metphi_              = &tr.template getVar<float>("METPhi");    
-        ht_                  = &tr.template getVar<float>("HT");
-        highestDisc_         = &tr.template getVar<float>("highestDisc");
-        vtxSize_             = &tr.template getVar<int>("NVtx");
-        cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
-        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr"); 
-        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
-        lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
-        bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLV");
-        bestTopMass_         = &tr.template getVar<float>("bestTopMass");
-        bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTag");
-        bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatch");
-
-        //cutMuVec_            = &tr.template getVec<TLorentzVector>("cutMuVec");
-        //cutElecVec_          = &tr.template getVec<TLorentzVector>("cutElecVec");    
-        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");  
-        genTops_             = &tr.template getVec<TLorentzVector>("hadtops");
-    }
-
     void fill(const TUPLECLASS& tr, const float& eWeight, TRandom* trand)
     {
-        if ( tr.checkBranch("met") )
-        {
-            setStopVar(tr);
-        }
-        else if( tr.checkBranch("MET") )
-        {
-            setStealthVar(tr);
-        }
-
+        setStopVar(tr);
+                
         runFill(eWeight, trand);
     }
 
     void fill(const TUPLECLASS& tr, const float& eWeight)
     {
-        if ( tr.checkBranch("met") )
-        {
-            setStopVar(tr);
-        }
-        else if( tr.checkBranch("MET") )
-        {
-            setStealthVar(tr);
-        }
+        setStopVar(tr);
 
         runFill(eWeight, trand_);
     }

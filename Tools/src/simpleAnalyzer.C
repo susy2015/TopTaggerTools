@@ -33,26 +33,20 @@
 
 std::vector<TLorentzVector> GetHadTopLVec(const std::vector<TLorentzVector>& genDecayLVec, const std::vector<int>& genDecayPdgIdVec, const std::vector<int>& genDecayIdxVec, const std::vector<int>& genDecayMomIdxVec)
 {
-//    std::cout << "Called GetHadTopLVec" << std::endl;
     std::vector<TLorentzVector> tLVec;
-//    std::cout << "genDecayPdgIDs: ";
     for(unsigned it=0; it<genDecayLVec.size(); it++)
     {
         int pdgId = genDecayPdgIdVec.at(it);
-//        std::cout << " " << pdgId;
         if(abs(pdgId)==6) //pdg(6), top quark
         {
 
-//            std::cout << "Found a genTop" << std::endl;
             for(unsigned ig=0; ig<genDecayLVec.size(); ig++)
             {
                 if( genDecayMomIdxVec.at(ig) == genDecayIdxVec.at(it) ) //Is this a daughter particle of the genTop?
                 {
-//                    std::cout << "Found a genTop decay product" << std::endl;
                     int pdgId = genDecayPdgIdVec.at(ig);
                     if(abs(pdgId)==24) //pdg(24), W boson //Let's look at the W boson that is coming off of the top
                     {
-//                        std::cout << "Found a genW from a genTop" << std::endl;
                         int flag = 0;
                         for(unsigned iq=0; iq<genDecayLVec.size(); iq++)
                         {
@@ -67,14 +61,12 @@ std::vector<TLorentzVector> GetHadTopLVec(const std::vector<TLorentzVector>& gen
                 }
             }//dau. loop
         }//top cond
-//        std::cout << std::endl;
     }//genloop
     return tLVec;
 }
 
 std::vector<TLorentzVector> GetLepTopLVec(const std::vector<TLorentzVector>& genDecayLVec, const std::vector<int>& genDecayPdgIdVec, const std::vector<int>& genDecayIdxVec, const std::vector<int>& genDecayMomIdxVec)
 {
-//    std::cout << "Called GetLepTopLVec" << std::endl;
     std::vector<TLorentzVector> tLVec;
     for(unsigned it=0; it<genDecayLVec.size(); it++)
     {
@@ -163,7 +155,7 @@ int main(int argc, char* argv[])
 
     int JECSys = 0, bTagSys = 0;
 
-    while((opt = getopt_long(argc, argv, "ctsfraRzdubUBD:N:M:E:T:O:", long_options, &option_index)) != -1)
+    while((opt = getopt_long(argc, argv, "ctsfraRzdubUBD:N:M:E:O:", long_options, &option_index)) != -1)
     {
         switch(opt)
         {
@@ -236,22 +228,6 @@ int main(int argc, char* argv[])
             nEvts = int(atoi(optarg));
             break;
 
-        case 'T':
-            tF = int(atoi(optarg));
-            if(tF == 0){
-                onlyTTbarAllHad = true;
-                std::cout << "Include only TTbarAllHad = True" << std::endl;
-            }
-            if(tF == 1){
-                onlyTTbarSingleLep = true;
-                std::cout << "Include only TTbarSingleLep = True" << std::endl;
-            }
-            if(tF == 2){
-                onlyTTbarDiLep = true;
-                std::cout << "Include only TTbarDiLep = True" << std::endl;
-            }
-            break;
-
         case 'O':
             filename = optarg;
             std::cout << "Filename: " << filename << std::endl;
@@ -282,8 +258,8 @@ int main(int argc, char* argv[])
         savefile = false;
     }
 
-    AnaSamples::SampleSet        ss("sampleSets.txt", runOnCondor, AnaSamples::luminosity);
-    AnaSamples::SampleCollection sc("sampleCollections.txt", ss);
+    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor, AnaSamples::luminosity);
+    AnaSamples::SampleCollection sc("sampleCollections.cfg", ss);
 
     if(dataSets.find("Data") != std::string::npos)
     {
@@ -307,11 +283,9 @@ int main(int argc, char* argv[])
     try
     {
 
-        std::cout << "Let's load some datasets" << std::endl;
         //for(auto& fs : sc[dataSets])
         auto& fs = ss[dataSets];
         {
-            std::cout << "Filling in the TChain" << std::endl;
             TChain *t = new TChain(fs.treePath.c_str());
             fs.addFilesToChain(t, startFile, nFiles);
 
@@ -320,21 +294,17 @@ int main(int argc, char* argv[])
 
             //plotterFunctions::SystematicPrep sysPrep;
             plotterFunctions::PrepareTopCRSelection prepTopCR(JECSys);
-            plotterFunctions::PrepareTopVars prepareTopVars("TopTagger.cfg",JECSys);
+            plotterFunctions::PrepareTopVars prepareTopVars("TopTagger.cfg");
             plotterFunctions::TriggerInfo triggerInfo(false, false);
-            BTagCorrector bTagCorrector("allINone_bTagEff.root", "", false, fs.tag);
             TTbarCorrector ttbarCorrector(false, "");
             ISRCorrector ISRcorrector("allINone_ISRJets.root","","");
-            Pileup_Sys pileup("PileupHistograms_0121_69p2mb_pm4p6.root");
 
             NTupleReader tr(t);
 
-            tr.registerFunction(pileup);
             tr.registerFunction(filterEvents);
             tr.registerFunction(prepTopCR);
             tr.registerFunction(prepareTopVars);
             tr.registerFunction(triggerInfo);
-            tr.registerFunction(bTagCorrector);
             tr.registerFunction(ttbarCorrector);
             tr.registerFunction(ISRcorrector);
 
@@ -352,35 +322,19 @@ int main(int argc, char* argv[])
                     std::cout << "Event #: " << printNumber * printInterval << std::endl;
                 }
 
-                const float& met    = tr.getVar<float>("met");
-                const float& metphi = tr.getVar<float>("metphi");
+                const float& met    = tr.getVar<float>("MET_pt");
+                const float& metphi = tr.getVar<float>("MET_phi");
 
                 TLorentzVector MET;
                 MET.SetPtEtaPhiM(met, 0.0, metphi, 0.0);
 
-                //Filter by MC event type
-
-                const std::vector<TLorentzVector>& genDecayLVec = (tr.checkBranch("genDecayLVec") ? tr.getVec<TLorentzVector>("genDecayLVec") : std::vector<TLorentzVector>{});
-                const std::vector<int>& genDecayPdgIdVec = (tr.checkBranch("genDecayPdgIdVec") ? tr.getVec<int>("genDecayPdgIdVec") : std::vector<int>{});
-                const std::vector<int>& genDecayIdxVec = (tr.checkBranch("genDecayIdxVec") ? tr.getVec<int>("genDecayIdxVec") : std::vector<int>{});
-                const std::vector<int>& genDecayMomIdxVec = (tr.checkBranch("genDecayMomIdxVec") ? tr.getVec<int>("genDecayMomIdxVec") : std::vector<int>{});
-                
-                std::vector<TLorentzVector> hadTop = GetHadTopLVec(genDecayLVec,genDecayPdgIdVec,genDecayIdxVec,genDecayMomIdxVec);                
-                std::vector<TLorentzVector> lepTop = GetLepTopLVec(genDecayLVec,genDecayPdgIdVec,genDecayIdxVec,genDecayMomIdxVec);                
-                
-                bool bTTbarAllHad = lepTop.size() == 0 && hadTop.size() == 2;
-                bool bTTbarSingleLep = lepTop.size() == 1 && hadTop.size() == 1;
-                bool bTTbarDiLep = lepTop.size() == 2 && hadTop.size() == 0;
-
-                if((onlyTTbarAllHad && !bTTbarAllHad) || (onlyTTbarSingleLep && !bTTbarSingleLep) || (onlyTTbarDiLep && !bTTbarDiLep)) continue; // We only want to include the specific ttbar sample
-
-                const bool&   passNoiseEventFilter = (tr.getVar<bool>("passNoiseEventFilter") || noNoiseFilter);
-                const bool&   passSingleLep20      = tr.getVar<bool>("passSingleLep20");
-                const bool&   passLep20            = tr.getVar<bool>("passLep20");
-                const bool&   passSingleLep30      = tr.getVar<bool>("passSingleLep30");
-                const bool&   passSingleMu40       = tr.getVar<bool>("passSingleMu40");
-                const bool&   passLeptonVeto       = tr.getVar<bool>("passLeptVeto");
-                const bool&   passdPhis            = tr.getVar<bool>("passdPhis");
+                const bool&  passNoiseEventFilter = (tr.getVar<bool>("passNoiseEventFilter") || noNoiseFilter);
+                const bool&  passSingleLep20      = tr.getVar<bool>("passSingleLep20");
+                const bool&  passLep20            = tr.getVar<bool>("passLep20");
+                const bool&  passSingleLep30      = tr.getVar<bool>("passSingleLep30");
+                const bool&  passSingleMu40       = tr.getVar<bool>("passSingleMu40");
+                const bool&  passLeptonVeto       = tr.getVar<bool>("passLeptVeto");
+                const bool&  passdPhis            = tr.getVar<bool>("passdPhis");
                 const float& ht                   = tr.getVar<float>("HT");
 
                 const int&    nbCSV                = tr.getVar<int>("cntCSVS");
@@ -399,9 +353,9 @@ int main(int argc, char* argv[])
                 const std::vector<TLorentzVector>& cutElecVec = tr.getVec<TLorentzVector>("cutElecVec");
                 const std::vector<float>& cutElecMTlepVec = tr.getVec<float>("cutElecMTlepVec");
 
-                const TopTaggerResults *ttr_                 =  tr.getVar<TopTaggerResults*>("ttrMVA");
+                const TopTaggerResults *ttr_                 =  tr.getVar<TopTaggerResults const*>("ttrMVA");
 
-                const float isData = !tr.checkBranch("genDecayLVec");
+                const float isData = !tr.checkBranch("GenPart_pt");
 
                 float eWeight = fileWgt;
 
@@ -410,13 +364,14 @@ int main(int argc, char* argv[])
 
                 if(!isData && doWgt)
                 {
-                    const float& puWF               = tr.getVar<float>("_PUweightFactor");
+                    const float& puWF               = tr.getVar<float>("puWeight");
                     //std::cout << "Calculate btag WF" << std::endl;
-                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
-                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
-                                                                                        "bTagSF_EventWeightSimple_Central")));
+//                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
+//                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
+//                                                                                        "bTagSF_EventWeightSimple_Central")));
+                    const float bTagWF = 1.0; /// FIX ME!!!!!!!!!!
 
-                    const float& stored_weight      = tr.getVar<float>("stored_weight");
+                    const float& stored_weight      = tr.getVar<float>("genWeight");
                     if(enableTTbar & !noCorr)
                     {
                         const float& ttbarWF            = tr.getVar<float>("TTbarWF");
@@ -443,7 +398,7 @@ int main(int argc, char* argv[])
                     }
                 }
                 
-                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("recoJetsCSVv2");
+                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("Jet_btagDeepB");
 
                 //Find lepton (here it is assumed there is exactly 1 lepton)
                 TLorentzVector lepton;

@@ -55,7 +55,7 @@ CXXDEPFLAGS = -MMD -MP
 
 #Necessary libraries, the order matters here!
 # ROOT libraries
-LIBS       = $(shell root-config --glibs)
+LIBS       = $(shell root-config --libs)
 
 # hdf5 libs
 LIBS += -L$(HDF5_DIRECTORY)/lib -lhdf5
