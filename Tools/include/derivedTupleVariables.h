@@ -612,21 +612,22 @@ namespace plotterFunctions
             ttUtility::ConstAK4Inputs<float> *myConstAK4Inputs = nullptr;
 
             std::vector<TLorentzVector> *genTops;
+            std::vector<std::vector<const TLorentzVector*>> *genTopDaughters;
             std::vector<Constituent> constituentsMVA;
 
-            if(tr.checkBranch("GenPart"))
+            const std::vector<TLorentzVector>& genDecayLVec = tr.getVec_LVFromNano<float>("GenPart");
+            if(tr.checkBranch("GenPart_pt"))
             {
-                const std::vector<TLorentzVector>& genDecayLVec = tr.getVec_LVFromNano<float>("GenPart");
                 const std::vector<int>& genDecayPdgIdVec        = tr.getVec<int>("GenPart_pdgId");
                 const std::vector<int>& genDecayStatFlag        = tr.getVec<int>("GenPart_statusFlags");
                 const std::vector<int>& genDecayMomIdxVec       = tr.getVec<int>("GenPart_genPartIdxMother");
 
                 //prep input object (constituent) vector
                 auto genMatchingInfo = ttUtility::GetTopdauGenLVecFromNano(genDecayLVec, genDecayPdgIdVec, genDecayStatFlag, genDecayMomIdxVec);
-                //lazy deep copy of a vector ... deal with this?
-                genTops = new std::vector<TLorentzVector>(genMatchingInfo.first);
+                genTops = new std::vector<TLorentzVector>(std::move(genMatchingInfo.first));
+                genTopDaughters = new std::vector<std::vector<const TLorentzVector*>>(std::move(genMatchingInfo.second));
 
-                myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, genMatchingInfo.first, genMatchingInfo.second);
+                myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, *genTops, *genTopDaughters);
 
             }
             else
@@ -668,6 +669,7 @@ namespace plotterFunctions
             ttMVA->runTagger(constituentsMVA);
 
             delete myConstAK4Inputs;
+            delete genTopDaughters;
 
             const TopTaggerResults& ttrMVA = ttMVA->getResults();
 
