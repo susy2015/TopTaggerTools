@@ -30,74 +30,6 @@
 #include "TRandom3.h"
 #include "TFile.h"
 
-
-std::vector<TLorentzVector> GetHadTopLVec(const std::vector<TLorentzVector>& genDecayLVec, const std::vector<int>& genDecayPdgIdVec, const std::vector<int>& genDecayIdxVec, const std::vector<int>& genDecayMomIdxVec)
-{
-    std::vector<TLorentzVector> tLVec;
-    for(unsigned it=0; it<genDecayLVec.size(); it++)
-    {
-        int pdgId = genDecayPdgIdVec.at(it);
-        if(abs(pdgId)==6) //pdg(6), top quark
-        {
-
-            for(unsigned ig=0; ig<genDecayLVec.size(); ig++)
-            {
-                if( genDecayMomIdxVec.at(ig) == genDecayIdxVec.at(it) ) //Is this a daughter particle of the genTop?
-                {
-                    int pdgId = genDecayPdgIdVec.at(ig);
-                    if(abs(pdgId)==24) //pdg(24), W boson //Let's look at the W boson that is coming off of the top
-                    {
-                        int flag = 0;
-                        for(unsigned iq=0; iq<genDecayLVec.size(); iq++)
-                        {
-                            if( genDecayMomIdxVec.at(iq) == genDecayIdxVec.at(ig) ) //Is this a daughter particle of the W?
-                            {
-                                int pdgid = genDecayPdgIdVec.at(iq);
-                                if(abs(pdgid)== 11 || abs(pdgid)== 13 || abs(pdgid)== 15) flag++; //pdg(11), electron; pdg(13), muon; pdg(15), tau
-                            }
-                        }
-                        if(!flag) tLVec.push_back(genDecayLVec.at(it)); //If the W didn't have a lepton daughter product then let's include in the list of hadronic tops.
-                    }
-                }
-            }//dau. loop
-        }//top cond
-    }//genloop
-    return tLVec;
-}
-
-std::vector<TLorentzVector> GetLepTopLVec(const std::vector<TLorentzVector>& genDecayLVec, const std::vector<int>& genDecayPdgIdVec, const std::vector<int>& genDecayIdxVec, const std::vector<int>& genDecayMomIdxVec)
-{
-    std::vector<TLorentzVector> tLVec;
-    for(unsigned it=0; it<genDecayLVec.size(); it++)
-    {
-        int pdgId = genDecayPdgIdVec.at(it);
-        if(abs(pdgId)==6) //pdg(6), top quark
-        {
-            for(unsigned ig=0; ig<genDecayLVec.size(); ig++)
-            {
-                if( genDecayMomIdxVec.at(ig) == genDecayIdxVec.at(it) ) //Is this a daughter particle of the genTop?
-                {
-                    int pdgId = genDecayPdgIdVec.at(ig);
-                    if(abs(pdgId)==24) //pdg(24), W boson //Let's look at the W boson that is coming off of the top
-                    {
-                        int flag = 0;
-                        for(unsigned iq=0; iq<genDecayLVec.size(); iq++)
-                        {
-                            if( genDecayMomIdxVec.at(iq) == genDecayIdxVec.at(ig) ) //Is this a daughter particle of the W?
-                            {
-                                int pdgid = genDecayPdgIdVec.at(iq);
-                                if(abs(pdgid)== 11 || abs(pdgid)== 13 || abs(pdgid)== 15) flag++; //pdg(11), electron; pdg(13), muon; pdg(15), tau
-                            }
-                        }
-                        if(flag) tLVec.push_back(genDecayLVec.at(it)); //If the W has a lepton daughter product then let's include it in the list of leptonic tops.
-                    }
-                }
-            }//dau. loop
-        }//top cond
-    }//genloop
-    return tLVec;
-}
-
 void stripRoot(std::string &path)
 {
     int dot = path.rfind(".root");
@@ -105,13 +37,6 @@ void stripRoot(std::string &path)
     {
         path.resize(dot);
     }
-}
-
-float SF_13TeV(float top_pt)
-{
-
-    return exp(0.0615-0.0005*top_pt);
-
 }
 
 bool filterEvents(NTupleReader& tr)
@@ -276,7 +201,7 @@ int main(int argc, char* argv[])
        enableStored = true;
     }
 
-    HistoContainer<NTupleReader> hists0Lep("Lep0"), hists1Lep("Lep1"), histsTTbar("ttbar"), histsTTbarNob("ttbarNob"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsPhoton("photon"), histsDilepton("dilepton"), histsSimpleSemiLept("simpleSemiLep"), histsTTbar1l("histsTTbar1l"), histsTTbar2l("histsTTbar2l"), histsTTbar1lnoMET("histsTTbar1lnoMET"), histsTTbar2lnoMET("histsTTbar2lnoMET"), histsTTbarNol("histsTTbarNol");
+    HistoContainer<NTupleReader> histsTTbar("ttbar"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsPhoton("photon"), histsDilepton("dilepton");
 
     TRandom* trand = new TRandom3();
 
@@ -330,8 +255,6 @@ int main(int argc, char* argv[])
 
                 const bool&  passNoiseEventFilter = (tr.getVar<bool>("passNoiseEventFilter") || noNoiseFilter);
                 const bool&  passSingleLep20      = tr.getVar<bool>("passSingleLep20");
-                const bool&  passLep20            = tr.getVar<bool>("passLep20");
-                const bool&  passSingleLep30      = tr.getVar<bool>("passSingleLep30");
                 const bool&  passSingleMu40       = tr.getVar<bool>("passSingleMu40");
                 const bool&  passLeptonVeto       = tr.getVar<bool>("passLeptVeto");
                 const bool&  passdPhis            = tr.getVar<bool>("passdPhis");
@@ -341,7 +264,6 @@ int main(int argc, char* argv[])
 
                 const bool& passMuTrigger     = tr.getVar<bool>("passMuTrigger");
                 const bool& passElecTrigger   = tr.getVar<bool>("passElecTrigger");
-                const bool& passMETMHTTrigger = tr.getVar<bool>("passMETMHTTrigger");
                 const bool& passSearchTrigger = tr.getVar<bool>("passSearchTrigger");
                 const bool& passHighHtTrigger = tr.getVar<bool>("passHighHtTrigger");
                 const bool& passPhotonTrigger = tr.getVar<bool>("passPhotonTrigger");
@@ -425,13 +347,7 @@ int main(int argc, char* argv[])
                 tr.registerDerivedVar("lepton", lepton);
                 tr.registerDerivedVar("mTLep", mTLep);
 
-                //                                    minAbsEta, maxAbsEta, minPt, maxPt
-                const AnaConsts::AccRec pt45Eta24Arr = {-1,         2.4,      45,   -1  };
-
-                int cntNJetsPt45Eta24 = AnaFunctions::countJets(jetsLVec,            pt45Eta24Arr);
                 int cntNJetsPt30Eta24 = AnaFunctions::countJets(jetsLVec, AnaConsts::pt30Eta24Arr);
-
-                const float& HT = tr.getVar<float>("HT");
 
                 const bool& passPhoton200 = tr.getVar<bool>("passPhoton200");
 
@@ -477,16 +393,6 @@ int main(int argc, char* argv[])
                     )
                 {
                     histsLowHTQCD.fill(tr, eWeight, trand);
-                }
-
-                //Simple SemiLeptonic criteria (just MC)
-                if( (!isData)
-                    && passNoiseEventFilter
-                    && cntNJetsPt30Eta24 >= 4
-                    && (ht > 250)
-                    )
-                {
-                    histsSimpleSemiLept.fill(tr, eWeight, trand);
                 }
 
                 //High HT QCD + b control sample
@@ -541,79 +447,6 @@ int main(int argc, char* argv[])
                     histsTTbar.fill(tr, eWeight, trand);
                 }
 
-                //TTbar1Lepton
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passLep20
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && (met > 150)
-                    )
-                {
-                    histsTTbar1l.fill(tr, eWeight, trand);
-                }
-
-                //TTbar2Lepton
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passLep20
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && (met > 150)
-                    )
-                {
-                    histsTTbar2l.fill(tr, eWeight, trand);
-                }
-
-                //TTbar No Lepton
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passLeptonVeto
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && (met > 150)
-                    )
-                {
-                    histsTTbarNol.fill(tr, eWeight, trand);
-                }
-
-                //TTbar1Lepton
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passLep20
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    )
-                {
-                    histsTTbar1lnoMET.fill(tr, eWeight, trand);
-                }
-
-                //TTbar2Lepton
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passLep20
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    )
-                {
-                    histsTTbar2lnoMET.fill(tr, eWeight, trand);
-                }
-
-                //semileptonic ttbar enriched control sample MET triggered
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passSingleLep20
-                    && cntNJetsPt30Eta24 >= 4
-                    && passdPhis
-                    && deltaPhiLepMET < 0.8
-                    && mTLep < 100
-                    && (ht > 250)
-                    && (met > 250)
-                    )
-                {
-                    histsTTbarNob.fill(tr, eWeight, trand);
-                }
-
                 //semileptonic ttbar enriched control sample Mu triggered
                 if( (!isData || passMuTrigger)
                     && passNoiseEventFilter
@@ -662,22 +495,13 @@ int main(int argc, char* argv[])
             throw "File is zombie";
         }
 
-        hists0Lep.save(f);
-        hists1Lep.save(f);
         histsQCD.save(f);
         histsLowHTQCD.save(f);
-        histsSimpleSemiLept.save(f);
         histsQCDb.save(f);
         histsTTbar.save(f);
-        histsTTbarNob.save(f);
         histsTTbarLep.save(f);
         histsPhoton.save(f);
         histsDilepton.save(f);
-        histsTTbar1l.save(f);
-        histsTTbar2l.save(f);
-        histsTTbarNol.save(f);
-        histsTTbar1lnoMET.save(f);
-        histsTTbar2lnoMET.save(f);
 
         f->Write();
         f->Close();

@@ -125,8 +125,8 @@ public:
         trand_ = new TRandom3();
         
         jet1pT     = bookHisto<TH1D>("jet1pT",100,0,500);
-        jet2pT     = bookHisto<TH1D>("jet1pT",100,0,500);
-        jet3pT     = bookHisto<TH1D>("jet1pT",100,0,500);
+        jet2pT     = bookHisto<TH1D>("jet2pT",100,0,500);
+        jet3pT     = bookHisto<TH1D>("jet3pT",100,0,500);
 
         hMET       = bookHisto<TH1D>("MET",100,0, 1000);
         hHT        = bookHisto<TH1D>("HT",200,0, 4000);
@@ -144,12 +144,12 @@ public:
         hNVerticesTagged = bookHisto<TH1D>("nVerticesTagged",61,-0.5, 60.5);
         hPhotonTagged    = bookHisto<TH1D>("photonTagged",100,0, 1000);
 
-        hMETTagged2       = bookHisto<TH1D>("METTagged2",100,0, 1000);
-        hHTTagged2        = bookHisto<TH1D>("HTTagged2",200,0, 4000);
-        hHighestDiscTagged2 = bookHisto<TH1D>("HighestDiscTagged2",1000,-1,1);
-        hNJetsTagged2     = bookHisto<TH1D>("nJetsTagged2",21,-0.5, 20.5);
-        hNBJetsTagged2    = bookHisto<TH1D>("nBJetsTagged2",21,-0.5, 20.5);
-        hNVerticesTagged2 = bookHisto<TH1D>("nVerticesTagged2",61,-0.5, 60.5);
+        hMETTagged2       = bookHisto<TH1D>("METTagged2Top",100,0, 1000);
+        hHTTagged2        = bookHisto<TH1D>("HTTagged2Top",200,0, 4000);
+        hHighestDiscTagged2 = bookHisto<TH1D>("HighestDiscTagged2Top",1000,-1,1);
+        hNJetsTagged2     = bookHisto<TH1D>("nJetsTagged2Top",21,-0.5, 20.5);
+        hNBJetsTagged2    = bookHisto<TH1D>("nBJetsTagged2Top",21,-0.5, 20.5);
+        hNVerticesTagged2 = bookHisto<TH1D>("nVerticesTagged2Top",61,-0.5, 60.5);
 
         hMETTaggedNotGen       = bookHisto<TH1D>("METTaggedNotGen",100,0, 1000);
         hHTTaggedNotGen        = bookHisto<TH1D>("HTTaggedNotGen",200,0, 4000);
@@ -345,6 +345,7 @@ public:
             if(genTop)
             {
                 genMatched = true;
+                break;
             }
         }
 
@@ -359,7 +360,7 @@ public:
 
         }
 
-        if(ttr_->getTops().size() > 2){
+        if(ttr_->getTops().size() >= 2){
 
             hMETTagged2->Fill(*met_, eWeight);
             hHTTagged2->Fill(*ht_, eWeight);
@@ -536,19 +537,6 @@ public:
         //met TLorentz vector  
         TLorentzVector MET;
         MET.SetPtEtaPhiM(*met_, 0.0, *metphi_, 0);
-
-        //float xi = MET.Px()*lepton_->Px() + MET.Py()*lepton_->Py();
-        //float mW = 80.385;
-        //float a = pow(lepton_->Pt(), 2);
-        //float b = -lepton_->Pz()*(mW*mW + 2*xi);
-        //float c = pow(lepton_->P(), 2) * pow(*met_, 2) - pow(xi + mW*mW/2.0, 2);
-        //float pnuzp = (-b + sqrt(b*b - 4*a*c))/(2*a);
-        //float pnuzm = (-b - sqrt(b*b - 4*a*c))/(2*a);
-        //
-        //TLorentzVector neutrinop(MET.X(), MET.Y(), pnuzp, 0.0);
-        //TLorentzVector neutrinom(MET.X(), MET.Y(), pnuzm, 0.0);
-        //
-        //std::cout << xi << "\t" << a << "\t" << b << "\t" << c << "\t" << pnuzp << "\t" << pnuzm << "\t" << (*lepton_ + neutrinop).M() << "\t" << (*lepton_ + neutrinom).M() <<  std::endl;
 
         //Find b jets         
         std::vector<const Constituent*> bjets;
