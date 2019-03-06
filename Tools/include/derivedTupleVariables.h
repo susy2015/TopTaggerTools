@@ -615,9 +615,9 @@ namespace plotterFunctions
             std::vector<std::vector<const TLorentzVector*>> *genTopDaughters;
             std::vector<Constituent> constituentsMVA;
 
-            const std::vector<TLorentzVector>& genDecayLVec = tr.getVec_LVFromNano<float>("GenPart");
             if(tr.checkBranch("GenPart_pt"))
             {
+                const std::vector<TLorentzVector>& genDecayLVec = tr.getVec_LVFromNano<float>("GenPart");
                 const std::vector<int>& genDecayPdgIdVec        = tr.getVec<int>("GenPart_pdgId");
                 const std::vector<int>& genDecayStatFlag        = tr.getVec<int>("GenPart_statusFlags");
                 const std::vector<int>& genDecayMomIdxVec       = tr.getVec<int>("GenPart_genPartIdxMother");
