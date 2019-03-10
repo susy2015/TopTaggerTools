@@ -444,7 +444,7 @@ namespace plotterFunctions
             std::vector<float>& cutMuMTlepVec = tr.createDerivedVec<float>("cutMuMTlepVec");
             for(int i = 0; i < muonsLVec.size(); ++i)
             {
-                if(AnaFunctions::passMuon( muonsLVec[i], muonsMiniIso[i]/muonsLVec[i].Pt(), 0.0, muonsMediumID[i], AnaConsts::muonsMiniIsoArr))
+                if(AnaFunctions::passMuon( muonsLVec[i], muonsMiniIso[i], 0.0, muonsMediumID[i], AnaConsts::muonsMiniIsoArr))
                 {
                     cutMuVec.push_back(muonsLVec[i]);
                     cutMuMTlepVec.push_back(muonsMTlep[i]);
@@ -468,7 +468,7 @@ namespace plotterFunctions
             std::vector<float>& cutElecMTlepVec = tr.createDerivedVec<float>("cutElecMTlepVec");
             for(int i = 0; i < elesLVec.size(); ++i)
             {
-                if(AnaFunctions::passElectron(elesLVec[i], elesMiniIso[i]/elesLVec[i].Pt(), -1, elesFlagIDVec[i] >= 3, AnaConsts::elesMiniIsoArr))
+                if(AnaFunctions::passElectron(elesLVec[i], elesMiniIso[i], -1, elesFlagIDVec[i] >= 3, AnaConsts::elesMiniIsoArr))
                 {
                     cutElecVec.push_back(elesLVec[i]);
                     cutElecMTlepVec.push_back(elesMTlep[i]);
