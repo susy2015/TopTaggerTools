@@ -41,7 +41,8 @@ void stripRoot(std::string &path)
 
 bool filterEvents(NTupleReader& tr)
 {
-    return true;
+    auto& jet_pt = tr.getVec<float>("Jet_pt");
+    return jet_pt.size() >= 4 && jet_pt[3] >= 20;
 }
 
 int main(int argc, char* argv[])
@@ -201,7 +202,7 @@ int main(int argc, char* argv[])
        enableStored = true;
     }
 
-    HistoContainer<NTupleReader> histsTTbar("ttbar"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsPhoton("photon"), histsDilepton("dilepton");
+    HistoContainer<NTupleReader> histsTTbar("ttbar"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsLowHTQCDb("lowHTQCDb"), histsPhoton("photon"), histsDilepton("dilepton");
 
     TRandom* trand = new TRandom3();
 
@@ -224,7 +225,7 @@ int main(int argc, char* argv[])
             TTbarCorrector ttbarCorrector(false, "");
             ISRCorrector ISRcorrector("allINone_ISRJets.root","","");
 
-            NTupleReader tr(t);
+            NTupleReader tr(t, {"run"});
 
             tr.registerFunction(filterEvents);
             tr.registerFunction(prepTopCR);
@@ -286,38 +287,26 @@ int main(int argc, char* argv[])
 
                 if(!isData && doWgt)
                 {
-                    const float& puWF               = tr.getVar<float>("puWeight");
+                    const float& puWF               = 1.0;//tr.getVar<float>("puWeight");
                     //std::cout << "Calculate btag WF" << std::endl;
 //                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
 //                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
 //                                                                                        "bTagSF_EventWeightSimple_Central")));
                     const float bTagWF = 1.0; /// FIX ME!!!!!!!!!!
 
-                    const float& stored_weight      = tr.getVar<float>("genWeight");
+                    const float& stored_weight      = tr.getVar<float>("genWeight_sign");
                     if(enableTTbar & !noCorr)
                     {
-                        const float& ttbarWF            = tr.getVar<float>("TTbarWF");
+                        const float& ttbarWF            = 1.0;//tr.getVar<float>("TTbarWF");
                         eWeight *= ttbarWF;
                     }
-                    if(enableStored)
-                    {
-                        //std::cout << "weight: " << stored_weight << " jet pT: " << jetsLVec[0].Pt() << std::endl;
-                        eWeight *= stored_weight;
-                        //std::cout << "eWeight after stored weight: " << eWeight;
-                    }
-                    const float& triggerWF          = tr.getVar<float>("TriggerEffMC");
+//                    const float& triggerWF          = tr.getVar<float>("TriggerEffMC");
 
                     muTrigEff = tr.getVar<float>("muTrigWgt");
 
-                    eWeight *= puWF * triggerWF;
-
-                    if(!noCorr) eWeight *= bTagWF;
-
-                    if(ttr_->getTops().size() > 0 && topReWeight){
-                        for(int t = 0; t < ttr_->getTops().size(); t++){
-                            eWeight *= .954;
-                        }
-                    }
+                    eWeight *= stored_weight;
+                    eWeight *= puWF;
+                    eWeight *= bTagWF;
                 }
                 
                 const std::vector<float>& recoJetsBtag     = tr.getVec<float>("Jet_btagDeepB");
@@ -374,25 +363,36 @@ int main(int argc, char* argv[])
                 float deltaPhiLepMET = fabs(lepton.DeltaPhi(MET));
 
                 //High HT QCD control sample
-                if( (!isData || passHighHtTrigger)
-                    && passNoiseEventFilter
-                    && passLeptonVeto
-                    && cntNJetsPt30Eta24 >= 4
-                    && (ht > 1000)
-                    )
-                {
-                    histsQCD.fill(tr, eWeight, trand);
-                }
+                std::vector<std::pair<std::string, bool>> htQCDCuts = {
+                    {"trig",    (!isData || passHighHtTrigger)},
+                    {"filter",  passNoiseEventFilter},
+                    {"lepVeto", passLeptonVeto},
+                    {"nJet",    cntNJetsPt30Eta24 >= 4},
+                    {"HT1000",  ht > 1000},
+                };
+                histsQCD.fillWithCutFlow(htQCDCuts, tr, eWeight, trand);
+
+                //Low HT QCD control sample (For Fake study)
+                std::vector<std::pair<std::string, bool>> lowHTQCDCuts = {
+                    {"trig",    (!isData || passHighHtTrigger)},
+                    {"filter",  passNoiseEventFilter},
+                    {"lepVeto", passLeptonVeto},
+                    {"nJet",    cntNJetsPt30Eta24 >= 4},
+                    {"HT250",   ht > 250},
+                };
+                histsLowHTQCD.fillWithCutFlow(lowHTQCDCuts, tr, eWeight, trand);
+
 
                 //Low HT QCD control sample (For Fake study)
                 if( (!isData || passHighHtTrigger)
                     && passNoiseEventFilter
                     && passLeptonVeto
+                    && nbCSV >= 1
                     && cntNJetsPt30Eta24 >= 4
                     && (ht > 250)
                     )
                 {
-                    histsLowHTQCD.fill(tr, eWeight, trand);
+                    histsLowHTQCDb.fill(tr, eWeight, trand);
                 }
 
                 //High HT QCD + b control sample
@@ -430,40 +430,38 @@ int main(int argc, char* argv[])
                 }
 
                 //semileptonic ttbar enriched control sample MET triggered
-                if( (!isData || passSearchTrigger)
-                    && passNoiseEventFilter
-                    && passSingleLep20
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && passdPhis
-                    && passBLep
-                    && passLepTtag
-                    && deltaPhiLepMET < 0.8
-                    && mTLep < 100
-                    && (ht > 250)
-                    && (met > 250)
-                    )
-                {
-                    histsTTbar.fill(tr, eWeight, trand);
-                }
+                std::vector<std::pair<std::string, bool>> ttbarCuts = {
+                    {"trig",     (!isData || passSearchTrigger)},
+                    {"filter",   passNoiseEventFilter},
+                    {"njets",    passSingleLep20},
+                    {"mu40",     nbCSV >= 1},
+                    {"mTLep",    cntNJetsPt30Eta24 >= 4},
+                    {"nb",       passdPhis},
+                    {"dphi",     passBLep},
+                    {"BLep",     passLepTtag},
+                    {"LepTTag",  deltaPhiLepMET < 0.8},
+                    {"dPhiLMET", mTLep < 100},
+                    {"HT250",    ht > 250},
+                    {"MET250",   met > 250}
+                };
+                histsTTbar.fillWithCutFlow(ttbarCuts, tr, eWeight, trand);
 
                 //semileptonic ttbar enriched control sample Mu triggered
-                if( (!isData || passMuTrigger)
-                    && passNoiseEventFilter
-                    && passSingleMu40
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && passdPhis
-                    && passBLep
-                    && passLepTtag
-                    && deltaPhiLepMET < 0.8
-                    && mTLep < 100
-                    && (ht > 200)
-                    && (met > 50)
-                    )
-                {
-                    histsTTbarLep.fill(tr, eWeight * muTrigEff, trand);
-                }
+                std::vector<std::pair<std::string, bool>> ttbarLepCuts = {
+                    {"trig",     (!isData || passMuTrigger)},
+                    {"filter",   passNoiseEventFilter},
+                    {"njets",    cntNJetsPt30Eta24 >= 4},
+                    {"mu40",     passSingleMu40},
+                    {"mTLep",    mTLep < 100},
+                    {"nb",       nbCSV >= 1},
+                    {"dphi",     passdPhis},
+                    {"BLep",     passBLep},
+                    {"LepTTag",  passLepTtag},
+                    {"dPhiLMET", deltaPhiLepMET < 0.8},
+                    {"HT200",    ht > 200},
+                    {"MET50",    met > 50} 
+                };
+                histsTTbarLep.fillWithCutFlow(ttbarLepCuts, tr, eWeight * muTrigEff, trand);
             }
         }
     }
@@ -497,6 +495,7 @@ int main(int argc, char* argv[])
 
         histsQCD.save(f);
         histsLowHTQCD.save(f);
+        histsLowHTQCDb.save(f);
         histsQCDb.save(f);
         histsTTbar.save(f);
         histsTTbarLep.save(f);

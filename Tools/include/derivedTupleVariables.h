@@ -196,45 +196,45 @@ namespace plotterFunctions
 
             if(!tr.checkBranch("GenPart_pt"))
             {
-                if( tr.getVar<bool>("HLT_PFMET170_NoiseCleaned") ||
-                    tr.getVar<bool>("HLT_PFMET170_JetIdCleaned") ||
-                    tr.getVar<bool>("HLT_PFMET170_HBHECleaned") ||
-                    tr.getVar<bool>("HLT_PFMET100_PFMHT100_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMET110_PFMHT110_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMET120_PFMHT120_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMET130_PFMHT130_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMET140_PFMHT140_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMET150_PFMHT150_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight") ||
-                    tr.getVar<bool>("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight")
+                if( (tr.checkBranch("HLT_PFMET170_NoiseCleaned")             && tr.getVar<bool>("HLT_PFMET170_NoiseCleaned")) ||
+                    (tr.checkBranch("HLT_PFMET170_JetIdCleaned")             && tr.getVar<bool>("HLT_PFMET170_JetIdCleaned")) ||
+                    (tr.checkBranch("HLT_PFMET170_HBHECleaned")              && tr.getVar<bool>("HLT_PFMET170_HBHECleaned")) ||
+                    (tr.checkBranch("HLT_PFMET100_PFMHT100_IDTight")         && tr.getVar<bool>("HLT_PFMET100_PFMHT100_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMET110_PFMHT110_IDTight")         && tr.getVar<bool>("HLT_PFMET110_PFMHT110_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMET120_PFMHT120_IDTight")         && tr.getVar<bool>("HLT_PFMET120_PFMHT120_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMET130_PFMHT130_IDTight")         && tr.getVar<bool>("HLT_PFMET130_PFMHT130_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMET140_PFMHT140_IDTight")         && tr.getVar<bool>("HLT_PFMET140_PFMHT140_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMET150_PFMHT150_IDTight")         && tr.getVar<bool>("HLT_PFMET150_PFMHT150_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight") && tr.getVar<bool>("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight") && tr.getVar<bool>("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight")) ||
+                    (tr.checkBranch("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight") && tr.getVar<bool>("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight"))
                     )
                 {
                     passSearchTrigger = true;
                 }
 
-                if( tr.getVar<bool>("HLT_PFHT750_4JetPt50") ||
-                    tr.getVar<bool>("HLT_PFHT800") ||
-                    tr.getVar<bool>("HLT_PFHT900") ||
-                    tr.getVar<bool>("HLT_PFJet450")
+                if( (tr.checkBranch("HLT_PFHT750_4JetPt50") && tr.getVar<bool>("HLT_PFHT750_4JetPt50")) ||
+                    (tr.checkBranch("HLT_PFHT800")          && tr.getVar<bool>("HLT_PFHT800")) ||
+                    (tr.checkBranch("HLT_PFHT900")          && tr.getVar<bool>("HLT_PFHT900")) ||
+                    (tr.checkBranch("HLT_PFJet450")         && tr.getVar<bool>("HLT_PFJet450"))
                     )
                 {
                     passHighHtTrigger = true;
                 }
 
-                if( tr.getVar<bool>("HLT_Photon175") ||
-                    tr.getVar<bool>("HLT_Photon75") ||
-                    tr.getVar<bool>("HLT_Photon90_CaloIdL_PFHT500") ||
-                    tr.getVar<bool>("HLT_Photon90")
+                if( (tr.checkBranch("HLT_Photon175")                && tr.getVar<bool>("HLT_Photon175")) ||
+                    (tr.checkBranch("HLT_Photon75")                 && tr.getVar<bool>("HLT_Photon75")) ||
+                    (tr.checkBranch("HLT_Photon90_CaloIdL_PFHT500") && tr.getVar<bool>("HLT_Photon90_CaloIdL_PFHT500")) ||
+                    (tr.checkBranch("HLT_Photon90")                 && tr.getVar<bool>("HLT_Photon90"))
                     )
                 {
                     passPhotonTrigger = true;
                 }
 
-                if( tr.getVar<bool>("HLT_IsoMu24") ||
-                    tr.getVar<bool>("HLT_IsoTkMu24") ||
-                    tr.getVar<bool>("HLT_Mu50") ||
-                    tr.getVar<bool>("HLT_Mu55")
+                if( (tr.checkBranch("HLT_IsoMu24")   && tr.getVar<bool>("HLT_IsoMu24")) ||
+                    (tr.checkBranch("HLT_IsoTkMu24") && tr.getVar<bool>("HLT_IsoTkMu24")) ||
+                    (tr.checkBranch("HLT_Mu50")      && tr.getVar<bool>("HLT_Mu50")) ||
+                    (tr.checkBranch("HLT_Mu55")      && tr.getVar<bool>("HLT_Mu55"))
                     )
                 {
                     passMuTrigger = true;
@@ -357,8 +357,26 @@ namespace plotterFunctions
                 auto& HBHENoiseFilter = tr->getVar<bool>("Flag_HBHENoiseFilter");
                 auto& HBHENoiseIsoFilter = tr->getVar<bool>("Flag_HBHENoiseIsoFilter");
                 auto& EcalDeadCellTriggerPrimitiveFilter = tr->getVar<bool>("Flag_EcalDeadCellTriggerPrimitiveFilter");
-                auto& BadPFMuonFilter = tr->getVar<unsigned char>("Flag_BadPFMuonFilter");
-                auto& BadChargedCandidateFilter = tr->getVar<unsigned char>("Flag_BadChargedCandidateFilter");
+                
+                std::string type;
+                tr->getType("Flag_BadPFMuonFilter", type);
+                bool BadPFMuonFilter = true;
+                bool BadChargedCandidateFilter = true;
+                if(type.compare("bool") == 0)
+                {
+                    BadPFMuonFilter = tr->getVar<bool>("Flag_BadPFMuonFilter");
+                    BadChargedCandidateFilter = tr->getVar<bool>("Flag_BadChargedCandidateFilter");
+                }
+                else if(type.compare("unsigned char") == 0)
+                {
+                    BadPFMuonFilter = tr->getVar<unsigned char>("Flag_BadPFMuonFilter");
+                    BadChargedCandidateFilter = tr->getVar<unsigned char>("Flag_BadChargedCandidateFilter");
+                }
+                else
+                {
+                    BadPFMuonFilter = tr->getVar<char>("Flag_BadPFMuonFilter");
+                    BadChargedCandidateFilter = tr->getVar<char>("Flag_BadChargedCandidateFilter");
+                }
 
                 return passDataSpec && passJetIDFilter && HBHENoiseFilter && HBHENoiseIsoFilter && EcalDeadCellTriggerPrimitiveFilter && BadPFMuonFilter && BadChargedCandidateFilter && passMETratioFilter;
             }
@@ -380,7 +398,6 @@ namespace plotterFunctions
 
             std::vector<TLorentzVector>& jetsLVec = tr.createDerivedVec<TLorentzVector>("jetsLVec");
             jetsLVec.reserve(jetsLVecNominal.size());
-
             if(tr.checkBranch("Jet_jecUncertTotal"))
             {
                 const std::vector<float>& recoJetsJecUnc = tr.getVec<float>("Jet_jecUncertTotal");
@@ -399,12 +416,11 @@ namespace plotterFunctions
             }
             else
             {
+                for(int ijet=0; ijet<jetsLVecNominal.size(); ++ijet) jetsLVec.push_back( jetsLVecNominal[ijet] );
                 handleSys = false; //If this is data, we shouldn't do anything
             }
 
             const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagDeepB");
-
-	    const float& stored_weight = tr.getVar<float>("Generator_weight");
 
             int cntCSVS = AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
 
@@ -420,7 +436,7 @@ namespace plotterFunctions
 
             std::vector<TLorentzVector>& tightPhotons = tr.createDerivedVec<TLorentzVector>("tightPhotons");
 
-            for(int i = 0; i < tightPhotons.size(); ++i)
+            for(int i = 0; i < gammaLVec.size(); ++i)
             {
                 if(photonID[i] == 3) // check for tight ID
                 {
@@ -437,7 +453,8 @@ namespace plotterFunctions
             std::vector<float> muonsMTlep(muonsLVec.size());
             for(int i = 0; i < muonsMTlep.size(); ++i)
             {
-                muonsMTlep[i] = (muonsLVec[i] + metLV).Mt();
+                //muonsMTlep[i] = (muonsLVec[i] + metLV).Mt();
+                muonsMTlep[i] = sqrt(2*metLV.Pt()*muonsLVec[i].Pt()*(1-cos(ROOT::Math::VectorUtil::DeltaPhi(metLV, muonsLVec[i]))));
             }
 
             std::vector<TLorentzVector>& cutMuVec = tr.createDerivedVec<TLorentzVector>("cutMuVec");
@@ -458,10 +475,13 @@ namespace plotterFunctions
             std::vector<float>  elesMTlep(elesLVec.size());
             for(int i = 0; i < elesMTlep.size(); ++i)
             {
-                elesMTlep[i] = (elesLVec[i] + metLV).Mt();
+                //elesMTlep[i] = (elesLVec[i] + metLV).Mt();
+                elesMTlep[i] = sqrt(2*metLV.Pt()*elesLVec[i].Pt()*(1-cos(ROOT::Math::VectorUtil::DeltaPhi(metLV, elesLVec[i]))));
             }
 
-            const std::vector<int> & elesFlagIDVec = tr.getVec<int>("Electron_cutBasedNoIso");
+//            const std::vector<int> & elesFlagIDVec = tr.getVec<int>("Electron_cutBasedNoIso");
+            //HACK
+            const std::vector<int> & elesFlagIDVec = tr.getVec<int>("Electron_cutBased");
 
             //electron selection
             std::vector<TLorentzVector>& cutElecVec = tr.createDerivedVec<TLorentzVector>("cutElecVec");
@@ -533,11 +553,17 @@ namespace plotterFunctions
 
 	    // Process the generator weight
 	    float genWeight = 1.;
+            float stored_weight = 1.0;
+            if(tr.checkBranch("Generator_weight"))
+            {
+                stored_weight = tr.getVar<float>("Generator_weight");
+            }
+
 	    // Never apply this weight for data! In the old ntuple version <=3 this is "-1", in the newer ones it is "0"
 	    if(stored_weight < 0) genWeight = -1.;
 
             //std::cout << genWeight << std::endl;
-	    tr.registerDerivedVar("genWeight", genWeight);
+	    tr.registerDerivedVar("genWeight_sign", genWeight);
 
             tr.registerDerivedVar("cntCSVS", cntCSVS);
 
@@ -612,7 +638,7 @@ namespace plotterFunctions
             ttUtility::ConstAK4Inputs<float> *myConstAK4Inputs = nullptr;
 
             std::vector<TLorentzVector> *genTops;
-            std::vector<std::vector<const TLorentzVector*>> *genTopDaughters;
+            std::vector<std::vector<const TLorentzVector*>> *genTopDaughters = nullptr;
             std::vector<Constituent> constituentsMVA;
 
             if(tr.checkBranch("GenPart_pt"))
@@ -626,7 +652,6 @@ namespace plotterFunctions
                 auto genMatchingInfo = ttUtility::GetTopdauGenLVecFromNano(genDecayLVec, genDecayPdgIdVec, genDecayStatFlag, genDecayMomIdxVec);
                 genTops = new std::vector<TLorentzVector>(std::move(genMatchingInfo.first));
                 genTopDaughters = new std::vector<std::vector<const TLorentzVector*>>(std::move(genMatchingInfo.second));
-
                 myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, *genTops, *genTopDaughters);
 
             }
@@ -669,7 +694,7 @@ namespace plotterFunctions
             ttMVA->runTagger(constituentsMVA);
 
             delete myConstAK4Inputs;
-            delete genTopDaughters;
+            if(genTopDaughters) delete genTopDaughters;
 
             const TopTaggerResults& ttrMVA = ttMVA->getResults();
 
@@ -683,6 +708,7 @@ namespace plotterFunctions
             const TopObject* bestTopMassLV = nullptr;
             bool bestTopMassGenMatch = false;
             bool bestTopMassTopTag = false;
+            float bestTopMassTopTagDisc = -999.9;
             
             float highestDisc = -9999.9;
 
@@ -697,6 +723,7 @@ namespace plotterFunctions
                     bestTopMass = top.p().M();
                     bestTopEta = top.p().Eta();
                     bestTopMassLV = &top;
+                    bestTopMassTopTagDisc = top.getDiscriminator();
                 }
             }
 
@@ -743,6 +770,7 @@ namespace plotterFunctions
             tr.registerDerivedVar("bestTopMassLV", bestTopMassLV?(bestTopMassLV->p()):(TLorentzVector()));
             tr.registerDerivedVar("bestTopMassGenMatch", bestTopMassGenMatch);
             tr.registerDerivedVar("bestTopMassTopTag", bestTopMassTopTag);
+            tr.registerDerivedVar("bestTopMassTopTagDisc", bestTopMassTopTagDisc);
 
 
             tr.registerDerivedVar("randomTopCand", randomTopCand?(randomTopCand->p()):(TLorentzVector()));
