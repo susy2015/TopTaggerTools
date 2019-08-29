@@ -310,6 +310,36 @@ public:
         genTops_             = &tr.template getVec<TLorentzVector>("genTops");
     }
 
+    void setStealthStopVar(const TUPLECLASS& tr)
+    {
+        tr.registerDerivedVar("MET_float", float(tr.template getVar<double>("MET")));
+        tr.registerDerivedVar("METPhi_float", float(tr.template getVar<double>("METPhi")));
+        tr.registerDerivedVar("HT_float", float(tr.template getVar<double>("HT")));
+        //tr.registerDerivedVar("bestTopMassCand_float", float(tr.template getVar<double>("bestTopMassCand")));
+
+        met_                 = &tr.template getVar<float>("MET_float");
+        metphi_              = &tr.template getVar<float>("METPhi_float");
+        ht_                  = &tr.template getVar<float>("HT_float");
+        highestDisc_         = &tr.template getVar<float>("highestDisc");
+        vtxSize_             = &tr.template getVar<int>("NVtx");
+        cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
+        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr");
+        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
+        jets_                = &tr.template getVec<TLorentzVector>("Jets");
+        lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
+        bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLVCand");
+        bestTopMass_         = &tr.template getVar<float>("bestTopMassCand");
+        bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTagCand");
+        bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatchCand");
+        bestTopMassTopTagDisc_ = &tr.template getVar<float>("bestTopMassTopTagDisc");
+
+        cutMuVec_            = &tr.template getVec<TLorentzVector>("Muons");
+        cutElecVec_          = &tr.template getVec<TLorentzVector>("Electrons");
+        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");
+        genTops_             = &tr.template getVec<TLorentzVector>("hadtops");
+        //std::cout << "inside setStealthStopVar()" << genTops_->size() << std::endl;
+    }
+
     void fillWithCutFlow(const std::vector<std::pair<std::string, bool>>& cuts, const TUPLECLASS& tr, const float& eWeight, TRandom* trand)
     {
         const int EXTRACUT = 1; 
@@ -363,14 +393,28 @@ public:
 
     void fill(const TUPLECLASS& tr, const float& eWeight, TRandom* trand)
     {
-        setStopVar(tr);
-                
+        if(tr.checkBranch("met"))
+        {
+            setStopVar(tr);
+        }
+        else if( tr.checkBranch("MET") )
+        {
+            setStealthStopVar(tr);
+        }
+       
         runFill(eWeight, trand);
     }
 
     void fill(const TUPLECLASS& tr, const float& eWeight)
     {
-        setStopVar(tr);
+        if(tr.checkBranch("met"))
+        {
+            setStopVar(tr);
+        }
+        else if( tr.checkBranch("MET") )
+        {
+            setStealthStopVar(tr);
+        }
 
         runFill(eWeight, trand_);
     }
@@ -411,6 +455,7 @@ public:
         //plots for gen efficiency 
         for(const TLorentzVector& genTop : *genTops_)
         {
+            std::cout << "before genTopEvt set true " << std::endl;
             genTopEvt = true;
             genTopPt->Fill(genTop.Pt(), eWeight);
             genTopP->Fill(genTop.P(), eWeight);
@@ -456,7 +501,7 @@ public:
             genTopMatchEvtnVert->Fill(*vtxSize_,eWeight);
         }
         
-        //SF plots  
+        //SF plots 
         if(*bestTopMass_ > 0.0)
         {
             bestTopCandPt->Fill(bestCandLV_->Pt(), eWeight);
@@ -592,7 +637,7 @@ public:
                 if(top->getDiscriminator() > wp) ++nTops;
             }
 
-            if(nTops > 0){
+            if(nTops >= 1){
 
                 hMETTagged[iWP]->Fill(*met_, eWeight);
                 hHTTagged[iWP]->Fill(*ht_, eWeight);
@@ -614,7 +659,7 @@ public:
 
             }
 
-            if(nTops > 1 && genMatched){
+            if(nTops >= 2 && genMatched){
 
                 hMETTaggedGen[iWP]->Fill(*met_, eWeight);
                 hHTTaggedGen[iWP]->Fill(*ht_, eWeight);
@@ -625,7 +670,7 @@ public:
 
             }
 
-            if(nTops > 1 && !genMatched){
+            if(nTops >= 2 && !genMatched){
 
                 hMETTaggedNotGen[iWP]->Fill(*met_, eWeight);
                 hHTTaggedNotGen[iWP]->Fill(*ht_, eWeight);
