@@ -102,7 +102,7 @@ simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtil
 	$(LD) $^ $(LIBS) -o $@
 
 fakeRatePlots: $(ODIR)/fakeRatePlots.o
-	$(LD) $^ $(LIBS) -o $@
+	$(LD) $^ $(shell root-config --libs) -o $@
 
 clean:
 	rm -f $(ODIR)/*.o $(ODIR)/*.so $(ODIR)/*.d $(PROGRAMS) core 
