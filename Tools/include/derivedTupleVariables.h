@@ -527,7 +527,7 @@ namespace plotterFunctions
             //// Pass lepton veto?
             bool passMuonVeto = (nMuons == AnaConsts::nMuonsSel);
             bool passEleVeto = (nElectrons == AnaConsts::nElectronsSel);
-            bool passIsoTrkVeto = (nIsoTrks == AnaConsts::nIsoTrksSel);
+            bool passIsoTrkVeto = (nIsoTrks == 0); //AnaConsts::nIsoTrksSel is no longer defined 
 
             float Mmumu = -999.9;
             bool passfloatMuon = false;
@@ -540,7 +540,7 @@ namespace plotterFunctions
 
             // Calculate deltaPhi
             std::vector<float> * dPhiVec = new std::vector<float>();
-            (*dPhiVec) = AnaFunctions::calcDPhi(jetsLVec, metphi, 3, AnaConsts::dphiArr);
+            (*dPhiVec) = AnaFunctions::calcDPhi(jetsLVec, metLV, 3, { -1, 4.7, 20, -1}); //AnaConsts::dphiArr is no longer defined
 
             // Pass deltaPhi?
             bool passdPhis = (dPhiVec->size() >= 3) && ((*dPhiVec)[0] >= AnaConsts::dPhi0_CUT && (*dPhiVec)[1] >= AnaConsts::dPhi1_CUT && (*dPhiVec)[2] >= AnaConsts::dPhi2_CUT);

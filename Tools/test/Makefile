@@ -2,8 +2,8 @@
 OPENCV_DIRECTORY    = 
 HDF5_DIRECTORY      = /cvmfs/cms.cern.ch/slc6_amd64_gcc700/external/hdf5/1.8.17-omkpbe2
 HDF5_INC_DIRECTORY  = include
-TAGGERDIR           = /uscms/home/pastika/nobackup/zinv/test/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../TopTagger
-SUSYANATOOLSDIR     = /uscms/home/pastika/nobackup/zinv/test/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../SusyAnaTools
+TAGGERDIR           = /uscms_data/d3/semrat/CMSSW_9_3_3/src/TopTaggerTools/Tools/test/../../../TopTagger
+SUSYANATOOLSDIR     = /uscms_data/d3/semrat/CMSSW_9_3_3/src/TopTaggerTools/Tools/test/../../../SusyAnaTools
 
 CXX       = g++
 LD        = g++
@@ -55,7 +55,7 @@ CXXDEPFLAGS = -MMD -MP
 
 #Necessary libraries, the order matters here!
 # ROOT libraries
-LIBS       = $(shell root-config --glibs)
+LIBS       = $(shell root-config --libs)
 
 # hdf5 libs
 LIBS += -L$(HDF5_DIRECTORY)/lib -lhdf5
@@ -64,7 +64,7 @@ LIBS += -L$(HDF5_DIRECTORY)/lib -lhdf5
 # tagger libraries
 LIBS      += -L$(TAGGERDIR)/TopTagger/test -lTopTagger
 
-PROGRAMS = simpleAnalyzer
+PROGRAMS = simpleAnalyzer fakeRatePlots
 
 all: mkobj $(PROGRAMS)
 
@@ -98,7 +98,10 @@ $(ODIR)/%.o : $(TSDIR)/%.cc
 $(ODIR)/%.o : $(TSDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(CXXDEPFLAGS) -I$(TIDIR) -I$(INCLUDESDIRS) -o $@ -c $<
 
-simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/BTagCalibrationStandalone.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o
+simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/BTagCalibrationStandalone.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o $(ODIR)/SusyUtility.o
+	$(LD) $^ $(LIBS) -o $@
+
+fakeRatePlots: $(ODIR)/fakeRatePlots.o
 	$(LD) $^ $(LIBS) -o $@
 
 clean:

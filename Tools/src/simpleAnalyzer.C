@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
         savefile = false;
     }
 
-    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor, AnaSamples::luminosity);
+    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor);
     AnaSamples::SampleCollection sc("sampleCollections.cfg", ss);
 
     if(dataSets.find("Data") != std::string::npos)
