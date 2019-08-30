@@ -322,10 +322,10 @@ public:
         ht_                  = &tr.template getVar<float>("HT_float");
         highestDisc_         = &tr.template getVar<float>("highestDisc");
         vtxSize_             = &tr.template getVar<int>("NVtx");
-        cntCSVS_             = &tr.template getVar<int>("NBJets_pt30");
+        cntCSVS_             = &tr.template getVar<int>("NGoodBJets_pt45");
         ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr");
-        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NJets_pt30");
-        jets_                = &tr.template getVec<TLorentzVector>("Jets");
+        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NGoodJets_pt45");
+        jets_                = &tr.template getVec<TLorentzVector>("GoodJets_pt45_tlv");
         lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
         bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLVCand");
         bestTopMass_         = &tr.template getVar<float>("bestTopMassCand");
@@ -455,7 +455,6 @@ public:
         //plots for gen efficiency 
         for(const TLorentzVector& genTop : *genTops_)
         {
-            std::cout << "before genTopEvt set true " << std::endl;
             genTopEvt = true;
             genTopPt->Fill(genTop.Pt(), eWeight);
             genTopP->Fill(genTop.P(), eWeight);
