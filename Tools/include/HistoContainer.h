@@ -118,7 +118,7 @@ public:
     std::vector<TH1*> fakerateMET2, fakerateNj2, fakerateNb2, fakerateNvert2, fakerateHT2, fakerateHighestDisc2;
     std::vector<TH2*> randomTopMassByPt;
 
-    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.75, 0.85, 0.95}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
+    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.82, 0.87, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
     {
         trand_ = new TRandom3();
         
@@ -449,7 +449,7 @@ public:
 
         //bools for genTop event variable plots
         bool genTopEvt      = false;
-        bool genTopAcptEvt  = false;
+        bool genTopAcptEvt  = false; // genTopAcptEvt: gen tops in the eta acceptance of top tagger (|eta| < 2.0)
         bool genTopMatchEvt = false;
 
         //plots for gen efficiency 

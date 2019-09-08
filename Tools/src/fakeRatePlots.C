@@ -26,8 +26,8 @@ public:
     std::string legName;
 };
 
-void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
-               const std::string& dataSet, const std::string& simpleLeg = "Simple   Top Tagger", const std::string& mediumLeg = "Medium Top Tagger")
+void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist,
+               const std::string& dataSet, const std::string& simpleLeg = "Simple Top Tagger")
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -69,21 +69,21 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     //Top TPad
     pad_up->cd();
     
-    double max = std::max( mediumHist->GetMaximum(), simpleHist->GetMaximum() );
-    mediumHist->SetMaximum( 1.2*max );
-    mediumHist->SetMinimum(0);
-    mediumHist->SetTitleSize(0.002);
-    mediumHist->SetTitleSize(0.05,"X");
-    mediumHist->SetTitleSize(0.05,"Y");
-    mediumHist->SetTitleOffset(1.2,"X");
-    mediumHist->SetTitleOffset(1.5,"Y");
-    mediumHist->SetLabelSize(0.0,"X");
-    //mediumHist->SetLabelSize(0.05,"X");
-    mediumHist->SetLabelSize(0.05,"Y");
-    //mediumHist->SetNdivisions(0,"X");
-    mediumHist->SetStats(false);    
-    mediumHist->SetLineColor(kRed);
-    mediumHist->Draw("hist E");
+    //double max = std::max( mediumHist->GetMaximum(), simpleHist->GetMaximum() );
+    //mediumHist->SetMaximum( 1.2*max );
+    //mediumHist->SetMinimum(0);
+    //mediumHist->SetTitleSize(0.002);
+    //mediumHist->SetTitleSize(0.05,"X");
+    //mediumHist->SetTitleSize(0.05,"Y");
+    //mediumHist->SetTitleOffset(1.2,"X");
+    //mediumHist->SetTitleOffset(1.5,"Y");
+    //mediumHist->SetLabelSize(0.0,"X");
+    ////mediumHist->SetLabelSize(0.05,"X");
+    //mediumHist->SetLabelSize(0.05,"Y");
+    ////mediumHist->SetNdivisions(0,"X");
+    //mediumHist->SetStats(false);    
+    //mediumHist->SetLineColor(kRed);
+    //mediumHist->Draw("hist E");
 
     simpleHist->SetLineColor(kBlack);
     simpleHist->Draw("hist E same");
@@ -91,7 +91,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     l->SetBorderSize(0);
     l->SetFillStyle(0);
     l->SetTextSize(0.03);    
-    l->AddEntry(mediumHist, (mediumLeg).c_str()   , "l");
+    //l->AddEntry(mediumHist, (mediumLeg).c_str()   , "l");
     l->AddEntry(simpleHist, (simpleLeg).c_str()   , "l");
     l->Draw();
 
@@ -99,11 +99,11 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     pad_dw->cd();
 
     Eff_FakeRatePlots dummy;
-    TH1F *ratio = (TH1F*)mediumHist->Clone( (name+dataSet+"Ratio").c_str() );;
+    TH1F *ratio = (TH1F*)simpleHist->Clone( (name+dataSet+"Ratio").c_str() );;
     for(int i=0; i < ratio->GetSize(); i++)
     {
-        double errorNum = dummy.errorRatio(i,mediumHist,simpleHist);
-        double ratioNum = mediumHist->GetBinContent(i)/simpleHist->GetBinContent(i);      
+        double errorNum = dummy.errorRatio(i,simpleHist,simpleHist);
+        double ratioNum = simpleHist->GetBinContent(i)/simpleHist->GetBinContent(i);      
         if(isinf(ratioNum)==1 || isnan(ratioNum)==1) ratioNum = 0;
         ratio->SetBinContent(i,ratioNum);
         ratio->SetBinError(i,errorNum);
@@ -144,7 +144,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     delete line;
 }
 
-void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std::string>& selections, const std::string& dataSet)
+void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std::string>& selections, const std::string& dataSet, std::string wp)
 {
     char copy[128];
     strcpy(copy, taggerInfo[0].inputFile.c_str() );    
@@ -164,7 +164,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
         Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
         for(const auto& s : selections)
         {
-            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3);
+            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3, wp);
         }
 
         TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
@@ -192,7 +192,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
     ////////////////////////////////
     for(int i = 0; i < vecPlots[0]->histos_.size(); i++)
     {
-        makePlots(vecPlots[0]->outFile_[i], vecPlots[0]->histoName_[i], vecPlots[0]->histos_[i], vecPlots[1]->histos_[i], dataSet, taggerInfo[0].legName, taggerInfo[1].legName);
+        makePlots(vecPlots[0]->outFile_[i], vecPlots[0]->histoName_[i], vecPlots[0]->histos_[i], dataSet, taggerInfo[0].legName);
     }
 
     //Cleaning up
@@ -205,118 +205,64 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 int main()
 {
     TH1::AddDirectory(false);
+    
+    // -------------------------------------------------------------------
+    // -- Comparing joes test top tagger to the full top tagger: WP 0.7
+    // -------------------------------------------------------------------
+    //std::vector<std::string> selections = {"Lep0/", "Lep1/", "QCD/", "QCDb/"};
+    //std::vector<TaggerInfo> joeTest_TTbarSingleLepT
+    //{
+    //    {"joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root"    , "Full TT 0.7 WP"},
+    //    {"joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    //};
 
-    ////Orginal cuts for Simple and Medium Top Tagger
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_TTbar-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbar_mediumTopTagger.root",
-    //           "originalDiscCuts/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_QCD-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_mediumTopTagger.root",
-    //           "originalDiscCuts/"               
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/MediumHaddFiles/TT_TTbarSingleLep-2018-3-9.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_mediumTopTagger.root",
-    //           "originalDiscCuts/"               
-    //          );
-    //
-    //
-    ////95max_00017pt85 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_00017pt85_medium.root",
-    //           "95max_00017pt85_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_00017pt85_medium.root",
-    //           "95max_00017pt85_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                 ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00017pt85/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00017pt85_medium.root",
-    //           "95max_00017pt85_medium/"
-    //          );
-    //
-    //
-    ////95max_0004375pt775 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
-    //           "95max_0004375pt775_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
-    //           "95max_0004375pt775_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbarSingleLep-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0004375pt775_medium.root",
-    //           "95max_0004375pt775_medium/"
-    //          );
-    //
-    ////95max_0005pt7 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0005pt7_medium.root",
-    //           "95max_0005pt7_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0005pt7_medium.root",
-    //           "95max_0005pt7_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_0005pt7/TT_TTbarSingleLep-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_0005pt7_medium.root",
-    //           "95max_0005pt7_medium/"
-    //          );
-    //
-    ////95max_00175pt3125 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_00175pt3125_medium.root",
-    //           "95max_00175pt3125_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_00175pt3125_medium.root",
-    //           "95max_00175pt3125_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_95max_00175pt3125/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_95max_00175pt3125_medium.root",
-    //           "95max_00175pt3125_medium/"
-    //          );    
-    //
-    ////93max_000575pt7 Medium Top Tagger cuts
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbar-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbar_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbar-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_93max_000575pt7_medium.root",
-    //           "93max_000575pt7_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_QCD-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_QCD_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_QCD-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_93max_000575pt7_medium.root",
-    //           "93max_000575pt7_medium/"
-    //          );
-    //runPlotter("joesGroup/SimpleHaddFiles/TT_TTbarSingleLep-2018-3-9.root"                    ,"outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_simpleTopTagger.root",
-    //           "joesGroup/mediumTopTagger_93max_000575pt7/TT_TTbarSingleLep-2018-3-13.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_93max_000575pt7_medium.root",
-    //           "93max_000575pt7_medium/"
-    //          );    
-    //
-    ////Comparing Joes nTuples to ours Medium TopTagger discCut = 0.95 discSlope = 0.0004375 discOffset = 0.775
-    //runPlotter("joesGroup/mediumTopTagger_95max_0004375pt775/TT_TTbar-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_TTbar_95max_0004375pt775_medium.root",
-    //           "stealthGroup/TT/stealth_TT_mediumTT.root","outputRoot/efficiencyandFakeRatePlots_TT_Stealth_95max_0004375pt775_medium.root",
-    //           "95max_0004375pt775_medium/"
-    //          );
-    //runPlotter("joesGroup/mediumTopTagger_95max_0004375pt775/TT_QCD-2018-3-12.root","outputRoot/efficiencyandFakeRatePlots_TT_QCD_95max_0004375pt775_medium.root",
-    //           "stealthGroup/QCD/stealth_QCD_mediumTT.root","outputRoot/efficiencyandFakeRatePlots_QCD_Stealth_95max_0004375pt775_medium.root",
-    //           "95max_0004375pt775_medium/"
-    //          );
+    //std::vector<TaggerInfo> joeTest_QCD
+    //{
+    //    {"joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root"   , "Full TT 0.7 WP"},
+    //    {"joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    //};
 
+    //runPlotter(joeTest_TTbarSingleLepT, selections, "0.7WP_joeTest_test/");
+    //runPlotter(joeTest_QCD, selections, "0.7WP_joeTest_test/");
 
-    //Comparing joes test top tagger to the full top tagger: WP 0.7
-    std::vector<std::string> selections = {"Lep0/", "Lep1/", "QCD/", "QCDb/"};
-    std::vector<TaggerInfo> joeTest_TTbarSingleLepT
+    // ----------------------------------------------------
+    // -- Stealth stop fake rate for resolved top tagger
+    // ----------------------------------------------------
+    std::vector<std::string> selections = {"histos/"};
+    
+    // -----------
+    // -- TTbar 
+    // -----------
+    // 2016
+    std::vector<TaggerInfo> TTbar2016 
     {
-        {"joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root"    , "Full TT 0.7 WP"},
-        {"joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_FakeRate_04.09.2019/2016_TT.root", "outputRoot/Efficiency_FakeRate_Plots_2016_ResolvedTopTagger.root", "2016 Resolved TT"},
     };
-
-    std::vector<TaggerInfo> joeTest_QCD
+    std::cout << "TTbar2016" << TTbar2016 << std::endl;
+    runPlotter(TTbar2016, selections, "2016_TT/", "0.920");
+ 
+    // 2017
+    std::vector<TaggerInfo> TTbar2017
     {
-        {"joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root"   , "Full TT 0.7 WP"},
-        {"joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_FakeRate_04.09.2019/2017_TT.root", "outputRoot/Efficiency_FakeRate_Plots_2017_ResolvedTopTagger.root", "2017 Resolved TT"},
     };
+    runPlotter(TTbar2017, selections, "2017_TT/", "0.920");
 
-    runPlotter(joeTest_TTbarSingleLepT, selections, "0.7WP_joeTest_test/");
-    runPlotter(joeTest_QCD, selections, "0.7WP_joeTest_test/");
+    // ---------
+    // -- QCD 
+    // --------
+    // 2016
+    std::vector<TaggerInfo> QCD2016
+    {
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_FakeRate_04.09.2019/2016_QCD.root", "outputRoot/Efficiency_FakeRate_Plots_2016_ResolvedTopTagger.root", "2016 Resolved QCD"},
+    };
+    runPlotter(QCD2016, selections, "2016_QCD/", "0.920");
+
+    // 2017
+    std::vector<TaggerInfo> QCD2017
+    {
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_FakeRate_04.09.2019/2017_QCD.root", "outputRoot/Efficiency_FakeRate_Plots_2017_ResolvedTopTagger.root", "2017 Resolved QCD"},
+    };
+    runPlotter(QCD2017, selections, "2017_QCD/", "0.920");
+
 }
