@@ -156,9 +156,9 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
     char* type3;
     type3 = strtok( nullptr, "-/" );
 
-    /////////////////////////////////
-    ////   Looping over TaggerInfo
-    /////////////////////////////////
+    // -----------------------------
+    // -- Looping over TaggerInfo
+    // -----------------------------
     std::vector<Eff_FakeRatePlots*> vecPlots;
     for(const auto& tI : taggerInfo)
     {
@@ -187,10 +187,10 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 
         vecPlots.push_back(fakeratePlots);
     }
-
-    ////////////////////////////////
-    //       Making Plots
-    ////////////////////////////////
+    
+    // ------------------
+    // -- Making Plots
+    // ------------------
     for(int i = 0; i < vecPlots[0]->histos_.size(); i++)
     {
         makePlots(vecPlots[0]->outFile_[i], vecPlots[0]->histoName_[i], vecPlots[0]->histos_[i], dataSet, taggerInfo[0].legName);
@@ -237,7 +237,7 @@ int main()
     // 2016
     std::vector<TaggerInfo> TTbar2016 
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_FakeRate_04.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "2016_TT - Resolved "},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "2016_TT - Resolved "},
     };
     runPlotter(TTbar2016, selections, "2016_TT_wp0.82/", "0.820");
     runPlotter(TTbar2016, selections, "2016_TT_wp0.87/", "0.870");
@@ -254,9 +254,9 @@ int main()
     // 2017
     std::vector<TaggerInfo> TTbar2017
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_FakeRate_04.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "2017_TT - Resolved"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "2017_TT - Resolved"},
     };
-    runPlotter(TTbar2017, selections, "2017_TT_wp0.62/", "0.820");
+    runPlotter(TTbar2017, selections, "2017_TT_wp0.82/", "0.820");
     runPlotter(TTbar2017, selections, "2017_TT_wp0.87/", "0.870");
     runPlotter(TTbar2017, selections, "2017_TT_wp0.89/", "0.890");
     runPlotter(TTbar2017, selections, "2017_TT_wp0.90/", "0.900");
@@ -274,7 +274,7 @@ int main()
     // 2016
     std::vector<TaggerInfo> QCD2016
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_FakeRate_04.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger.root", "2016_QCD - Resolved"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger.root", "2016_QCD - Resolved"},
     };
     runPlotter(QCD2016, selections, "2016_QCD_wp0.82/", "0.820");
     runPlotter(QCD2016, selections, "2016_QCD_wp0.87/", "0.870");
@@ -291,7 +291,7 @@ int main()
     // 2017
     std::vector<TaggerInfo> QCD2017
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_FakeRate_04.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "2017_QCD - Resolved"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "2017_QCD - Resolved"},
     };
     runPlotter(QCD2017, selections, "2017_QCD_wp0.82/", "0.820");
     runPlotter(QCD2017, selections, "2017_QCD_wp0.87/", "0.870");

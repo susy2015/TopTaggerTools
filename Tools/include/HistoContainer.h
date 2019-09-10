@@ -278,7 +278,6 @@ public:
             fakerateHT2  .push_back( bookHisto<TH1D>("fakerateHT2_" + wpStr ,  200,0, 4000));
             fakerateHighestDisc2  .push_back( bookHisto<TH1D>("fakerateHighestDisc2_" + wpStr ,  1000,-1,1));
         }
-
     }
 
     ~HistoContainer()
@@ -613,7 +612,7 @@ public:
         topCandMaxDisc->Fill(discMax, eWeight);
         topCandMaxGenMatchDisc->Fill(discMaxGenMatch, eWeight);
 
-        if(randCandIndicies.size() > 0)
+        if(randCandIndicies.size() > 0 ) 
         {
             int nCand = trand->Integer(randCandIndicies.size());
 
