@@ -27,13 +27,8 @@ public:
 
     TH1F* defineTH1F(const char *file="", std::string branch="")
     {
-        //TFile *f = new TFile(file);
         TFile *f = TFile::Open(file);
-        //std::cout << "file   : " << file << std::endl;
-        //std::cout << "f      : " << f << std::endl;
         TH1F *h = (TH1F*)f->Get(branch.c_str());
-        //std::cout << "branch : " << branch << std::endl;
-        //std::cout << "h      : " << h << std::endl;
         f->Close();
         return h;
     }
@@ -68,6 +63,8 @@ public:
         fakeRate->SetTitle((type + "/" + fakerate).c_str());
         fakeRate->GetXaxis()->SetTitle(xname.c_str());
         fakeRate->GetYaxis()->SetTitle(yname.c_str());
+        fakeRate->GetYaxis()->SetRangeUser(0., 1.2); //
+        fakeRate->SetStats(0);
         histos_.emplace_back(fakeRate);
         histoName_.emplace_back(type + "/" + fakerate);
         outFile_.emplace_back(type + "/" + name);
