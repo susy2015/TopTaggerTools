@@ -63,7 +63,7 @@ public:
         fakeRate->SetTitle((type + "/" + fakerate).c_str());
         fakeRate->GetXaxis()->SetTitle(xname.c_str());
         fakeRate->GetYaxis()->SetTitle(yname.c_str());
-        fakeRate->GetYaxis()->SetRangeUser(0., 1.2); //
+        fakeRate->GetYaxis()->SetRangeUser(0.0, 1.2); //
         fakeRate->SetStats(0);
         histos_.emplace_back(fakeRate);
         histoName_.emplace_back(type + "/" + fakerate);
