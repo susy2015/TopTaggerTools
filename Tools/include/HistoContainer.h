@@ -64,10 +64,11 @@ public:
     TH1 *hNVertices;
     TH1 *hPhoton;
     TH1 *topCandPt, *topCandMass, *topCandEta, *topCandDisc;
-    TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch, *topCandDiscGenMatch, *topCandDiscNotGenMatch;
+    TH1 *topCandPtGenMatch, *topCandMassGenMatch, *topCandEtaGenMatch, *topCandDiscGenMatch, *topCandDiscNotGenMatch; 
+    TH1 *topDiscGenMatch, *topDiscNotGenMatch; 
     TH1 *topCandMaxDisc, *topCandMaxGenMatchDisc;
     TH1 *genTopPt, *genTopP, *genTopMass, *genTopEta;
-    TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
+    //TH1 *genTopMatchPt, *genTopMatchMass, *genTopMatchEta;
     TH1 *genTopEvtnJet, *genTopEvtMET, *genTopEvtHT, *genTopEvtHighestDisc, *genTopEvtnVert;
     TH1 *genTopAcptEvtnJet, *genTopAcptEvtMET, *genTopAcptEvtHT, *genTopAcptEvtHighestDisc, *genTopAcptEvtnVert;
     TH1 *genTopMatchEvtnJet, *genTopMatchEvtMET, *genTopMatchEvtHT, *genTopMatchEvtHighestDisc, *genTopMatchEvtnVert;
@@ -108,7 +109,8 @@ public:
     std::vector<TH1*> hNBJetsTagged2;
     std::vector<TH1*> hNVerticesTagged2;
     std::vector<TH1*> hPhotonTagged;
-    std::vector<TH1*> topPt, topP, topMass, topEta, topDisc, topDiscGenMatch, topDiscNotGenMatch;
+    std::vector<TH1*> topPt, topP, topMass, topEta, topDisc, topDiscGenMatchWP, topDiscNotGenMatchWP; 
+    std::vector<TH1*> topCandDiscGenMatchWP, topCandDiscNotGenMatchWP; 
     std::vector<TH1*> topPtGenMatch, topPGenMatch, topMassGenMatch, topEtaGenMatch;
     std::vector<TH1*> bestTopGenPt, bestTopGenMass, bestTopGenEta;
     std::vector<TH1*> bestTopNotGenPt, bestTopNotGenMass, bestTopNotGenEta;
@@ -116,9 +118,10 @@ public:
     std::vector<TH1*> randomTopPt, randomTopP, randomTopMass, randomTopEta, randomTopDisc;
     std::vector<TH1*> fakerateMET, fakerateNj, fakerateNb, fakerateHT, fakerateHighestDisc;
     std::vector<TH1*> fakerateMET2, fakerateNj2, fakerateNb2, fakerateNvert2, fakerateHT2, fakerateHighestDisc2;
+    std::vector<TH1*> genTopMatchPt, genTopMatchMass, genTopMatchEta;
     std::vector<TH2*> randomTopMassByPt;
 
-    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.82, 0.87, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
+    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.82, 0.85, 0.87, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
     {
         trand_ = new TRandom3();
         
@@ -161,8 +164,11 @@ public:
         topCandPtGenMatch   = bookHisto<TH1D>("topCandPtGenMatch",   100,  0, 1000);
         topCandMassGenMatch = bookHisto<TH1D>("topCandMassGenMatch", 100,  0, 500);
         topCandEtaGenMatch  = bookHisto<TH1D>("topCandEtaGenMatch",  100, -5, 5);
-        topCandDiscGenMatch = bookHisto<TH1D>("topCandDiscGenMatch",  1000, -1, 1);
+        topCandDiscGenMatch    = bookHisto<TH1D>("topCandDiscGenMatch",  1000, -1, 1);
         topCandDiscNotGenMatch = bookHisto<TH1D>("topCandDiscNotGenMatch",  1000, -1, 1);
+        topDiscGenMatch        = bookHisto<TH1D>("topDiscGenMatch",  1000, -1, 1); //
+        topDiscNotGenMatch     = bookHisto<TH1D>("topDiscNotGenMatch",  1000, -1, 1); //
+
         topCandMaxDisc = bookHisto<TH1D>("topCandMaxDisc",  1000, -1, 1);
         topCandMaxGenMatchDisc = bookHisto<TH1D>("topCandMaxGenMatchDisc",  1000, -1, 1);
         
@@ -170,9 +176,9 @@ public:
         genTopP    = bookHisto<TH1D>("genTopP",   100,  0, 1000);
         genTopMass = bookHisto<TH1D>("genTopMass", 100,  0, 500);
         genTopEta  = bookHisto<TH1D>("genTopEta",  100, -5, 5);
-        genTopMatchPt   = bookHisto<TH1D>("genTopMatchPt",   100,  0, 1000);
-        genTopMatchMass = bookHisto<TH1D>("genTopMatchMass", 100,  0, 500);
-        genTopMatchEta  = bookHisto<TH1D>("genTopMatchEta",  100, -5, 5);
+        //genTopMatchPt   = bookHisto<TH1D>("genTopMatchPt",   100,  0, 1000);
+        //genTopMatchMass = bookHisto<TH1D>("genTopMatchMass", 100,  0, 500);
+        //genTopMatchEta  = bookHisto<TH1D>("genTopMatchEta",  100, -5, 5);
         
         bestTopCandPt   = bookHisto<TH1D>("bestTopCandPt",   100,  0, 1000);
         bestTopCandMass = bookHisto<TH1D>("bestTopCandMass", 100,  0, 500);
@@ -239,9 +245,11 @@ public:
             topMass .push_back( bookHisto<TH1D>("topMass_" + wpStr , 100,  0, 500));
             topEta  .push_back( bookHisto<TH1D>("topEta_" + wpStr ,  100, -5, 5));
             topDisc  .push_back( bookHisto<TH1D>("topDisc_" + wpStr ,  1000, -1, 1));
-            topDiscGenMatch  .push_back( bookHisto<TH1D>("topDiscGenMatch_" + wpStr ,  1000, -1, 1));
-            topDiscNotGenMatch  .push_back( bookHisto<TH1D>("topDiscNotGenMatch_" + wpStr ,  1000, -1, 1));
-
+            topDiscGenMatchWP       .push_back( bookHisto<TH1D>("topDiscGenMatchWP_" + wpStr ,  1000, -1, 1));  
+            topDiscNotGenMatchWP    .push_back( bookHisto<TH1D>("topDiscNotGenMatchWP_" + wpStr ,  1000, -1, 1)); 
+            topCandDiscGenMatchWP   .push_back( bookHisto<TH1D>("topCandDiscGenMatchWP_" + wpStr , 1000, -1, 1)); 
+            topCandDiscNotGenMatchWP.push_back( bookHisto<TH1D>("topCandDiscNotGenMatchWP_" + wpStr , 1000, -1, 1));            
+ 
             topPtGenMatch   .push_back( bookHisto<TH1D>("topPtGenMatch_" + wpStr ,   100,  0, 1000));
             topPGenMatch    .push_back( bookHisto<TH1D>("topPGenMatch_" + wpStr ,   100,  0, 1000));
             topMassGenMatch .push_back( bookHisto<TH1D>("topMassGenMatch_" + wpStr , 100,  0, 500));
@@ -277,6 +285,10 @@ public:
             fakerateNb2  .push_back( bookHisto<TH1D>("fakerateNb2_" + wpStr ,  21,-0.5, 20.5));
             fakerateHT2  .push_back( bookHisto<TH1D>("fakerateHT2_" + wpStr ,  200,0, 4000));
             fakerateHighestDisc2  .push_back( bookHisto<TH1D>("fakerateHighestDisc2_" + wpStr ,  1000,-1,1));
+
+            genTopMatchPt  .push_back( bookHisto<TH1D>("genTopMatchPt_" + wpStr ,   100,  0, 1000));
+            genTopMatchMass.push_back( bookHisto<TH1D>("genTopMatchMass_" + wpStr , 100,  0, 500));
+            genTopMatchEta .push_back( bookHisto<TH1D>("genTopMatchEta_" + wpStr ,  100, -5, 5));            
         }
     }
 
@@ -314,29 +326,27 @@ public:
         tr.registerDerivedVar("MET_float", float(tr.template getVar<double>("MET")));
         tr.registerDerivedVar("METPhi_float", float(tr.template getVar<double>("METPhi")));
         tr.registerDerivedVar("HT_float", float(tr.template getVar<double>("HT")));
-        //tr.registerDerivedVar("bestTopMassCand_float", float(tr.template getVar<double>("bestTopMassCand")));
 
-        met_                 = &tr.template getVar<float>("MET_float");
-        metphi_              = &tr.template getVar<float>("METPhi_float");
-        ht_                  = &tr.template getVar<float>("HT_float");
-        highestDisc_         = &tr.template getVar<float>("highestDisc");
-        vtxSize_             = &tr.template getVar<int>("NVtx");
-        cntCSVS_             = &tr.template getVar<int>("NGoodBJets_pt45");
-        ttr_                 =  tr.template getVar<TopTaggerResults*>("ttr");
-        cntNJetsPt30Eta24_   = &tr.template getVar<int>("NGoodJets_pt45");
-        jets_                = &tr.template getVec<TLorentzVector>("GoodJets_pt45_tlv");
-        lepton_              = &tr.template getVar<TLorentzVector>("singleLepton");
-        bestCandLV_          = &tr.template getVar<TLorentzVector>("bestTopMassLVCand");
-        bestTopMass_         = &tr.template getVar<float>("bestTopMassCand");
-        bestTopMassTopTag_   = &tr.template getVar<bool>("bestTopMassTopTagCand");
-        bestTopMassGenMatch_ = &tr.template getVar<bool>("bestTopMassGenMatchCand");
+        met_                   = &tr.template getVar<float>("MET_float");
+        metphi_                = &tr.template getVar<float>("METPhi_float");
+        ht_                    = &tr.template getVar<float>("HT_float");
+        highestDisc_           = &tr.template getVar<float>("highestDisc");
+        vtxSize_               = &tr.template getVar<int>("NVtx");
+        cntCSVS_               = &tr.template getVar<int>("NGoodBJets_pt45");
+        ttr_                   =  tr.template getVar<TopTaggerResults*>("ttr");
+        cntNJetsPt30Eta24_     = &tr.template getVar<int>("NGoodJets_pt45");
+        jets_                  = &tr.template getVec<TLorentzVector>("GoodJets_pt45_tlv");
+        lepton_                = &tr.template getVar<TLorentzVector>("singleLepton");
+        bestCandLV_            = &tr.template getVar<TLorentzVector>("bestTopMassLVCand");
+        bestTopMass_           = &tr.template getVar<float>("bestTopMassCand");
+        bestTopMassTopTag_     = &tr.template getVar<bool>("bestTopMassTopTagCand");
+        bestTopMassGenMatch_   = &tr.template getVar<bool>("bestTopMassGenMatchCand");
         bestTopMassTopTagDisc_ = &tr.template getVar<float>("bestTopMassTopTagDisc");
 
-        cutMuVec_            = &tr.template getVec<TLorentzVector>("Muons");
-        cutElecVec_          = &tr.template getVec<TLorentzVector>("Electrons");
-        tightPhotonsVec_     = &tr.template getVec<TLorentzVector>("tightPhotons");
-        genTops_             = &tr.template getVec<TLorentzVector>("hadtops");
-        //std::cout << "inside setStealthStopVar()" << genTops_->size() << std::endl;
+        cutMuVec_              = &tr.template getVec<TLorentzVector>("Muons");
+        cutElecVec_            = &tr.template getVec<TLorentzVector>("Electrons");
+        tightPhotonsVec_       = &tr.template getVec<TLorentzVector>("tightPhotons");
+        genTops_               = &tr.template getVec<TLorentzVector>("hadtops");
     }
 
     void fillWithCutFlow(const std::vector<std::pair<std::string, bool>>& cuts, const TUPLECLASS& tr, const float& eWeight, TRandom* trand)
@@ -462,17 +472,17 @@ public:
             if(fabs(genTop.Eta()) < 2.0) genTopAcptEvt = true;
         }
 
-        for(const auto& top : ttr_->getTops())
-        {
-            const auto* genTop = top->getBestGenTopMatch();
-            if(genTop)
-            {
-                genTopMatchEvt = true;
-                genTopMatchPt->Fill(genTop->Pt(), eWeight);
-                genTopMatchMass->Fill(genTop->M(), eWeight);
-                genTopMatchEta->Fill(genTop->Eta(), eWeight);
-            }
-        }
+        //for(const auto& top : ttr_->getTops())
+        //{
+        //    const auto* genTop = top->getBestGenTopMatch();
+        //    if(genTop)
+        //    {
+        //        genTopMatchEvt = true;
+        //        genTopMatchPt->Fill(genTop->Pt(), eWeight);
+        //        genTopMatchMass->Fill(genTop->M(), eWeight);
+        //        genTopMatchEta->Fill(genTop->Eta(), eWeight);
+        //    }
+        //}
 
         //Fill genTop event variable plots
         if(genTopEvt){
@@ -612,6 +622,28 @@ public:
         topCandMaxDisc->Fill(discMax, eWeight);
         topCandMaxGenMatchDisc->Fill(discMaxGenMatch, eWeight);
 
+        // -------------------------------------------
+        // -- for MVA score distribution & ROC plot
+        // -------------------------------------------
+        for(auto& top : ttr_->getTops())
+        { 
+            if(true)
+            {
+                float discriminator = top->getDiscriminator();
+                for(auto& top : ttr_->getTops())  
+                {
+                    if(top->getBestGenTopMatch() != nullptr)
+                    {
+                        topDiscGenMatch->Fill(discriminator, eWeight);
+                    }   
+                    else
+                    {
+                        topDiscNotGenMatch->Fill(discriminator, eWeight);
+                    }
+                }
+            }
+        }
+
         if(randCandIndicies.size() > 0 ) 
         {
             int nCand = trand->Integer(randCandIndicies.size());
@@ -625,6 +657,9 @@ public:
             randomTopCandMassByPt->Fill(topCand.p().M(), topCand.p().Pt(), eWeight);;
         }
 
+        // -----------------------------------------------
+        // -- fill histograms inside working point loop
+        // -----------------------------------------------
         for(unsigned int iWP = 0; iWP < workingPoints_.size(); ++iWP)
         {
             float wp = workingPoints_[iWP];
@@ -723,15 +758,36 @@ public:
                         topPGenMatch[iWP]->Fill(top->p().P(), eWeight);
                         topMassGenMatch[iWP]->Fill(top->p().M(), eWeight);
                         topEtaGenMatch[iWP]->Fill(top->p().Eta(), eWeight);
-                        topDiscGenMatch[iWP]->Fill(top->getDiscriminator(), eWeight);
+                        topDiscGenMatchWP[iWP]->Fill(top->getDiscriminator(), eWeight);
                     }
                     else
                     {
-                        topDiscNotGenMatch[iWP]->Fill(top->getDiscriminator(), eWeight);
+                        topDiscNotGenMatchWP[iWP]->Fill(top->getDiscriminator(), eWeight);
                     }
                 }
             }
 
+            // ----------------------------------------
+            // -- for MVA score distribution & ROC plot
+            // ----------------------------------------
+            for(auto& topCand : ttr_->getTopCandidates())
+            {
+                if(topCand.getDiscriminator() > wp) 
+                {
+                    if(topCand.getBestGenTopMatch() != nullptr)
+                    {
+                        topCandDiscGenMatchWP[iWP]->Fill(topCand.getDiscriminator(), eWeight);
+                    }
+                    else
+                    {
+                        topCandDiscNotGenMatchWP[iWP]->Fill(topCand.getDiscriminator(), eWeight);
+                    }
+                }
+            }
+
+            // -----------------------------------------
+            // -- event-wise fakeaRate for different WPs
+            // -----------------------------------------
             for(auto& top : ttr_->getTops())
             {
                 if(top->getDiscriminator() > wp && top->getNConstituents() == 3 && top->getBestGenTopMatch() == nullptr)
@@ -758,6 +814,9 @@ public:
                 }
             }
 
+            // ------------------------------------------
+            // -- object-wise fakeaRate for different WPs
+            // ------------------------------------------ 
             if(randCandIndicies.size() > 0)
             {
                 int nCand = trand->Integer(randCandIndicies.size());
@@ -778,6 +837,22 @@ public:
                     }
                 }
             }
+
+            // -----------------------------------------------
+            // -- variables of efficiency for different WPs
+            // -----------------------------------------------
+            for(const auto& top : ttr_->getTops())
+            {
+                const auto* genTop = top->getBestGenTopMatch();
+                if(genTop)
+                {
+                    genTopMatchEvt = true;
+                    genTopMatchPt[iWP]->Fill(genTop->Pt(), eWeight);
+                    genTopMatchMass[iWP]->Fill(genTop->M(), eWeight);
+                    genTopMatchEta[iWP]->Fill(genTop->Eta(), eWeight);
+                }
+            }
+ 
         }
     }
     
