@@ -803,7 +803,7 @@ public:
 
             for(auto& top : ttr_->getTops())
             {
-                if(top->getDiscriminator() > wp)
+                if(top->getDiscriminator() > wp && top->getNConstituents() == 3)
                 {
                     fakerateMET2[iWP]->Fill(*met_, eWeight);
                     fakerateNj2[iWP]->Fill(*cntNJetsPt30Eta24_, eWeight);
@@ -843,7 +843,7 @@ public:
             // --------------------------
             for(const auto& top : ttr_->getTops())
             {
-                if(top->getDiscriminator() > wp && top->getNConstituents() == 3)
+                if(top->getDiscriminator() > wp)
                 {
                     const auto* genTop = top->getBestGenTopMatch();
                     if(genTop)
