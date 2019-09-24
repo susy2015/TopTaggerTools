@@ -25,10 +25,13 @@ public:
     std::string outputFile;
     std::string legName;
     std::string wp;
+    
+    TaggerInfo(std::string inputFile, std::string outputFile, std::string legName, std::string wp) : inputFile(inputFile), outputFile(outputFile), legName(legName), wp(wp) {} 
+    ~TaggerInfo(){}
 };
 
 void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
-               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.97")
+               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.99")
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -110,7 +113,6 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
         ratio->SetBinContent(i,ratioNum);
         ratio->SetBinError(i,errorNum);
     }
-
     double maxDw = ratio->GetMaximum();
     double minDw = ratio->GetMinimum();
 
@@ -166,7 +168,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
         Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
         for(const auto& s : selections)
         {
-            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3, tI.wp);
+            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3, tI.wp); 
         }
 
         TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
@@ -184,7 +186,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
         }
     
         f->Write();
-        f->Close();
+        //f->Close();
 
         vecPlots.push_back(fakeratePlots);
     }
@@ -207,76 +209,66 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 int main()
 {
     TH1::AddDirectory(false);
+    std::vector<std::string> selections = {"histos/", "Njet7/", "Njet8/", "Njet9/", "Njet10/", "Njet11/", "Njet12/", "Njet13/"};
     
-    // -------------------------------------------------------------------
-    // -- Comparing joes test top tagger to the full top tagger: WP 0.7
-    // -------------------------------------------------------------------
-    //std::vector<std::string> selections = {"Lep0/", "Lep1/", "QCD/", "QCDb/"};
-    //std::vector<TaggerInfo> joeTest_TTbarSingleLepT
+    //// ----------------
+    //// -- 2016 TTbar
+    //// ----------------
+    //std::vector<TaggerInfo> TTbar2016
     //{
-    //    {"joesGroup/fullTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLep_fullTopTagger_0.7WP.root"    , "Full TT 0.7 WP"},
-    //    {"joesGroup/joeTestTopTagger_0.7WP/TT_TTbarSingleLepT-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_TTbarSingleLepT_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger92.root", "Resolved - 2016_TT - WP 0.92", "0.920"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger99.root", "Resolved - 2016_TT - WP 0.99", "0.990"},
     //};
+    //runPlotter(TTbar2016, selections, "2016_TT_compareWP-92-99/");
 
-    //std::vector<TaggerInfo> joeTest_QCD
+    //// ----------------
+    //// -- 2017 TTbar
+    //// ----------------
+    //std::vector<TaggerInfo> TTbar2017 
     //{
-    //    {"joesGroup/fullTopTagger_0.7WP/TT_QCD-2018-4-22.root"   , "outputRoot/efficiencyandFakeRatePlots_TT_QCD_fullTopTagger_0.7WP.root"   , "Full TT 0.7 WP"},
-    //    {"joesGroup/joeTestTopTagger_0.7WP/TT_QCD-2018-4-22.root", "outputRoot/efficiencyandFakeRatePlots_TT_QCD_joeTestTopTagger_0.7WP.root", "JoeTest TT 0.7 WP"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger92.root", "Resolved - 2017_TT - WP 0.92", "0.920"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger99.root", "Resolved - 2017_TT - WP 0.99", "0.990"}
     //};
+    //runPlotter(TTbar2017, selections, "2017_TT_compareWP-92-99/");
 
-    //runPlotter(joeTest_TTbarSingleLepT, selections, "0.7WP_joeTest_test/");
-    //runPlotter(joeTest_QCD, selections, "0.7WP_joeTest_test/");
+    //// ----------------
+    //// -- 2018 TTbar
+    //// ----------------
+    //std::vector<TaggerInfo> TTbar2018
+    //{
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger92.root", "Resolved - 2018_TT - WP 0.92", "0.920"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger99.root", "Resolved - 2018_TT - WP 0.99", "0.990"},
+    //};
+    //runPlotter(TTbar2018, selections, "2018_TT_compareWP-92-99/");
 
-    // ----------------------------------------------------
-    // -- Stealth stop fake rate for resolved top tagger
-    // ----------------------------------------------------
-    std::vector<std::string> selections = {"histos/"};
-    
-    // -----------
-    // -- TTbar 
-    // -----------
-    // 2016
-    std::vector<TaggerInfo> TTbar2016 
+    //// --------------
+    //// -- 2016 QCD 
+    //// --------------
+    //std::vector<TaggerInfo> QCD2016
+    //{
+    //  {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger92.root", "Resolved - 2016_QCD - WP 0.92", "0.920"},
+    //  {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger99.root", "Resolved - 2016_QCD - WP 0.99", "0.990"},
+    //};
+    //runPlotter(QCD2016, selections, "2016_QCD_compareWP-92-99/");
+     
+    //// --------------
+    //// -- 2017 QCD
+    //// --------------
+    //std::vector<TaggerInfo> QCD2017
+    //{
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger92.root", "Resolved - 2017_QCD - WP 0.92", "0.920"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger99.root", "Resolved - 2017_QCD - WP 0.99", "0.990"},
+    //};
+    //runPlotter(QCD2017, selections, "2017_QCD_compareWP-92-99/");
+
+    // --------------
+    // -- 2018 QCD
+    // --------------
+    std::vector<TaggerInfo> QCD2018
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "Resolved - 2016_TT - WP 0.92", "0.920"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "Resolved - 2016_TT - WP 0.87", "0.870"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "Resolved - 2016_TT - WP 0.95", "0.950"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger.root", "Resolved - 2016_TT - WP 0.97", "0.970"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger92.root", "Resolved - 2018_QCD - WP 0.92", "0.920"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger99.root", "Resolved - 2018_QCD - WP 0.99", "0.990"},
     };
-    runPlotter(TTbar2016, selections, "2016_TT_compareWP-92-97");
-
-
-    // 2017
-    std::vector<TaggerInfo> TTbar2017
-    {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "Resolved - 2017_TT - WP 0.92", "0.920"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "Resolved - 2017_TT - WP 0.87", "0.870"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "Resolved - 2017_TT - WP 0.95", "0.950"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "Resolved - 2017_TT - WP 0.97", "0.970"},
-    };
-    runPlotter(TTbar2017, selections, "2017_TT_compareWP-92-97");
-
-    // ---------
-    // -- QCD 
-    // --------
-    // 2016
-    std::vector<TaggerInfo> QCDbar2016
-    {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger.root", "Resolved - 2016_QCD - WP 0.92", "0.920"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger.root", "Resolved - 2016_QCD - WP 0.87", "0.870"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger.root", "Resolved - 2016_QCD - WP 0.95", "0.950"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_9thSlides_11.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger.root", "Resolved - 2016_QCD - WP 0.97", "0.970"},
-    };
-    runPlotter(QCDbar2016, selections, "2016_QCD_compareWP-92-97");
-
-    // 2017
-    std::vector<TaggerInfo> QCDbar2017
-    {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCDbar_ResolvedTopTagger.root", "Resolved - 2017_QCD - WP 0.92", "0.920"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCDbar_ResolvedTopTagger.root", "Resolved - 2017_QCD - WP 0.87", "0.870"},
-        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCDbar_ResolvedTopTagger.root", "Resolved - 2017_QCD - WP 0.95", "0.950"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_9thSlides_11.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCDbar_ResolvedTopTagger.root", "Resolved - 2017_QCD - WP 0.97", "0.970"},
-    };
-    runPlotter(QCDbar2017, selections, "2017_QCD_compareWP-92-97");
+    runPlotter(QCD2018, selections, "2018_QCD_compareWP-92-99/");
 
 }
