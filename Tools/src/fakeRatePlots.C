@@ -31,7 +31,7 @@ public:
 };
 
 void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
-               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.99")
+               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.95")
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
@@ -217,9 +217,9 @@ int main()
     //std::vector<TaggerInfo> TTbar2016
     //{
     //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger92.root", "Resolved - 2016_TT - WP 0.92", "0.920"},
-    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger99.root", "Resolved - 2016_TT - WP 0.99", "0.990"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger95.root", "Resolved - 2016_TT - WP 0.95", "0.950"},
     //};
-    //runPlotter(TTbar2016, selections, "2016_TT_compareWP-92-99/");
+    //runPlotter(TTbar2016, selections, "2016_TT_compareWP-92-95/");
 
     //// ----------------
     //// -- 2017 TTbar
@@ -227,9 +227,9 @@ int main()
     //std::vector<TaggerInfo> TTbar2017 
     //{
     //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger92.root", "Resolved - 2017_TT - WP 0.92", "0.920"},
-    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger99.root", "Resolved - 2017_TT - WP 0.99", "0.990"}
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger95.root", "Resolved - 2017_TT - WP 0.95", "0.950"}
     //};
-    //runPlotter(TTbar2017, selections, "2017_TT_compareWP-92-99/");
+    //runPlotter(TTbar2017, selections, "2017_TT_compareWP-92-95/");
 
     //// ----------------
     //// -- 2018 TTbar
@@ -237,9 +237,9 @@ int main()
     //std::vector<TaggerInfo> TTbar2018
     //{
     //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger92.root", "Resolved - 2018_TT - WP 0.92", "0.920"},
-    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger99.root", "Resolved - 2018_TT - WP 0.99", "0.990"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger95.root", "Resolved - 2018_TT - WP 0.95", "0.950"},
     //};
-    //runPlotter(TTbar2018, selections, "2018_TT_compareWP-92-99/");
+    //runPlotter(TTbar2018, selections, "2018_TT_compareWP-92-95/");
 
     //// --------------
     //// -- 2016 QCD 
@@ -247,9 +247,9 @@ int main()
     //std::vector<TaggerInfo> QCD2016
     //{
     //  {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger92.root", "Resolved - 2016_QCD - WP 0.92", "0.920"},
-    //  {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger99.root", "Resolved - 2016_QCD - WP 0.99", "0.990"},
+    //  {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger95.root", "Resolved - 2016_QCD - WP 0.95", "0.950"},
     //};
-    //runPlotter(QCD2016, selections, "2016_QCD_compareWP-92-99/");
+    //runPlotter(QCD2016, selections, "2016_QCD_compareWP-92-95/");
      
     //// --------------
     //// -- 2017 QCD
@@ -257,9 +257,9 @@ int main()
     //std::vector<TaggerInfo> QCD2017
     //{
     //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger92.root", "Resolved - 2017_QCD - WP 0.92", "0.920"},
-    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger99.root", "Resolved - 2017_QCD - WP 0.99", "0.990"},
+    //    {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger95.root", "Resolved - 2017_QCD - WP 0.95", "0.950"},
     //};
-    //runPlotter(QCD2017, selections, "2017_QCD_compareWP-92-99/");
+    //runPlotter(QCD2017, selections, "2017_QCD_compareWP-92-95/");
 
     // --------------
     // -- 2018 QCD
@@ -267,8 +267,8 @@ int main()
     std::vector<TaggerInfo> QCD2018
     {
         {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger92.root", "Resolved - 2018_QCD - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger99.root", "Resolved - 2018_QCD - WP 0.99", "0.990"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger95.root", "Resolved - 2018_QCD - WP 0.95", "0.950"},
     };
-    runPlotter(QCD2018, selections, "2018_QCD_compareWP-92-99/");
+    runPlotter(QCD2018, selections, "2018_QCD_compareWP-92-95/");
 
 }
