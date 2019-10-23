@@ -4,16 +4,6 @@
 
 #include "TopTaggerTools/Tools/include/HistoContainer.h"
 
-#include "derivedTupleVariables.h"
-#include "SusyAnaTools/Tools/BTagCorrector.h"
-#include "SusyAnaTools/Tools/TTbarCorrector.h"
-#include "SusyAnaTools/Tools/ISRCorrector.h"
-#include "SusyAnaTools/Tools/PileupWeights.h"
-#include "SusyAnaTools/Tools/customize.h"
-
-#include "TopTagger/TopTagger/interface/TopTaggerResults.h"
-#include "TopTagger/TopTagger/interface/Constituent.h"
-
 #include <iostream>
 #include <string>
 #include <vector>
@@ -29,6 +19,7 @@
 #include "TLegend.h"
 #include "TRandom3.h"
 #include "TFile.h"
+#include "TChain.h"
 
 void stripRoot(std::string &path)
 {
@@ -184,27 +175,14 @@ int main(int argc, char* argv[])
         savefile = false;
     }
 
-    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor, AnaSamples::luminosity);
-    AnaSamples::SampleCollection sc("sampleCollections.cfg", ss);
+    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor);
+    //AnaSamples::SampleCollection sc("sampleCollections.cfg", ss);
 
-    if(dataSets.find("Data") != std::string::npos)
-    {
-       doWgt = false;
-    }
+    HistoContainer histsBaselineHighDM("baselineHighDm");
+    HistoContainer histsInclusive("Inclusive");
 
-    if(dataSets.find("TT") != std::string::npos)
-    {
-       enableTTbar = true;
-    }
-
-    if(dataSets.find("Pt15to7000") != std::string::npos && !overrideStored)
-    {
-       enableStored = true;
-    }
-
-    HistoContainer<NTupleReader> histsTTbar("ttbar"), histsTTbarLep("ttbarLep"), histsQCD("QCD"), histsQCDb("QCDb"), histsLowHTQCD("lowHTQCD"), histsLowHTQCDb("lowHTQCDb"), histsPhoton("photon"), histsDilepton("dilepton");
-
-    TRandom* trand = new TRandom3();
+    MiniTupleMaker mtm("miniTree_" + filename, "Events");
+    mtm.setTupleVars({"Stop0l_evtWeight", "Pass_JetID", "Pass_CaloMETRatio", "Pass_EventFilter", "Pass_highDM", "Pass_lowDM", "Pass_Baseline", "FatJet_pt", "FatJet_eta", "FatJet_phi", "FatJet_mass", "FatJet_msoftdrop", "FatJet_deepTag_TvsQCD", "FatJet_nGenPartMatch", "FatJet_nGenTopConstMatch", "FatJet_Stop0l"});
 
     try
     {
@@ -219,25 +197,13 @@ int main(int argc, char* argv[])
             std::cout << "Tree: " << fs.treePath << std::endl;
 
             //plotterFunctions::SystematicPrep sysPrep;
-            plotterFunctions::PrepareTopCRSelection prepTopCR(JECSys);
-            plotterFunctions::PrepareTopVars prepareTopVars("TopTagger.cfg");
-            plotterFunctions::TriggerInfo triggerInfo(false, false);
-            TTbarCorrector ttbarCorrector(false, "");
-            ISRCorrector ISRcorrector("allINone_ISRJets.root","","");
-
             NTupleReader tr(t, {"run"});
-
-            tr.registerFunction(filterEvents);
-            tr.registerFunction(prepTopCR);
-            tr.registerFunction(prepareTopVars);
-            tr.registerFunction(triggerInfo);
-            tr.registerFunction(ttbarCorrector);
-            tr.registerFunction(ISRcorrector);
 
             float fileWgt = fs.getWeight();
 
-            const int printInterval = 1000;
+            const int printInterval = 10000;
             int printNumber = 0;
+
 
             while(tr.getNextEvent())
             {
@@ -248,220 +214,80 @@ int main(int argc, char* argv[])
                     std::cout << "Event #: " << printNumber * printInterval << std::endl;
                 }
 
-                const float& met    = tr.getVar<float>("MET_pt");
-                const float& metphi = tr.getVar<float>("MET_phi");
-
-                TLorentzVector MET;
-                MET.SetPtEtaPhiM(met, 0.0, metphi, 0.0);
-
-                const bool&  passNoiseEventFilter = (tr.getVar<bool>("passNoiseEventFilter") || noNoiseFilter);
-                const bool&  passSingleLep20      = tr.getVar<bool>("passSingleLep20");
-                const bool&  passSingleMu40       = tr.getVar<bool>("passSingleMu40");
-                const bool&  passLeptonVeto       = tr.getVar<bool>("passLeptVeto");
-                const bool&  passdPhis            = tr.getVar<bool>("passdPhis");
-                const float& ht                   = tr.getVar<float>("HT");
-
-                const int&    nbCSV                = tr.getVar<int>("cntCSVS");
-
-                const bool& passMuTrigger     = tr.getVar<bool>("passMuTrigger");
-                const bool& passElecTrigger   = tr.getVar<bool>("passElecTrigger");
-                const bool& passSearchTrigger = tr.getVar<bool>("passSearchTrigger");
-                const bool& passHighHtTrigger = tr.getVar<bool>("passHighHtTrigger");
-                const bool& passPhotonTrigger = tr.getVar<bool>("passPhotonTrigger");
-
-                const bool& passfloatLep      = tr.getVar<bool>("passfloatLep");
-
-                const std::vector<TLorentzVector>& cutMuVec = tr.getVec<TLorentzVector>("cutMuVec");
-                const std::vector<float>& cutMuMTlepVec = tr.getVec<float>("cutMuMTlepVec");
-                const std::vector<TLorentzVector>& cutElecVec = tr.getVec<TLorentzVector>("cutElecVec");
-                const std::vector<float>& cutElecMTlepVec = tr.getVec<float>("cutElecMTlepVec");
-
-                const TopTaggerResults *ttr_                 =  tr.getVar<TopTaggerResults const*>("ttrMVA");
-
-                const float isData = !tr.checkBranch("GenPart_pt");
-
-                float eWeight = fileWgt;
-
-                float muTrigEff = 1.0;
-                const std::vector<TLorentzVector>& jetsLVec = tr.getVec<TLorentzVector>(jetVecLabel);
-
-                if(!isData && doWgt)
-                {
-                    const float& puWF               = 1.0;//tr.getVar<float>("puWeight");
-                    //std::cout << "Calculate btag WF" << std::endl;
-//                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
-//                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
-//                                                                                        "bTagSF_EventWeightSimple_Central")));
-                    const float bTagWF = 1.0; /// FIX ME!!!!!!!!!!
-
-                    const float& stored_weight      = tr.getVar<float>("genWeight_sign");
-                    if(enableTTbar & !noCorr)
-                    {
-                        const float& ttbarWF            = 1.0;//tr.getVar<float>("TTbarWF");
-                        eWeight *= ttbarWF;
-                    }
-//                    const float& triggerWF          = tr.getVar<float>("TriggerEffMC");
-
-                    muTrigEff = tr.getVar<float>("muTrigWgt");
-
-                    eWeight *= stored_weight;
-                    eWeight *= puWF;
-                    eWeight *= bTagWF;
-                }
+                double eWeight = fileWgt;
                 
-                const std::vector<float>& recoJetsBtag     = tr.getVec<float>("Jet_btagDeepB");
+                //cuts
+                const bool& Pass_JetID        = tr.getVar<bool>("Pass_JetID");
+                const bool& Pass_CaloMETRatio = tr.getVar<bool>("Pass_CaloMETRatio");
+                const bool& Pass_EventFilter  = tr.getVar<bool>("Pass_EventFilter");
+                const bool& Pass_highDM       = tr.getVar<bool>("Pass_highDM");
 
-                //Find lepton (here it is assumed there is exactly 1 lepton)
-                TLorentzVector lepton;
-                float mTLep = 999.9;
-                for(unsigned int i = 0; i < cutMuVec.size(); ++i)
+                const auto& fatJet_TLV   = tr.getVec_LVFromNano<float>("FatJet");
+
+                const auto& genPart_TLV              = tr.getVec_LVFromNano<float>("GenPart");
+                const auto& genPart_pdgId            = tr.getVec<int>("GenPart_pdgId");
+                const auto& genPart_genPartIdxMother = tr.getVec<int>("GenPart_genPartIdxMother");
+                const auto& genPart_statusFlags      = tr.getVec<int>("GenPart_statusFlags");
+
+                std::pair<std::vector<TLorentzVector>, std::vector<std::vector<const TLorentzVector*>>> genTops = ttUtility::GetTopdauGenLVecFromNano(genPart_TLV, genPart_pdgId, genPart_statusFlags, genPart_genPartIdxMother);
+
+                std::vector<int>& fatJet_nGenTopConstMatch = tr.createDerivedVec<int>("FatJet_nGenTopConstMatch", fatJet_TLV.size());
+                for(unsigned int i = 0; i < fatJet_TLV.size(); ++i)
                 {
-                    if(cutMuVec[i].Pt() > 20)
+                    for(const auto& genTopConst : genTops.second)
                     {
-                        lepton = cutMuVec[i];
-                        mTLep = cutMuMTlepVec[i];
-                        break;
-                    }
-                }
-                for(unsigned int i = 0; i < cutElecVec.size(); ++i)
-                {
-                    if(cutElecVec[i].Pt() > 20)
-                    {
-                        lepton = cutElecVec[i];
-                        mTLep = cutElecMTlepVec[i];
-                        break;
-                    }
-                }
-
-                tr.registerDerivedVar("lepton", lepton);
-                tr.registerDerivedVar("mTLep", mTLep);
-
-                int cntNJetsPt30Eta24 = AnaFunctions::countJets(jetsLVec, AnaConsts::pt30Eta24Arr);
-
-                const bool& passPhoton200 = tr.getVar<bool>("passPhoton200");
-
-                // calculate passBLep
-                bool passBLep = false;
-                bool passLepTtag = false;
-                for(int i = 0; i < jetsLVec.size(); i++)
-                {
-                    //Is this a b-tagged jet (loose wp?)?
-                    if(recoJetsBtag[i] < 0.8) continue;
-
-                    float lepTopMass = (lepton + jetsLVec[i]).M();
-                    if(lepTopMass > 30 && lepTopMass < 180)
-                    {
-                        passLepTtag = true;
-                    }
-
-                    if(jetsLVec[i].DeltaR(lepton) < 1.5)
-                    {
-                        passBLep = true;
+                        int nMatch = 0;
+                        for(const auto& gp : genTopConst)
+                        {
+                            if(ROOT::Math::VectorUtil::DeltaR(fatJet_TLV[i], *gp) < 0.6)
+                            {
+                                ++nMatch;
+                            }
+                        }
+                        if(nMatch > fatJet_nGenTopConstMatch[i]) fatJet_nGenTopConstMatch[i] = nMatch;
                     }
                 }
 
-                float deltaPhiLepMET = fabs(lepton.DeltaPhi(MET));
-
-                //High HT QCD control sample
-                std::vector<std::pair<std::string, bool>> htQCDCuts = {
-                    {"trig",    (!isData || passHighHtTrigger)},
-                    {"filter",  passNoiseEventFilter},
-                    {"lepVeto", passLeptonVeto},
-                    {"nJet",    cntNJetsPt30Eta24 >= 4},
-                    {"HT1000",  ht > 1000},
-                };
-                histsQCD.fillWithCutFlow(htQCDCuts, tr, eWeight, trand);
-
-                //Low HT QCD control sample (For Fake study)
-                std::vector<std::pair<std::string, bool>> lowHTQCDCuts = {
-                    {"trig",    (!isData || passHighHtTrigger)},
-                    {"filter",  passNoiseEventFilter},
-                    {"lepVeto", passLeptonVeto},
-                    {"nJet",    cntNJetsPt30Eta24 >= 4},
-                    {"HT250",   ht > 250},
-                };
-                histsLowHTQCD.fillWithCutFlow(lowHTQCDCuts, tr, eWeight, trand);
-
-
-                //Low HT QCD control sample (For Fake study)
-                if( (!isData || passHighHtTrigger)
-                    && passNoiseEventFilter
-                    && passLeptonVeto
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && (ht > 250)
-                    )
+                std::vector<int>& fatJet_nGenPartMatch = tr.createDerivedVec<int>("FatJet_nGenPartMatch", fatJet_TLV.size());
+                for(unsigned int i = 0; i < fatJet_TLV.size(); ++i)
                 {
-                    histsLowHTQCDb.fill(tr, eWeight, trand);
+                    for(unsigned int j = 0; j < genPart_TLV.size(); ++j)
+                    {
+                        const int absPdgId = abs(genPart_pdgId[j]);
+                        if((absPdgId >= 1 && absPdgId <= 5) || absPdgId == 21) 
+                        {
+                            if(ROOT::Math::VectorUtil::DeltaR(fatJet_TLV[i], genPart_TLV[j]) < 0.6)
+                            {
+                                ++fatJet_nGenPartMatch[i];
+                            }
+                        }
+                    }
+                    if(fatJet_nGenPartMatch[i] >= 6) fatJet_nGenPartMatch[i] = 5;
                 }
 
-                //High HT QCD + b control sample
-                if( (!isData || passHighHtTrigger)
-                    && passNoiseEventFilter
-                    && passLeptonVeto
-                    && nbCSV >= 1
-                    && cntNJetsPt30Eta24 >= 4
-                    && (ht > 1000)
-                    )
-                {
-                    histsQCDb.fill(tr, eWeight, trand);
-                }
-
-                //photon control sample
-                if( (!isData || passPhotonTrigger)
-                    && passNoiseEventFilter
-                    && passLeptonVeto
-                    && cntNJetsPt30Eta24 >= 4
-                    && passPhoton200
-                    && ht > 400
-                    )
-                {
-                    histsPhoton.fill(tr, eWeight, trand);
-                }
-
-                //dilepton control sample
-                if( (!isData || passMuTrigger)
-                    && passNoiseEventFilter
-                    && cntNJetsPt30Eta24 >= 4
-                    && passfloatLep                    
-                    )
-                {
-                    histsDilepton.fill(tr, eWeight * muTrigEff, trand);
-                }
-
-                //semileptonic ttbar enriched control sample MET triggered
-                std::vector<std::pair<std::string, bool>> ttbarCuts = {
-                    {"trig",     (!isData || passSearchTrigger)},
-                    {"filter",   passNoiseEventFilter},
-                    {"njets",    passSingleLep20},
-                    {"mu40",     nbCSV >= 1},
-                    {"mTLep",    cntNJetsPt30Eta24 >= 4},
-                    {"nb",       passdPhis},
-                    {"dphi",     passBLep},
-                    {"BLep",     passLepTtag},
-                    {"LepTTag",  deltaPhiLepMET < 0.8},
-                    {"dPhiLMET", mTLep < 100},
-                    {"HT250",    ht > 250},
-                    {"MET250",   met > 250}
+                //High DM region
+                std::vector<std::pair<std::string, bool>> highDMCuts = {
+                    {"JetID",        Pass_JetID},
+                    {"CaloMETRatio", Pass_CaloMETRatio},
+                    {"EventFilter",  Pass_EventFilter},
+                    {"highDM",       Pass_highDM},
                 };
-                histsTTbar.fillWithCutFlow(ttbarCuts, tr, eWeight, trand);
+                histsBaselineHighDM.fillWithCutFlow(highDMCuts, tr, eWeight);
 
-                //semileptonic ttbar enriched control sample Mu triggered
-                std::vector<std::pair<std::string, bool>> ttbarLepCuts = {
-                    {"trig",     (!isData || passMuTrigger)},
-                    {"filter",   passNoiseEventFilter},
-                    {"njets",    cntNJetsPt30Eta24 >= 4},
-                    {"mu40",     passSingleMu40},
-                    {"mTLep",    mTLep < 100},
-                    {"nb",       nbCSV >= 1},
-                    {"dphi",     passdPhis},
-                    {"BLep",     passBLep},
-                    {"LepTTag",  passLepTtag},
-                    {"dPhiLMET", deltaPhiLepMET < 0.8},
-                    {"HT200",    ht > 200},
-                    {"MET50",    met > 50} 
+                //Inclusive
+                std::vector<std::pair<std::string, bool>> eventFilterOnly = {
+                    {"JetID",        Pass_JetID},
+                    {"CaloMETRatio", Pass_CaloMETRatio},
+                    {"EventFilter",  Pass_EventFilter},
                 };
-                histsTTbarLep.fillWithCutFlow(ttbarLepCuts, tr, eWeight * muTrigEff, trand);
+                histsInclusive.fillWithCutFlow(eventFilterOnly, tr, eWeight);
+
+                if(tr.isFirstEvent())
+                {
+                    mtm.initBranches(tr);
+                }
+
+                if(tr.getVar<bool>("Pass_Baseline")) mtm.fill();
             }
         }
     }
@@ -493,14 +319,8 @@ int main(int argc, char* argv[])
             throw "File is zombie";
         }
 
-        histsQCD.save(f);
-        histsLowHTQCD.save(f);
-        histsLowHTQCDb.save(f);
-        histsQCDb.save(f);
-        histsTTbar.save(f);
-        histsTTbarLep.save(f);
-        histsPhoton.save(f);
-        histsDilepton.save(f);
+        histsBaselineHighDM.save(f);
+        histsInclusive.save(f);
 
         f->Write();
         f->Close();
