@@ -362,7 +362,7 @@ public:
 
             cutFlow_->GetXaxis()->SetBinLabel(1, "all evt");
             cutFlowNoWgt_->GetXaxis()->SetBinLabel(1, "all evt");
-            for(int iBin = 1; iBin <= cuts.size(); ++iBin)
+            for(unsigned int iBin = 1; iBin <= cuts.size(); ++iBin)
             {
                 cutFlow_->GetXaxis()->SetBinLabel(iBin + EXTRACUT, cuts[iBin - 1].first.c_str());
                 cutFlowNoWgt_->GetXaxis()->SetBinLabel(iBin + EXTRACUT, cuts[iBin - 1].first.c_str());
@@ -575,12 +575,12 @@ public:
                 hdPhiMaxGenMatch->Fill(dPhiMax, eWeight);
             }
 
-            bool recoMatch = false;
+            //bool recoMatch = false;
             for(auto& top : ttr_->getTops())
             {
                 if(top == &topCand)
                 {
-                    recoMatch = true;
+                    //recoMatch = true;
                     break;
                 }
             }
