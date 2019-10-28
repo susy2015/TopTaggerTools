@@ -293,12 +293,4 @@ int main(int argc, char *argv[])
     else if (year == "2018")
         { runPlotter(TTbar2018, selections, "2018_TT_compareWP-92-96/"); }
 
-    else if (year == "2016")
-        { runPlotter(QCD2016, selections, "2016_QCD_compareWP-92-96/"); }
-
-    else if (year == "2017")
-        { runPlotter(QCD2017, selections, "2017_QCD_compareWP-92-96/"); }
-
-    else if (year == "2018")
-        { runPlotter(QCD2018, selections, "2018_QCD_compareWP-92-96/"); }
 }
