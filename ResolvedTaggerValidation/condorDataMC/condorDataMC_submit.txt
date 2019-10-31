@@ -1,0 +1,92 @@
+universe = vanilla
+Executable = $ENV(CMSSW_BASE)/src/ResolvedTagger/Tools/condorDataMC/goMakePlots.sh
+Requirements = OpSys == "LINUX"&& (Arch != "DUMMY" )
+Should_Transfer_Files = YES
+WhenToTransferOutput = ON_EXIT
+Transfer_Input_Files = $ENV(CMSSW_BASE)/src/ResolvedTagger/Tools/condorDataMC/goMakePlots.sh,$ENV(CMSSW_BASE)/src/ResolvedTagger/Tools/condorDataMC/DataMC.tar.gz,$ENV(CMSSW_BASE)/src/ResolvedTagger/Tools/condorDataMC/$ENV(CMSSW_VERSION).tar.gz
+Output = logs/makePlots_$(Process).stdout
+Error = logs/makePlots_$(Process).stderr
+Log = logs/makePlots_$(Process).log
+notify_user = ${LOGNAME}@FNAL.GOV
+x509userproxy = $ENV(X509_USER_PROXY)
+Arguments = DYJetsToLL_HT_2500toInf_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_2500toInf_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_1200to2500_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_1200to2500_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_800to1200_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_800to1200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_800to1200_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_800to1200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_600to800_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_600to800_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_600to800_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_600to800_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_600to800_2017 $ENV(CMSSW_VERSION) 4 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_600to800_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_600to800_2017 $ENV(CMSSW_VERSION) 6 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_600to800_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_400to600_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_400to600_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_400to600_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_400to600_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_400to600_2017 $ENV(CMSSW_VERSION) 4 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_400to600_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_400to600_2017 $ENV(CMSSW_VERSION) 6 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_400to600_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_200to400_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_200to400_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_200to400_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_200to400_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_200to400_2017 $ENV(CMSSW_VERSION) 4 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_200to400_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_200to400_2017 $ENV(CMSSW_VERSION) 6 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_200to400_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 4 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 6 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 8 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_100to200_2017 $ENV(CMSSW_VERSION) 10 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_100to200_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_70to100_2017 $ENV(CMSSW_VERSION) 0 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_70to100_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_70to100_2017 $ENV(CMSSW_VERSION) 2 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_70to100_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_70to100_2017 $ENV(CMSSW_VERSION) 4 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_70to100_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_70to100_2017 $ENV(CMSSW_VERSION) 6 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_70to100_2017.txt
+Queue
+
+Arguments = DYJetsToLL_HT_70to100_2017 $ENV(CMSSW_VERSION) 8 2 /eos/uscms/store/user/lpcsusyhad/Stop_production/Fall17_94X_v2_NanAOD_MC/PostProcessed_15Jan2019_v2p7/DYJetsToLL_HT_70to100_2017.txt
+Queue
+
