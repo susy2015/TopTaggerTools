@@ -12,29 +12,29 @@ import subprocess
 import datetime
 
 # TopTagger.cfg
-mvaFileName = ""
-with file(environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/TopTagger.cfg") as meowttcfgFile:
-    for line in meowttcfgFile:
-        line = line.split("#")[0]
-        if "modelFile" in line:
-            mvaFileName = line.split("=")[1].strip().strip("\"")
-            break
+#mvaFileName = ""
+#with file(environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/TopTagger.cfg") as meowttcfgFile:
+#    for line in meowttcfgFile:
+#        line = line.split("#")[0]
+#        if "modelFile" in line:
+#            mvaFileName = line.split("=")[1].strip().strip("\"")
+#            break
 
 #here I hack in the tarball for GMP, this needs to be generalized to the other options 
 
 #Here is the configuration for the Data/MC validation of the TopTagger 
 filestoTransferTT  = [environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/simpleAnalyzer",
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/TopTagger.cfg",
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/sampleCollections.cfg",
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/TopTagger.cfg",
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/sampleCollections.cfg",
                       environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/sampleSets.cfg",
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/%(trainingFile)s"%{"trainingFile":mvaFileName},
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/puppiCorr.root",
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/%(trainingFile)s"%{"trainingFile":mvaFileName},
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/puppiCorr.root",
                       environ["CMSSW_BASE"] + "/src/TopTagger/TopTagger/test/libTopTagger.so",
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/data/allINone_bTagEff.root", 
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/ISR_Root_Files/ISRWeights.root", 
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/ISR_Root_Files/allINone_ISRJets.root", 
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/CSVv2_Moriond17_B_H.csv", 
-                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/data/PileupHistograms_0121_69p2mb_pm4p6.root", 
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/data/allINone_bTagEff.root", 
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/ISR_Root_Files/ISRWeights.root", 
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/ISR_Root_Files/allINone_ISRJets.root", 
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/CSVv2_Moriond17_B_H.csv", 
+#                      environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/data/PileupHistograms_0121_69p2mb_pm4p6.root", 
                       ]
 
 #go make TTopTagger plots!

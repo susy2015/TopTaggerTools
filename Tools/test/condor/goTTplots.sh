@@ -45,7 +45,7 @@ ls -lhrt
 ./simpleAnalyzer -c -u -D $1 -N $3 -M $4 -O TT
 ls -lhrt
 
-mv TT*.root ${_CONDOR_SCRATCH_DIR}
+mv *.root ${_CONDOR_SCRATCH_DIR}
 #mv topStudyOutput_* /cms/data/pastika/condorOutput
 
 rm $(echo $6 | sed 's|.*/||')
