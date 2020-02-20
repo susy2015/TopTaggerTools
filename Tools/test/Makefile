@@ -1,9 +1,9 @@
 ## Variables set by configure 
-OPENCV_DIRECTORY    = 
+OPENCV_DIRECTORY    = /uscms_data/d3/pastika/zinv/dev/CMSSW_7_4_8/src/opencv
 HDF5_DIRECTORY      = /cvmfs/cms.cern.ch/slc6_amd64_gcc700/external/hdf5/1.8.17-omkpbe2
 HDF5_INC_DIRECTORY  = include
-TAGGERDIR           = /uscms/home/pastika/nobackup/zinv/test/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../TopTagger
-SUSYANATOOLSDIR     = /uscms/home/pastika/nobackup/zinv/test/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../SusyAnaTools
+TAGGERDIR           = /uscms/home/pastika/nobackup/zinv/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../TopTagger
+SUSYANATOOLSDIR     = /uscms/home/pastika/nobackup/zinv/CMSSW_10_2_9/src/TopTaggerTools/Tools/test/../../../SusyAnaTools
 
 CXX       = g++
 LD        = g++
@@ -30,17 +30,6 @@ INCLUDESDIRS  += -I. -I$(TAGGERDIR)/..
 TTIDIR     = $(TAGGERDIR)/TopTagger/include
 TPIDIR     = $(TAGGERDIR)/CfgParser/include
 
-#openCV include dirs and libs
-ifdef OPENCV_DIRECTORY
-	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/include/ -I$(OPENCV_DIRECTORY)/modules/core/include 
-	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/video/include -I$(OPENCV_DIRECTORY)/modules/objdetect/include 
-	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/ml/include/ -I$(OPENCV_DIRECTORY)/modules/photo/include/ 
-	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/imgproc/include/
-	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)
-
-	LIBS      += -L$(OPENCV_DIRECTORY)/lib -lopencv_ml -lopencv_core
-endif
-
 #hdf5 include dir
 INCLUDESDIRS  += -I$(HDF5_DIRECTORY)/$(HDF5_INC_DIRECTORY)
 
@@ -56,6 +45,17 @@ CXXDEPFLAGS = -MMD -MP
 #Necessary libraries, the order matters here!
 # ROOT libraries
 LIBS       = $(shell root-config --glibs)
+
+#openCV include dirs and libs
+ifdef OPENCV_DIRECTORY
+	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/include/ -I$(OPENCV_DIRECTORY)/modules/core/include 
+	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/video/include -I$(OPENCV_DIRECTORY)/modules/objdetect/include 
+	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/ml/include/ -I$(OPENCV_DIRECTORY)/modules/photo/include/ 
+	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)/modules/imgproc/include/
+	INCLUDESDIRS  += -I$(OPENCV_DIRECTORY)
+
+	LIBS      += -L$(OPENCV_DIRECTORY)/lib -lopencv_ml -lopencv_core
+endif
 
 # hdf5 libs
 LIBS += -L$(HDF5_DIRECTORY)/lib -lhdf5
@@ -98,7 +98,10 @@ $(ODIR)/%.o : $(TSDIR)/%.cc
 $(ODIR)/%.o : $(TSDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(CXXDEPFLAGS) -I$(TIDIR) -I$(INCLUDESDIRS) -o $@ -c $<
 
-simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/BTagCalibrationStandalone.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o
+simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o $(ODIR)/SusyUtility.o
+	$(LD) $^ $(LIBS) -o $@
+
+superSimpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/superSimpleAnalyzer.o
 	$(LD) $^ $(LIBS) -o $@
 
 clean:

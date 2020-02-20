@@ -422,7 +422,7 @@ namespace plotterFunctions
 
             const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagDeepB");
 
-            int cntCSVS = AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
+            int cntCSVS = tr.getVar<int>("Stop0l_nbtags");//AnaFunctions::countCSVS(jetsLVec, recoJetsBtag, AnaConsts::cutCSVS, AnaConsts::bTagArr);
 
             const float& met    = tr.getVar<float>("MET_pt");
             const float& metphi = tr.getVar<float>("MET_phi");
@@ -527,7 +527,7 @@ namespace plotterFunctions
             //// Pass lepton veto?
             bool passMuonVeto = (nMuons == AnaConsts::nMuonsSel);
             bool passEleVeto = (nElectrons == AnaConsts::nElectronsSel);
-            bool passIsoTrkVeto = (nIsoTrks == AnaConsts::nIsoTrksSel);
+//            bool passIsoTrkVeto = (nIsoTrks == AnaConsts::nIsoTrksSel);
 
             float Mmumu = -999.9;
             bool passfloatMuon = false;
@@ -540,7 +540,7 @@ namespace plotterFunctions
 
             // Calculate deltaPhi
             std::vector<float> * dPhiVec = new std::vector<float>();
-            (*dPhiVec) = AnaFunctions::calcDPhi(jetsLVec, metphi, 3, AnaConsts::dphiArr);
+            //(*dPhiVec) = AnaFunctions::calcDPhi(jetsLVec, metphi, 3, AnaConsts::dphiArr);
 
             // Pass deltaPhi?
             bool passdPhis = (dPhiVec->size() >= 3) && ((*dPhiVec)[0] >= AnaConsts::dPhi0_CUT && (*dPhiVec)[1] >= AnaConsts::dPhi1_CUT && (*dPhiVec)[2] >= AnaConsts::dPhi2_CUT);
@@ -575,8 +575,8 @@ namespace plotterFunctions
             tr.registerDerivedVar("passSingleLep30", nMuons_30GeV + nElectrons30 == 1);
             tr.registerDerivedVar("passfloatLep", passfloatMuon);
 
-            tr.registerDerivedVar("passLeptVetoNoMu", passEleVeto && passIsoTrkVeto);
-            tr.registerDerivedVar("passLeptVeto", passMuonVeto && passEleVeto && passIsoTrkVeto);
+            tr.registerDerivedVar("passLeptVetoNoMu", passEleVeto /*&& passIsoTrkVeto*/);
+            tr.registerDerivedVar("passLeptVeto", passMuonVeto && passEleVeto /*&& passIsoTrkVeto*/);
 
             tr.registerDerivedVec("dPhiVec", dPhiVec);
             tr.registerDerivedVar("passdPhis", passdPhis);
@@ -623,6 +623,7 @@ namespace plotterFunctions
 
 
             const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagDeepB");
+            //const std::vector<float>& recoJetsBtag      = tr.getVec<float>("Jet_btagCSVV2");
             const std::vector<float>& qgLikelihood      = tr.getVec<float>("Jet_qgl");
             
             //Helper function to turn int vectors into float vectors
@@ -649,7 +650,7 @@ namespace plotterFunctions
                 const std::vector<int>& genDecayMomIdxVec       = tr.getVec<int>("GenPart_genPartIdxMother");
 
                 //prep input object (constituent) vector
-                auto genMatchingInfo = ttUtility::GetTopdauGenLVecFromNano(genDecayLVec, genDecayPdgIdVec, genDecayStatFlag, genDecayMomIdxVec);
+                auto genMatchingInfo = ttUtility::GetTopdauGenLVecFromNano(genDecayLVec, genDecayPdgIdVec, genDecayStatFlag, genDecayMomIdxVec, 6, 3);
                 genTops = new std::vector<TLorentzVector>(std::move(genMatchingInfo.first));
                 genTopDaughters = new std::vector<std::vector<const TLorentzVector*>>(std::move(genMatchingInfo.second));
                 myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood, *genTops, *genTopDaughters);
@@ -662,6 +663,50 @@ namespace plotterFunctions
                 
                 myConstAK4Inputs = new ttUtility::ConstAK4Inputs<float>(jetsLVec, recoJetsBtag, qgLikelihood);
                 
+            }
+
+            auto& genTopP4Match = tr.createDerivedVec<TLorentzVector>("genTopP4Match");
+            auto& genTopP4Reco  = tr.createDerivedVec<TLorentzVector>("genTopP4Reco");
+            auto& genTopNRecoMatch = tr.createDerivedVec<int>("genTopNRecoMatch");
+            if(genTops && genTopDaughters)
+            {
+                for(unsigned int i = 0; i < genTops->size(); ++i)
+                {
+                    if((*genTopDaughters)[i].size() != 3) continue;
+                    
+                    std::set<const TLorentzVector*> matches;
+                    
+                    for(const auto& genDau : (*genTopDaughters)[i])
+                    {
+                        const TLorentzVector* bestJet = nullptr;
+                        double dRMin = 999.9;
+                        for(const auto& jet : jetsLVec)
+                        {
+                            if(jet.Pt() > 20)
+                            {
+                                double deltaR = ROOT::Math::VectorUtil::DeltaR(jet, *genDau);
+                                if(deltaR < dRMin)
+                                {
+                                    dRMin = deltaR;
+                                    bestJet = &jet;
+                                }
+                                //if(deltaR < 0.4) matches.insert(&jet);
+                            }
+                        }
+                        if(dRMin < 0.4) matches.insert(bestJet);
+                    }
+
+                    //std::cout << matches.size() << std::endl;
+                    genTopNRecoMatch.push_back(static_cast<int>(matches.size()));
+
+                    if(matches.size() == 3)
+                    {
+                        genTopP4Match.push_back((*genTops)[i]);
+                        TLorentzVector recoP;
+                        for(const auto& jetP : matches) recoP += *jetP;
+                        genTopP4Reco.push_back(recoP);
+                    }
+                }
             }
                 
             myConstAK4Inputs->addSupplamentalVector("qgLikelihood",                         tr.getVec<float>("Jet_qgl"));

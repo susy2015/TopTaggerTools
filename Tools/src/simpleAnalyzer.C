@@ -5,7 +5,7 @@
 #include "TopTaggerTools/Tools/include/HistoContainer.h"
 
 #include "derivedTupleVariables.h"
-#include "SusyAnaTools/Tools/BTagCorrector.h"
+//#include "SusyAnaTools/Tools/BTagCorrector.h"
 #include "SusyAnaTools/Tools/TTbarCorrector.h"
 #include "SusyAnaTools/Tools/ISRCorrector.h"
 #include "SusyAnaTools/Tools/PileupWeights.h"
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
         savefile = false;
     }
 
-    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor, AnaSamples::luminosity);
+    AnaSamples::SampleSet        ss("sampleSets.cfg", runOnCondor, 1.0);
     AnaSamples::SampleCollection sc("sampleCollections.cfg", ss);
 
     if(dataSets.find("Data") != std::string::npos)
@@ -231,8 +231,8 @@ int main(int argc, char* argv[])
             tr.registerFunction(prepTopCR);
             tr.registerFunction(prepareTopVars);
             tr.registerFunction(triggerInfo);
-            tr.registerFunction(ttbarCorrector);
-            tr.registerFunction(ISRcorrector);
+//            tr.registerFunction(ttbarCorrector);
+//            tr.registerFunction(ISRcorrector);
 
             float fileWgt = fs.getWeight();
 
@@ -287,12 +287,12 @@ int main(int argc, char* argv[])
 
                 if(!isData && doWgt)
                 {
-                    const float& puWF               = 1.0;//tr.getVar<float>("puWeight");
+                    const float& puWF               = tr.getVar<float>("puWeight");
                     //std::cout << "Calculate btag WF" << std::endl;
 //                    const float& bTagWF             = tr.getVar<float>((bTagSys == 1 ?  "bTagSF_EventWeightSimple_Up" : 
 //                                                                       (bTagSys == -1 ? "bTagSF_EventWeightSimple_Down" : 
 //                                                                                        "bTagSF_EventWeightSimple_Central")));
-                    const float bTagWF = 1.0; /// FIX ME!!!!!!!!!!
+                    const float bTagWF = tr.getVar<float>("BTagWeight"); /// FIX ME!!!!!!!!!!
 
                     const float& stored_weight      = tr.getVar<float>("genWeight_sign");
                     if(enableTTbar & !noCorr)
@@ -302,7 +302,7 @@ int main(int argc, char* argv[])
                     }
 //                    const float& triggerWF          = tr.getVar<float>("TriggerEffMC");
 
-                    muTrigEff = tr.getVar<float>("muTrigWgt");
+                    muTrigEff = 1.0;//tr.getVar<float>("muTrigWgt");
 
                     eWeight *= stored_weight;
                     eWeight *= puWF;
@@ -366,9 +366,9 @@ int main(int argc, char* argv[])
                 std::vector<std::pair<std::string, bool>> htQCDCuts = {
                     {"trig",    (!isData || passHighHtTrigger)},
                     {"filter",  passNoiseEventFilter},
-                    {"lepVeto", passLeptonVeto},
+//                    {"lepVeto", passLeptonVeto},
                     {"nJet",    cntNJetsPt30Eta24 >= 4},
-                    {"HT1000",  ht > 1000},
+                    {"HT150",  ht > 150},
                 };
                 histsQCD.fillWithCutFlow(htQCDCuts, tr, eWeight, trand);
 

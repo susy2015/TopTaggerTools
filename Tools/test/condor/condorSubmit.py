@@ -35,6 +35,8 @@ filestoTransferTT  = [environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/si
                       environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/ISR_Root_Files/allINone_ISRJets.root", 
                       environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/CSVv2_Moriond17_B_H.csv", 
                       environ["CMSSW_BASE"] + "/src/TopTaggerTools/Tools/test/data/PileupHistograms_0121_69p2mb_pm4p6.root", 
+                      "/uscms_data/d3/pastika/zinv/dev/CMSSW_7_4_8/src/opencv/lib/libopencv_core.so.3.1",
+                      "/uscms_data/d3/pastika/zinv/dev/CMSSW_7_4_8/src/opencv/lib/libopencv_ml.so.3.1",
                       ]
 
 #go make TTopTagger plots!
