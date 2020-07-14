@@ -64,7 +64,7 @@ LIBS += -L$(HDF5_DIRECTORY)/lib -lhdf5
 # tagger libraries
 LIBS      += -L$(TAGGERDIR)/TopTagger/test -lTopTagger
 
-PROGRAMS = simpleAnalyzer fakeRatePlots
+PROGRAMS = fakeRatePlots
 
 all: mkobj $(PROGRAMS)
 
@@ -98,8 +98,8 @@ $(ODIR)/%.o : $(TSDIR)/%.cc
 $(ODIR)/%.o : $(TSDIR)/%.cpp
 	$(CXX) $(CXXFLAGS) $(CXXDEPFLAGS) -I$(TIDIR) -I$(INCLUDESDIRS) -o $@ -c $<
 
-simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/BTagCalibrationStandalone.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o $(ODIR)/SusyUtility.o
-	$(LD) $^ $(LIBS) -o $@
+#simpleAnalyzer: $(ODIR)/NTupleReader.o $(ODIR)/SATException.o $(ODIR)/TaggerUtility.o $(ODIR)/samples.o $(ODIR)/simpleAnalyzer.o $(ODIR)/customize.o $(ODIR)/BTagCalibrationStandalone.o $(ODIR)/TTbarCorrector.o $(ODIR)/ISRCorrector.o $(ODIR)/SusyUtility.o
+#	$(LD) $^ $(LIBS) -o $@
 
 fakeRatePlots: $(ODIR)/fakeRatePlots.o
 	$(LD) $^ $(shell root-config --libs) -o $@
