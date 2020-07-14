@@ -84,7 +84,6 @@ public:
 
     TH1 *cutFlow_, *cutFlowNoWgt_, *passCuts_, *passCutsNoWgt_;
     
-
     std::vector<TH1*> hMETTagged;
     std::vector<TH1*> hHTTagged;
     std::vector<TH1*> hNJetsTagged;
@@ -121,85 +120,91 @@ public:
     std::vector<TH1*> genTopMatchPtWP, genTopMatchMassWP, genTopMatchEtaWP;
     std::vector<TH2*> randomTopMassByPt;
 
-    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.0, 0.82, 0.85, 0.87, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
+    // When we had set up the discCut = 0.0 to get the different WPs, the constructer has the different WPs between 0.0, 0.99
+    //HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.0, 0.82, 0.85, 0.87, 0.89, 0.90, 0.91, 0.92, 0.93, 0.94, 0.95, 0.96, 0.97, 0.98, 0.99}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
+    
+    // We have the new releases of top tagger which are WP_0.96 & WP_0.98
+    // Whenever we run the 0.96 release, then the constructer only have the WP 0.96
+    // Whenever we run the 0.98 release, then the constructer only have the WP 0.98
+    HistoContainer(const std::string& csName, std::vector<float> workingPoints = {0.98}) : csName_(csName), trand_(nullptr), workingPoints_(workingPoints)
     {
         trand_ = new TRandom3();
         
-        jet1pT     = bookHisto<TH1D>("jet1pT",100,0,500);
-        jet2pT     = bookHisto<TH1D>("jet2pT",100,0,500);
-        jet3pT     = bookHisto<TH1D>("jet3pT",100,0,500);
+        jet1pT                    = bookHisto<TH1D>("jet1pT_"                    + csName_, 100, 0, 500);
+        jet2pT                    = bookHisto<TH1D>("jet2pT_"                    + csName_, 100, 0, 500);
+        jet3pT                    = bookHisto<TH1D>("jet3pT_"                    + csName_, 100, 0, 500);
 
-        hMET       = bookHisto<TH1D>("MET",100,0, 1000);
-        hHT        = bookHisto<TH1D>("HT",200,0, 4000);
-        hHighestDisc = bookHisto<TH1D>("highestDisc",1000,-1,1);
-        hNJets     = bookHisto<TH1D>("nJets",21,-0.5, 20.5);
-        hNBJets    = bookHisto<TH1D>("nBJets",21,-0.5, 20.5);
-        hNTops     = bookHisto<TH1D>("nTops",6,-0.5, 5.5);
-        hNVertices = bookHisto<TH1D>("nVertices",61,-0.5, 60.5);
-        hPhoton    = bookHisto<TH1D>("photon",100,0, 1000);
+        hMET                      = bookHisto<TH1D>("MET_"                       + csName_, 100, 0, 1000);
+        hHT                       = bookHisto<TH1D>("HT_"                        + csName_, 200, 0, 4000);
+        hHighestDisc              = bookHisto<TH1D>("highestDisc_"               + csName_, 1000, -1, 1);
+        hNJets                    = bookHisto<TH1D>("nJets_"                     + csName_, 21, -0.5, 20.5);
+        hNBJets                   = bookHisto<TH1D>("nBJets_"                    + csName_, 21, -0.5, 20.5);
+        hNTops                    = bookHisto<TH1D>("nTops_"                     + csName_, 6, -0.5, 5.5);
+        hNVertices                = bookHisto<TH1D>("nVertices_"                 + csName_, 61, -0.5, 60.5);
+        hPhoton                   = bookHisto<TH1D>("photon_"                    + csName_, 100, 0, 1000);
 
-        genTopEvtMET     = bookHisto<TH1D>("genTopEvtMET",100,0, 1000);
-        genTopEvtHT      = bookHisto<TH1D>("genTopEvtHT",200,0, 4000);
-        genTopEvtHighestDisc = bookHisto<TH1D>("genTopEvtHighestDisc",1000,-1,1);
-        genTopEvtnJet    = bookHisto<TH1D>("genTopEvtnJet",21,-0.5, 20.5);
-        genTopEvtnVert   = bookHisto<TH1D>("genTopEvtnVert",61,-0.5, 60.5);
+        genTopEvtMET              = bookHisto<TH1D>("genTopEvtMET_"              + csName_, 100, 0, 1000);
+        genTopEvtHT               = bookHisto<TH1D>("genTopEvtHT_"               + csName_, 200, 0, 4000);
+        genTopEvtHighestDisc      = bookHisto<TH1D>("genTopEvtHighestDisc_"      + csName_, 1000, -1, 1);
+        genTopEvtnJet             = bookHisto<TH1D>("genTopEvtnJet_"             + csName_, 21, -0.5, 20.5);
+        genTopEvtnVert            = bookHisto<TH1D>("genTopEvtnVert_"            + csName_, 61, -0.5, 60.5);
 
-        genTopAcptEvtMET     = bookHisto<TH1D>("genTopAcptEvtMET",100,0, 1000);
-        genTopAcptEvtHT      = bookHisto<TH1D>("genTopAcptEvtHT",200,0, 4000);
-        genTopAcptEvtHighestDisc = bookHisto<TH1D>("genTopAcptEvtHighestDisc",1000,-1,1);
-        genTopAcptEvtnJet    = bookHisto<TH1D>("genTopAcptEvtnJet",21,-0.5, 20.5);
-        genTopAcptEvtnVert   = bookHisto<TH1D>("genTopAcptEvtnVert",61,-0.5, 60.5);
+        genTopAcptEvtMET          = bookHisto<TH1D>("genTopAcptEvtMET_"          + csName_, 100, 0, 1000);
+        genTopAcptEvtHT           = bookHisto<TH1D>("genTopAcptEvtHT_"           + csName_, 200, 0, 4000);
+        genTopAcptEvtHighestDisc  = bookHisto<TH1D>("genTopAcptEvtHighestDisc_"  + csName_, 1000, -1, 1);
+        genTopAcptEvtnJet         = bookHisto<TH1D>("genTopAcptEvtnJet_"         + csName_, 21, -0.5, 20.5);
+        genTopAcptEvtnVert        = bookHisto<TH1D>("genTopAcptEvtnVert_"        + csName_, 61, -0.5, 60.5);
 
-        genTopMatchEvtMET     = bookHisto<TH1D>("genTopMatchEvtMET",100,0, 1000);
-        genTopMatchEvtHT      = bookHisto<TH1D>("genTopMatchEvtHT",200,0, 4000);
-        genTopMatchEvtHighestDisc  = bookHisto<TH1D>("genTopMatchEvtHighestDisc",1000,-1,1);
-        genTopMatchEvtnJet    = bookHisto<TH1D>("genTopMatchEvtnJet",21,-0.5, 20.5);
-        genTopMatchEvtnVert   = bookHisto<TH1D>("genTopMatchEvtnVert",61,-0.5, 60.5);
+        genTopMatchEvtMET         = bookHisto<TH1D>("genTopMatchEvtMET_"         + csName_, 100, 0, 1000);
+        genTopMatchEvtHT          = bookHisto<TH1D>("genTopMatchEvtHT_"          + csName_, 200, 0, 4000);
+        genTopMatchEvtHighestDisc = bookHisto<TH1D>("genTopMatchEvtHighestDisc_" + csName_, 1000, -1, 1);
+        genTopMatchEvtnJet        = bookHisto<TH1D>("genTopMatchEvtnJet_"        + csName_, 21, -0.5, 20.5);
+        genTopMatchEvtnVert       = bookHisto<TH1D>("genTopMatchEvtnVert_"       + csName_, 61, -0.5, 60.5);
 
-        topCandPt   = bookHisto<TH1D>("topCandPt",   100,  0, 1000);
-        topCandMass = bookHisto<TH1D>("topCandMass", 100,  0, 500);
-        topCandEta  = bookHisto<TH1D>("topCandEta",  100, -5, 5);
-        topCandDisc = bookHisto<TH1D>("topCandDisc",  1000, -1, 1);
+        topCandPt                 = bookHisto<TH1D>("topCandPt_"                 + csName_, 100, 0, 1000);
+        topCandMass               = bookHisto<TH1D>("topCandMass_"               + csName_, 100, 0, 500);
+        topCandEta                = bookHisto<TH1D>("topCandEta_"                + csName_, 100, -5, 5);
+        topCandDisc               = bookHisto<TH1D>("topCandDisc_"               + csName_, 1000, -1, 1);
 
-        topCandPtGenMatch   = bookHisto<TH1D>("topCandPtGenMatch",   100,  0, 1000);
-        topCandMassGenMatch = bookHisto<TH1D>("topCandMassGenMatch", 100,  0, 500);
-        topCandEtaGenMatch  = bookHisto<TH1D>("topCandEtaGenMatch",  100, -5, 5);
-        topCandDiscGenMatch    = bookHisto<TH1D>("topCandDiscGenMatch",  1000, -1, 1);
-        topCandDiscNotGenMatch = bookHisto<TH1D>("topCandDiscNotGenMatch",  1000, -1, 1);
-        topDiscGenMatch        = bookHisto<TH1D>("topDiscGenMatch",  1000, -1, 1); //
-        topDiscNotGenMatch     = bookHisto<TH1D>("topDiscNotGenMatch",  1000, -1, 1); //
+        topCandPtGenMatch         = bookHisto<TH1D>("topCandPtGenMatch_"         + csName_, 100, 0, 1000);
+        topCandMassGenMatch       = bookHisto<TH1D>("topCandMassGenMatch_"       + csName_, 100, 0, 500);
+        topCandEtaGenMatch        = bookHisto<TH1D>("topCandEtaGenMatch_"        + csName_, 100, -5, 5);
+        topCandDiscGenMatch       = bookHisto<TH1D>("topCandDiscGenMatch_"       + csName_, 1000, -1, 1);
+        topCandDiscNotGenMatch    = bookHisto<TH1D>("topCandDiscNotGenMatch_"    + csName_, 1000, -1, 1);
+        topDiscGenMatch           = bookHisto<TH1D>("topDiscGenMatch_"           + csName_, 1000, -1, 1); //
+        topDiscNotGenMatch        = bookHisto<TH1D>("topDiscNotGenMatch_"        + csName_, 1000, -1, 1); //
 
-        topCandMaxDisc = bookHisto<TH1D>("topCandMaxDisc",  1000, -1, 1);
-        topCandMaxGenMatchDisc = bookHisto<TH1D>("topCandMaxGenMatchDisc",  1000, -1, 1);
+        topCandMaxDisc            = bookHisto<TH1D>("topCandMaxDisc_"            + csName_, 1000, -1, 1);
+        topCandMaxGenMatchDisc    = bookHisto<TH1D>("topCandMaxGenMatchDisc_"    + csName_, 1000, -1, 1);
         
-        genTopPt   = bookHisto<TH1D>("genTopPt",   100,  0, 1000);
-        genTopP    = bookHisto<TH1D>("genTopP",   100,  0, 1000);
-        genTopMass = bookHisto<TH1D>("genTopMass", 100,  0, 500);
-        genTopEta  = bookHisto<TH1D>("genTopEta",  100, -5, 5);
-        genTopMatchPt   = bookHisto<TH1D>("genTopMatchPt",   100,  0, 1000);
-        genTopMatchMass = bookHisto<TH1D>("genTopMatchMass", 100,  0, 500);
-        genTopMatchEta  = bookHisto<TH1D>("genTopMatchEta",  100, -5, 5);
+        genTopPt                  = bookHisto<TH1D>("genTopPt_"                  + csName_, 100, 0, 1000);
+        genTopP                   = bookHisto<TH1D>("genTopP_"                   + csName_, 100, 0, 1000);
+        genTopMass                = bookHisto<TH1D>("genTopMass_"                + csName_, 100, 0, 500);
+        genTopEta                 = bookHisto<TH1D>("genTopEta_"                 + csName_, 100, -5, 5);
+        genTopMatchPt             = bookHisto<TH1D>("genTopMatchPt_"             + csName_, 100, 0, 1000);
+        genTopMatchMass           = bookHisto<TH1D>("genTopMatchMass_"           + csName_, 100, 0, 500);
+        genTopMatchEta            = bookHisto<TH1D>("genTopMatchEta_"            + csName_, 100, -5, 5);
         
-        bestTopCandPt   = bookHisto<TH1D>("bestTopCandPt",   100,  0, 1000);
-        bestTopCandMass = bookHisto<TH1D>("bestTopCandMass", 100,  0, 500);
-        bestTopCandEta  = bookHisto<TH1D>("bestTopCandEta",  100, -5, 5);
-        bestTopCandDisc = bookHisto<TH1D>("bestTopCandDisc", 100,  0, 1);
-        bestTopCandAcptPt   = bookHisto<TH1D>("bestTopCandAcptPt",   100,  0, 1000);
-        bestTopCandAcptMass = bookHisto<TH1D>("bestTopCandAcptMass", 100,  0, 500);
-        bestTopCandAcptEta  = bookHisto<TH1D>("bestTopCandAcptEta",  100, -5, 5);
+        bestTopCandPt             = bookHisto<TH1D>("bestTopCandPt_"             + csName_, 100, 0, 1000);
+        bestTopCandMass           = bookHisto<TH1D>("bestTopCandMass_"           + csName_, 100, 0, 500);
+        bestTopCandEta            = bookHisto<TH1D>("bestTopCandEta_"            + csName_, 100, -5, 5);
+        bestTopCandDisc           = bookHisto<TH1D>("bestTopCandDisc_"           + csName_, 100, 0, 1);
+        bestTopCandAcptPt         = bookHisto<TH1D>("bestTopCandAcptPt_"         + csName_, 100, 0, 1000);
+        bestTopCandAcptMass       = bookHisto<TH1D>("bestTopCandAcptMass_"       + csName_, 100, 0, 500);
+        bestTopCandAcptEta        = bookHisto<TH1D>("bestTopCandAcptEta_"        + csName_, 100, -5, 5);
         
-        randomTopCandPt   = bookHisto<TH1D>("randomTopCandPt",   100,  0, 1000);
-        randomTopCandMass = bookHisto<TH1D>("randomTopCandMass", 100,  0, 500);
-        randomTopCandEta  = bookHisto<TH1D>("randomTopCandEta",  100, -5, 5);
-        randomTopCandDisc = bookHisto<TH1D>("randomTopCandDisc",  100,  0, 1);
-        randomTopCandMassByPt = bookHisto<TH2D>("randomTopCandMassByPt", 100,  0, 500, 100, 0, 1000);
+        randomTopCandPt           = bookHisto<TH1D>("randomTopCandPt_"           + csName_, 100, 0, 1000);
+        randomTopCandMass         = bookHisto<TH1D>("randomTopCandMass_"         + csName_, 100, 0, 500);
+        randomTopCandEta          = bookHisto<TH1D>("randomTopCandEta_"          + csName_, 100, -5, 5);
+        randomTopCandDisc         = bookHisto<TH1D>("randomTopCandDisc_"         + csName_, 100, 0, 1);
+        randomTopCandMassByPt     = bookHisto<TH2D>("randomTopCandMassByPt_"     + csName_, 100, 0, 500, 100, 0, 1000);
         
-        topCandMassByPt        = bookHisto<TH2D>("topCandMassByPt",     100,  0, 500, 100, 0, 1000);
+        topCandMassByPt           = bookHisto<TH2D>("topCandMassByPt_"           + csName_, 100, 0, 500, 100, 0, 1000);
 
-        hdPhiMin = bookHisto<TH1D>("dPhiMin", 100, 0, 3.1415);
-        hdPhiMax = bookHisto<TH1D>("dPhiMax", 100, 0, 3.1415);
-        hdPhiMinGenMatch = bookHisto<TH1D>("dPhiMinGenMatch", 100, 0, 3.1415);
-        hdPhiMaxGenMatch = bookHisto<TH1D>("dPhiMaxGenMatch", 100, 0, 3.1415);
+        hdPhiMin                  = bookHisto<TH1D>("dPhiMin_"                   + csName_, 100, 0, 3.1415);
+        hdPhiMax                  = bookHisto<TH1D>("dPhiMax_"                   + csName_, 100, 0, 3.1415);
+        hdPhiMinGenMatch          = bookHisto<TH1D>("dPhiMinGenMatch_"           + csName_, 100, 0, 3.1415);
+        hdPhiMaxGenMatch          = bookHisto<TH1D>("dPhiMaxGenMatch_"           + csName_, 100, 0, 3.1415);
 
         cutFlow_ = nullptr;
         cutFlowNoWgt_ = nullptr;
@@ -212,83 +217,83 @@ public:
             sprintf(wpStrC, "%0.3f", wp);
             std::string wpStr(wpStrC);
 
-            hMETTagged       .push_back( bookHisto<TH1D>("METTagged_" + wpStr ,100,0, 1000));
-            hHTTagged        .push_back( bookHisto<TH1D>("HTTagged_" + wpStr ,200,0, 4000));
-            hNJetsTagged     .push_back( bookHisto<TH1D>("nJetsTagged_" + wpStr ,21,-0.5, 20.5));
-            hNBJetsTagged    .push_back( bookHisto<TH1D>("nBJetsTagged_" + wpStr ,21,-0.5, 20.5));
-            hNVerticesTagged .push_back( bookHisto<TH1D>("nVerticesTagged_" + wpStr ,61,-0.5, 60.5));
-            hPhotonTagged    .push_back( bookHisto<TH1D>("photonTagged_" + wpStr ,100,0, 1000));
+            hMETTagged              .push_back(bookHisto<TH1D>("METTagged_"                + wpStr + csName_ ,100, 0, 1000));
+            hHTTagged               .push_back(bookHisto<TH1D>("HTTagged_"                 + wpStr + csName_, 200, 0, 4000));
+            hNJetsTagged            .push_back(bookHisto<TH1D>("nJetsTagged_"              + wpStr + csName_, 21, -0.5, 20.5));
+            hNBJetsTagged           .push_back(bookHisto<TH1D>("nBJetsTagged_"             + wpStr + csName_, 21, -0.5, 20.5));
+            hNVerticesTagged        .push_back(bookHisto<TH1D>("nVerticesTagged_"          + wpStr + csName_, 61, -0.5, 60.5));
+            hPhotonTagged           .push_back(bookHisto<TH1D>("photonTagged_"             + wpStr + csName_, 100, 0, 1000));
 
-            hMETTagged2       .push_back( bookHisto<TH1D>("METTagged2Top_" + wpStr ,100,0, 1000));
-            hHTTagged2        .push_back( bookHisto<TH1D>("HTTagged2Top_" + wpStr ,200,0, 4000));
-            hHighestDiscTagged2 .push_back( bookHisto<TH1D>("HighestDiscTagged2Top_" + wpStr ,1000,-1,1));
-            hNJetsTagged2     .push_back( bookHisto<TH1D>("nJetsTagged2Top_" + wpStr ,21,-0.5, 20.5));
-            hNBJetsTagged2    .push_back( bookHisto<TH1D>("nBJetsTagged2Top_" + wpStr ,21,-0.5, 20.5));
-            hNVerticesTagged2 .push_back( bookHisto<TH1D>("nVerticesTagged2Top_" + wpStr ,61,-0.5, 60.5));
+            hMETTagged2             .push_back(bookHisto<TH1D>("METTagged2Top_"            + wpStr + csName_, 100, 0, 1000));
+            hHTTagged2              .push_back(bookHisto<TH1D>("HTTagged2Top_"             + wpStr + csName_, 200, 0, 4000));
+            hHighestDiscTagged2     .push_back(bookHisto<TH1D>("HighestDiscTagged2Top_"    + wpStr + csName_, 1000, -1, 1));
+            hNJetsTagged2           .push_back(bookHisto<TH1D>("nJetsTagged2Top_"          + wpStr + csName_, 21, -0.5, 20.5));
+            hNBJetsTagged2          .push_back(bookHisto<TH1D>("nBJetsTagged2Top_"         + wpStr + csName_, 21, -0.5, 20.5));
+            hNVerticesTagged2       .push_back(bookHisto<TH1D>("nVerticesTagged2Top_"      + wpStr + csName_, 61, -0.5, 60.5));
 
-            hMETTaggedNotGen       .push_back( bookHisto<TH1D>("METTaggedNotGen_" + wpStr ,100,0, 1000));
-            hHTTaggedNotGen        .push_back( bookHisto<TH1D>("HTTaggedNotGen_" + wpStr ,200,0, 4000));
-            hHighestDiscTaggedNotGen .push_back( bookHisto<TH1D>("HighestDiscTaggedNotGen_" + wpStr ,1000,-1,1));
-            hNJetsTaggedNotGen     .push_back( bookHisto<TH1D>("nJetsTaggedNotGen_" + wpStr ,21,-0.5, 20.5));
-            hNBJetsTaggedNotGen    .push_back( bookHisto<TH1D>("nBJetsTaggedNotGen_" + wpStr ,21,-0.5, 20.5));
-            hNVerticesTaggedNotGen .push_back( bookHisto<TH1D>("nVerticesTaggedNotGen_" + wpStr ,61,-0.5, 60.5));
+            hMETTaggedNotGen        .push_back(bookHisto<TH1D>("METTaggedNotGen_"          + wpStr + csName_, 100, 0, 1000));
+            hHTTaggedNotGen         .push_back(bookHisto<TH1D>("HTTaggedNotGen_"           + wpStr + csName_, 200, 0, 4000));
+            hHighestDiscTaggedNotGen.push_back(bookHisto<TH1D>("HighestDiscTaggedNotGen_"  + wpStr + csName_, 1000, -1, 1));
+            hNJetsTaggedNotGen      .push_back(bookHisto<TH1D>("nJetsTaggedNotGen_"        + wpStr + csName_, 21, -0.5, 20.5));
+            hNBJetsTaggedNotGen     .push_back(bookHisto<TH1D>("nBJetsTaggedNotGen_"       + wpStr + csName_, 21, -0.5, 20.5));
+            hNVerticesTaggedNotGen  .push_back(bookHisto<TH1D>("nVerticesTaggedNotGen_"    + wpStr + csName_, 61, -0.5, 60.5));
 
-            hMETTaggedGen       .push_back( bookHisto<TH1D>("METTaggedGen_" + wpStr ,100,0, 1000));
-            hHTTaggedGen        .push_back( bookHisto<TH1D>("HTTaggedGen_" + wpStr ,200,0, 4000));
-            hHighestDiscTaggedGen .push_back( bookHisto<TH1D>("HighestDiscTaggedGen_" + wpStr ,1000,-1,1));
-            hNJetsTaggedGen     .push_back( bookHisto<TH1D>("nJetsTaggedGen_" + wpStr ,21,-0.5, 20.5));
-            hNBJetsTaggedGen    .push_back( bookHisto<TH1D>("nBJetsTaggedGen_" + wpStr ,21,-0.5, 20.5));
-            hNVerticesTaggedGen .push_back( bookHisto<TH1D>("nVerticesTaggedGen_" + wpStr ,61,-0.5, 60.5));
+            hMETTaggedGen           .push_back(bookHisto<TH1D>("METTaggedGen_"             + wpStr + csName_, 100, 0, 1000));
+            hHTTaggedGen            .push_back(bookHisto<TH1D>("HTTaggedGen_"              + wpStr + csName_, 200, 0, 4000));
+            hHighestDiscTaggedGen   .push_back(bookHisto<TH1D>("HighestDiscTaggedGen_"     + wpStr + csName_, 1000, -1, 1));
+            hNJetsTaggedGen         .push_back(bookHisto<TH1D>("nJetsTaggedGen_"           + wpStr + csName_, 21, -0.5, 20.5));
+            hNBJetsTaggedGen        .push_back(bookHisto<TH1D>("nBJetsTaggedGen_"          + wpStr + csName_, 21, -0.5, 20.5));
+            hNVerticesTaggedGen     .push_back(bookHisto<TH1D>("nVerticesTaggedGen_"       + wpStr + csName_, 61, -0.5, 60.5));
 
-            topPt   .push_back( bookHisto<TH1D>("topPt_" + wpStr ,   100,  0, 1000));
-            topP    .push_back( bookHisto<TH1D>("topP_" + wpStr ,   100,  0, 1000));
-            topMass .push_back( bookHisto<TH1D>("topMass_" + wpStr , 100,  0, 500));
-            topEta  .push_back( bookHisto<TH1D>("topEta_" + wpStr ,  100, -5, 5));
-            topDisc  .push_back( bookHisto<TH1D>("topDisc_" + wpStr ,  1000, -1, 1));
-            topDiscGenMatchWP       .push_back( bookHisto<TH1D>("topDiscGenMatchWP_" + wpStr ,  1000, -1, 1));  
-            topDiscNotGenMatchWP    .push_back( bookHisto<TH1D>("topDiscNotGenMatchWP_" + wpStr ,  1000, -1, 1)); 
-            topCandDiscGenMatchWP   .push_back( bookHisto<TH1D>("topCandDiscGenMatchWP_" + wpStr , 1000, -1, 1)); 
-            topCandDiscNotGenMatchWP.push_back( bookHisto<TH1D>("topCandDiscNotGenMatchWP_" + wpStr , 1000, -1, 1));            
+            topPt                   .push_back(bookHisto<TH1D>("topPt_"                    + wpStr + csName_, 100, 0, 1000));
+            topP                    .push_back(bookHisto<TH1D>("topP_"                     + wpStr + csName_, 100, 0, 1000));
+            topMass                 .push_back(bookHisto<TH1D>("topMass_"                  + wpStr + csName_, 100, 0, 500));
+            topEta                  .push_back(bookHisto<TH1D>("topEta_"                   + wpStr + csName_, 100, -5, 5));
+            topDisc                 .push_back(bookHisto<TH1D>("topDisc_"                  + wpStr + csName_, 1000, -1, 1));
+            topDiscGenMatchWP       .push_back(bookHisto<TH1D>("topDiscGenMatchWP_"        + wpStr + csName_, 1000, -1, 1));  
+            topDiscNotGenMatchWP    .push_back(bookHisto<TH1D>("topDiscNotGenMatchWP_"     + wpStr + csName_, 1000, -1, 1)); 
+            topCandDiscGenMatchWP   .push_back(bookHisto<TH1D>("topCandDiscGenMatchWP_"    + wpStr + csName_, 1000, -1, 1)); 
+            topCandDiscNotGenMatchWP.push_back(bookHisto<TH1D>("topCandDiscNotGenMatchWP_" + wpStr + csName_, 1000, -1, 1));            
  
-            topPtGenMatch   .push_back( bookHisto<TH1D>("topPtGenMatch_" + wpStr ,   100,  0, 1000));
-            topPGenMatch    .push_back( bookHisto<TH1D>("topPGenMatch_" + wpStr ,   100,  0, 1000));
-            topMassGenMatch .push_back( bookHisto<TH1D>("topMassGenMatch_" + wpStr , 100,  0, 500));
-            topEtaGenMatch  .push_back( bookHisto<TH1D>("topEtaGenMatch_" + wpStr ,  100, -5, 5));
+            topPtGenMatch           .push_back(bookHisto<TH1D>("topPtGenMatch_"            + wpStr + csName_, 100, 0, 1000));
+            topPGenMatch            .push_back(bookHisto<TH1D>("topPGenMatch_"             + wpStr + csName_, 100, 0, 1000));
+            topMassGenMatch         .push_back(bookHisto<TH1D>("topMassGenMatch_"          + wpStr + csName_, 100, 0, 500));
+            topEtaGenMatch          .push_back(bookHisto<TH1D>("topEtaGenMatch_"           + wpStr + csName_, 100, -5, 5));
 
-            bestTopPt   .push_back( bookHisto<TH1D>("bestTopPt_" + wpStr ,   100,  0, 1000));
-            bestTopP    .push_back( bookHisto<TH1D>("bestTopP_" + wpStr ,   100,  0, 1000));
-            bestTopMass .push_back( bookHisto<TH1D>("bestTopMass_" + wpStr , 100,  0, 500));
-            bestTopEta  .push_back( bookHisto<TH1D>("bestTopEta_" + wpStr ,  100, -5, 5));
+            bestTopPt               .push_back(bookHisto<TH1D>("bestTopPt_"                + wpStr + csName_, 100, 0, 1000));
+            bestTopP                .push_back(bookHisto<TH1D>("bestTopP_"                 + wpStr + csName_, 100, 0, 1000));
+            bestTopMass             .push_back(bookHisto<TH1D>("bestTopMass_"              + wpStr + csName_, 100, 0, 500));
+            bestTopEta              .push_back(bookHisto<TH1D>("bestTopEta_"               + wpStr + csName_, 100, -5, 5));
 
-            bestTopGenPt   .push_back( bookHisto<TH1D>("bestTopGenPt_" + wpStr ,   100,  0, 1000));
-            bestTopGenMass .push_back( bookHisto<TH1D>("bestTopGenMass_" + wpStr , 100,  0, 500));
-            bestTopGenEta  .push_back( bookHisto<TH1D>("bestTopGenEta_" + wpStr ,  100, -5, 5));
-            bestTopNotGenPt   .push_back( bookHisto<TH1D>("bestTopNotGenPt_" + wpStr ,   100,  0, 1000));
-            bestTopNotGenMass .push_back( bookHisto<TH1D>("bestTopNotGenMass_" + wpStr , 100,  0, 500));
-            bestTopNotGenEta  .push_back( bookHisto<TH1D>("bestTopNotGenEta_" + wpStr ,  100, -5, 5));
+            bestTopGenPt            .push_back(bookHisto<TH1D>("bestTopGenPt_"             + wpStr + csName_, 100, 0, 1000));
+            bestTopGenMass          .push_back(bookHisto<TH1D>("bestTopGenMass_"           + wpStr + csName_, 100, 0, 500));
+            bestTopGenEta           .push_back(bookHisto<TH1D>("bestTopGenEta_"            + wpStr + csName_, 100, -5, 5));
+            bestTopNotGenPt         .push_back(bookHisto<TH1D>("bestTopNotGenPt_"          + wpStr + csName_, 100, 0, 1000));
+            bestTopNotGenMass       .push_back(bookHisto<TH1D>("bestTopNotGenMass_"        + wpStr + csName_, 100, 0, 500));
+            bestTopNotGenEta        .push_back(bookHisto<TH1D>("bestTopNotGenEta_"         + wpStr + csName_, 100, -5, 5));
 
-            randomTopPt   .push_back( bookHisto<TH1D>("randomTopPt_" + wpStr ,   100,  0, 1000));
-            randomTopP    .push_back( bookHisto<TH1D>("randomTopP_" + wpStr ,   100,  0, 1000));
-            randomTopMass .push_back( bookHisto<TH1D>("randomTopMass_" + wpStr , 100,  0, 500));
-            randomTopEta  .push_back( bookHisto<TH1D>("randomTopEta_" + wpStr ,  100, -5, 5));
-            randomTopDisc  .push_back( bookHisto<TH1D>("randomTopDisc_" + wpStr ,  1000,-1,1));
-            randomTopMassByPt .push_back( bookHisto<TH2D>("randomTopMassByPt_" + wpStr , 100,  0, 500, 100,0,1000));
+            randomTopPt             .push_back(bookHisto<TH1D>("randomTopPt_"              + wpStr + csName_, 100, 0, 1000));
+            randomTopP              .push_back(bookHisto<TH1D>("randomTopP_"               + wpStr + csName_, 100, 0, 1000));
+            randomTopMass           .push_back(bookHisto<TH1D>("randomTopMass_"            + wpStr + csName_, 100, 0, 500));
+            randomTopEta            .push_back(bookHisto<TH1D>("randomTopEta_"             + wpStr + csName_, 100, -5, 5));
+            randomTopDisc           .push_back(bookHisto<TH1D>("randomTopDisc_"            + wpStr + csName_, 1000, -1, 1));
+            randomTopMassByPt       .push_back(bookHisto<TH2D>("randomTopMassByPt_"        + wpStr + csName_, 100, 0, 500, 100,0,1000));
 
-            fakerateMET .push_back( bookHisto<TH1D>("fakerateMET_" + wpStr , 100,0, 1000));
-            fakerateNj  .push_back( bookHisto<TH1D>("fakerateNj_" + wpStr ,  21,-0.5, 20.5));
-            fakerateNb  .push_back( bookHisto<TH1D>("fakerateNb_" + wpStr ,  21,-0.5, 20.5));
-            fakerateHT  .push_back( bookHisto<TH1D>("fakerateHT_" + wpStr ,  200,0, 4000));
-            fakerateHighestDisc  .push_back( bookHisto<TH1D>("fakerateHighestDisc_" + wpStr ,  1000,-1,1));
+            fakerateMET             .push_back(bookHisto<TH1D>("fakerateMET_"              + wpStr + csName_, 100, 0, 1000));
+            fakerateNj              .push_back(bookHisto<TH1D>("fakerateNj_"               + wpStr + csName_, 21, -0.5, 20.5));
+            fakerateNb              .push_back(bookHisto<TH1D>("fakerateNb_"               + wpStr + csName_, 21, -0.5, 20.5));
+            fakerateHT              .push_back(bookHisto<TH1D>("fakerateHT_"               + wpStr + csName_, 200, 0, 4000));
+            fakerateHighestDisc     .push_back(bookHisto<TH1D>("fakerateHighestDisc_"      + wpStr + csName_, 1000, -1, 1));
 
-            fakerateMET2 .push_back( bookHisto<TH1D>("fakerateMET2_" + wpStr , 100,0, 1000));
-            fakerateNj2  .push_back( bookHisto<TH1D>("fakerateNj2_" + wpStr ,  21,-0.5, 20.5));
-            fakerateNb2  .push_back( bookHisto<TH1D>("fakerateNb2_" + wpStr ,  21,-0.5, 20.5));
-            fakerateHT2  .push_back( bookHisto<TH1D>("fakerateHT2_" + wpStr ,  200,0, 4000));
-            fakerateHighestDisc2  .push_back( bookHisto<TH1D>("fakerateHighestDisc2_" + wpStr ,  1000,-1,1));
+            fakerateMET2            .push_back(bookHisto<TH1D>("fakerateMET2_"             + wpStr + csName_, 100, 0, 1000));
+            fakerateNj2             .push_back(bookHisto<TH1D>("fakerateNj2_"              + wpStr + csName_, 21, -0.5, 20.5));
+            fakerateNb2             .push_back(bookHisto<TH1D>("fakerateNb2_"              + wpStr + csName_, 21, -0.5, 20.5));
+            fakerateHT2             .push_back(bookHisto<TH1D>("fakerateHT2_"              + wpStr + csName_, 200, 0, 4000));
+            fakerateHighestDisc2    .push_back(bookHisto<TH1D>("fakerateHighestDisc2_"     + wpStr + csName_, 1000, -1, 1));
 
-            genTopMatchPtWP  .push_back( bookHisto<TH1D>("genTopMatchPtWP_" + wpStr ,   100,  0, 1000));
-            genTopMatchMassWP.push_back( bookHisto<TH1D>("genTopMatchMassWP_" + wpStr , 100,  0, 500));
-            genTopMatchEtaWP .push_back( bookHisto<TH1D>("genTopMatchEtaWP_" + wpStr ,  100, -5, 5));            
+            genTopMatchPtWP         .push_back(bookHisto<TH1D>("genTopMatchPtWP_"          + wpStr + csName_, 100, 0, 1000));
+            genTopMatchMassWP       .push_back(bookHisto<TH1D>("genTopMatchMassWP_"        + wpStr + csName_, 100, 0, 500));
+            genTopMatchEtaWP        .push_back(bookHisto<TH1D>("genTopMatchEtaWP_"         + wpStr + csName_, 100, -5, 5));            
         }
     }
 
@@ -355,9 +360,9 @@ public:
 
         if(cutFlow_ == nullptr)
         {
-            cutFlow_ = bookHisto<TH1D>("cutFlow", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
-            cutFlowNoWgt_ = bookHisto<TH1D>("cutFlowNoWgt", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
-            passCuts_ = bookHisto<TH1D>("passCuts", cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
+            cutFlow_       = bookHisto<TH1D>("cutFlow", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
+            cutFlowNoWgt_  = bookHisto<TH1D>("cutFlowNoWgt", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
+            passCuts_      = bookHisto<TH1D>("passCuts", cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
             passCutsNoWgt_ = bookHisto<TH1D>("passCutsNoWgt", cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
 
             cutFlow_->GetXaxis()->SetBinLabel(1, "all evt");
