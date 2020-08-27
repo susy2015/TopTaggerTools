@@ -76,7 +76,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
     //Top TPad
     pad_up->cd();
-    pad_up->SetGrid();   
+    pad_up->SetGrid();
  
     double max = std::max( mediumHist->GetMaximum(), simpleHist->GetMaximum() );
     mediumHist->SetMaximum( 1.2*max );
@@ -90,7 +90,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     //mediumHist->SetLabelSize(0.05,"X");
     mediumHist->SetLabelSize(0.05,"Y");
     //mediumHist->SetNdivisions(0,"X");
-    mediumHist->SetStats(false);    
+    mediumHist->SetStats(false);   
     mediumHist->SetLineColor(kCyan+2);
     mediumHist->SetLineWidth(2);
     mediumHist->Draw("hist E");
@@ -240,8 +240,10 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2016
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger96.root", "Resolved - 2016_TT - WP 0.96", "0.960"}, 
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - before jet filter", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger96.root", "Resolved - 2016_TT - WP 0.96", "0.960"}, 
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98", "0.980"},
     };
 
     // ----------------
@@ -249,8 +251,8 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2017 
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger96.root", "Resolved - 2017_TT - WP 0.96", "0.960"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger98.root", "Resolved - 2017_TT - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger96.root", "Resolved - 2017_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger98.root", "Resolved - 2017_TT - WP 0.98", "0.980"},
     };
 
     // ----------------
@@ -258,8 +260,8 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2018
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger96.root", "Resolved - 2018p_TT - WP 0.96", "0.960"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger98.root", "Resolved - 2018_TT - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger96.root", "Resolved - 2018p_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger98.root", "Resolved - 2018_TT - WP 0.98", "0.980"},
     };
 
     // --------------
@@ -267,8 +269,10 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2016
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger96.root", "Resolved - 2016_QCD - WP 0.96", "0.960"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98 - before jet filter", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger96.root", "Resolved - 2016_QCD - WP 0.96", "0.960"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98", "0.980"},
     };
 
     // --------------
@@ -276,8 +280,8 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2017
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger96.root", "Resolved - 2017_QCD - WP 0.96", "0.960"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger98.root", "Resolved - 2017_QCD - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger96.root", "Resolved - 2017_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger98.root", "Resolved - 2017_QCD - WP 0.98", "0.980"},
     };
 
     // --------------
@@ -285,8 +289,8 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2018
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP96_13.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger96.root", "Resolved - 2018_QCD - WP 0.96", "0.960"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJets_WP98_13.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger98.root", "Resolved - 2018_QCD - WP 0.98", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger96.root", "Resolved - 2018_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger98.root", "Resolved - 2018_QCD - WP 0.98", "0.980"},
     };
 
 
