@@ -92,11 +92,15 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     //mediumHist->SetNdivisions(0,"X");
     mediumHist->SetStats(false);   
     mediumHist->SetLineColor(kCyan+2);
-    mediumHist->SetLineWidth(2);
+    mediumHist->SetLineWidth(3);
+    //mediumHist->SetFillColor(kCyan+2);
+    //mediumHist->SetFillStyle(3007);
     mediumHist->Draw("hist E");
 
     simpleHist->SetLineColor(kMagenta+2);
-    simpleHist->SetLineWidth(2);
+    simpleHist->SetLineWidth(3);
+    //simpleHist->SetFillColor(kMagenta+2);
+    //simpleHist->SetFillStyle(3002);
     simpleHist->Draw("hist E same");
 
     l->SetBorderSize(0);
@@ -216,18 +220,22 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 int main(int argc, char *argv[])
 {
     int opt, option_index = 0;
-    std::string year = "", dataset = "";
+    std::string year = "", dataset = "", wp1 = "", wp2 = "";
     static struct option long_options[] = {
         {"year",    required_argument, 0, 'y'},
         {"dataset", required_argument, 0, 'd'},
+        {"wp1",     required_argument, 0, 'w'},
+        {"wp2",     required_argument, 0, 'x'},
     };
 
-    while((opt = getopt_long(argc, argv, "y:d:", long_options, &option_index)) != -1)
+    while((opt = getopt_long(argc, argv, "y:d:w:x:", long_options, &option_index)) != -1)
     {
         switch(opt)
         {
             case 'y': year    = optarg; break;
             case 'd': dataset = optarg; break;
+            case 'w': wp1     = optarg; break;
+            case 'x': wp2     = optarg; break;
         }
     }
 
@@ -240,8 +248,9 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2016
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - before jet filter", "0.980"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP_" + wp1, wp1 },
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP_" + wp2, wp2},
+        //{"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
         //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger96.root", "Resolved - 2016_TT - WP 0.96", "0.960"}, 
         //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98", "0.980"},
     };
@@ -296,24 +305,24 @@ int main(int argc, char *argv[])
 
     // 2016 TT & QCD
     if (year == "2016" && dataset == "TT")
-        { runPlotter(TTbar2016, selections, "2016_TT_compareWP-96-98/"); }
+        { runPlotter(TTbar2016, selections, "2016_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
     else if (year == "2016" && dataset == "QCD")
-        { runPlotter(QCD2016, selections, "2016_QCD_compareWP-96-98/"); }
+        { runPlotter(QCD2016, selections, "2016_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
     // 2017 TT & QCD
     else if (year == "2017" && dataset == "TT")
-        { runPlotter(TTbar2017, selections, "2017_TT_compareWP-96-98/"); }
+        { runPlotter(TTbar2017, selections, "2017_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
     else if (year == "2017" && dataset == "QCD")
-        { runPlotter(QCD2017, selections, "2017_QCD_compareWP-96-98/"); }
+        { runPlotter(QCD2017, selections, "2017_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
     // 2018 TT & QCD
     else if (year == "2018 "&& dataset == "TT")
-        { runPlotter(TTbar2018, selections, "2018_TT_compareWP-96-98/"); }
+        { runPlotter(TTbar2018, selections, "2018_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
     else if (year == "2018" && dataset == "QCD")
-        { runPlotter(QCD2018, selections, "2018_QCD_compareWP-96-98/"); }  
+        { runPlotter(QCD2018, selections, "2018_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }  
 
 
 }

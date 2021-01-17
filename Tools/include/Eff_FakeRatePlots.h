@@ -69,7 +69,8 @@ public:
             fakeRate->SetBinContent(i,ratio);
             fakeRate->SetBinError(i,error);
         }
-        fakeRate->SetTitle((type + "/" + fakerate).c_str());
+        //fakeRate->SetTitle((type + "/" + fakerate).c_str());
+        fakeRate->SetTitle( "Resolved Top Tagger" );
         fakeRate->GetXaxis()->SetTitle(xname.c_str());
         fakeRate->GetYaxis()->SetTitle(yname.c_str());
         fakeRate->GetYaxis()->SetRangeUser(0.0, 1.2); 
