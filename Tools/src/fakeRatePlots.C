@@ -28,17 +28,17 @@ public:
     std::string outputFile;
     std::string legName;
     std::string wp;
-    
+ 
     TaggerInfo(std::string inputFile, std::string outputFile, std::string legName, std::string wp) : inputFile(inputFile), outputFile(outputFile), legName(legName), wp(wp) {} 
     ~TaggerInfo(){}
 };
 
 void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
-               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.96")
+               const std::string& dataSet, const std::string& simpleLeg = "WP 0.96", const std::string& mediumLeg = "WP 0.98")
 {
     //Define canvas and legend
     TCanvas *c = new TCanvas( (dataSet+name).c_str(),(dataSet+name).c_str(),1000,800);  
-    TLegend *l = new TLegend(0.7, 0.7, 0.9, 0.9 ); // 0.68, 0.8, 0.99, 0.9
+    TLegend *l = new TLegend(0.30, 0.68, 0.99, 0.90); // 0.68, 0.8, 0.99, 0.9 
     double topM,     bottomM,      rightM,      leftM;
     /*  */ topM=0.1; bottomM=0.35; rightM=0.05; leftM=0.16;
     gPad->SetAstat(0);
@@ -53,7 +53,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
     //Define the top and bottom TPad
     double up_height     = 0.75;  // please tune so that the upper figures size will meet your requirement
-    double dw_correction = 1.0;   //40;
+    double dw_correction = 1.0;   // 40;
     double dw_height     = (1.0 - up_height)*dw_correction;
     TPad *pad_up = new TPad("pad_up1","pad_up1",0.0, 1.0 - up_height, 1.0,       1.0);
     TPad *pad_dw = new TPad("pad_dw1","pad_dw1",0.0, 0.0,             1.0, dw_height);
@@ -76,7 +76,8 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
     //Top TPad
     pad_up->cd();
-    
+    pad_up->SetGrid();
+ 
     double max = std::max( mediumHist->GetMaximum(), simpleHist->GetMaximum() );
     mediumHist->SetMaximum( 1.2*max );
     mediumHist->SetMinimum(0);
@@ -89,11 +90,17 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     //mediumHist->SetLabelSize(0.05,"X");
     mediumHist->SetLabelSize(0.05,"Y");
     //mediumHist->SetNdivisions(0,"X");
-    mediumHist->SetStats(false);    
-    mediumHist->SetLineColor(kRed);
+    mediumHist->SetStats(false);   
+    mediumHist->SetLineColor(kCyan+2);
+    mediumHist->SetLineWidth(3);
+    //mediumHist->SetFillColor(kCyan+2);
+    //mediumHist->SetFillStyle(3007);
     mediumHist->Draw("hist E");
 
-    simpleHist->SetLineColor(kBlack);
+    simpleHist->SetLineColor(kMagenta+2);
+    simpleHist->SetLineWidth(3);
+    //simpleHist->SetFillColor(kMagenta+2);
+    //simpleHist->SetFillStyle(3002);
     simpleHist->Draw("hist E same");
 
     l->SetBorderSize(0);
@@ -105,6 +112,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
     //Bottom TPad
     pad_dw->cd();
+    pad_dw->SetGrid();
 
     Eff_FakeRatePlots dummy;
     TH1F *ratio = (TH1F*)mediumHist->Clone( (name+dataSet+"Ratio").c_str() );;
@@ -121,8 +129,8 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
     ratio->SetTitle("");
     ratio->SetStats(false);
-    ratio->SetMaximum( 1.5 );
-    ratio->SetMinimum( 0.5 );
+    ratio->SetMaximum( 2.0 ); // 1.5
+    ratio->SetMinimum( 0.0 ); // 0.5
     //ratio->SetMaximum( std::max(1.5*maxDw, 1.3) );
     //ratio->SetMinimum( std::min(0.5*maxDw, 0.7) );
     ratio->SetTitleOffset(1.0,"X");
@@ -138,12 +146,12 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     ratio->Draw("E1");
 
     TF1 *line = new TF1( (name+dataSet+"Line").c_str(),"1",-2000,2000);
-    line->SetLineColor(kRed);
+    line->SetLineColor(kBlue);
     line->Draw("same");
 
     //std::cout<<"fakeRateEfficiencyPlots/" + dataSet + outFile<<std::endl;
     gSystem -> Exec( ("mkdir -p fakeRateEfficiencyPlots/" + dataSet + outFile).c_str() ) ;    
-    c->SaveAs( ( "fakeRateEfficiencyPlots/" + dataSet + name + ".png" ).c_str() );        
+    c->SaveAs( ( "fakeRateEfficiencyPlots/" + dataSet + name + ".pdf" ).c_str() );        
 
     delete l;
     delete pad_up;
@@ -153,8 +161,8 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
 
 void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std::string>& selections, const std::string& dataSet)
 {
-    char copy[128];
-    strcpy(copy, taggerInfo[0].inputFile.c_str() );   
+    char copy[256]; // 128
+    strcpy(copy, taggerInfo[0].inputFile.c_str() );  
     char* type1;
     type1 = strtok( copy, "-/" );
     char* type2;
@@ -171,7 +179,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
         Eff_FakeRatePlots* fakeratePlots = new Eff_FakeRatePlots();
         for(const auto& s : selections)
         {
-            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3, tI.wp); 
+            fakeratePlots->makeTH1F(s, tI.inputFile.c_str(), type3, tI.wp);
         }
 
         TFile *f = new TFile(tI.outputFile.c_str(),"RECREATE");
@@ -183,7 +191,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
     
         f->cd();
     
-        for(int i = 0; i < fakeratePlots->histos_.size(); i++)
+        for(int i = 0; i < fakeratePlots->histos_.size(); i++) 
         {
             fakeratePlots->histos_[i]->Write();
         }
@@ -193,7 +201,7 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 
         vecPlots.push_back(fakeratePlots);
     }
-    
+
     // ------------------
     // -- Making Plots
     // ------------------
@@ -212,31 +220,39 @@ void runPlotter(const std::vector<TaggerInfo>& taggerInfo, const std::vector<std
 int main(int argc, char *argv[])
 {
     int opt, option_index = 0;
-    std::string year = "", dataset = "";
+    std::string year = "", dataset = "", wp1 = "", wp2 = "";
     static struct option long_options[] = {
-        {"year",     required_argument, 0, 'y'},
-        {"dataset",     required_argument, 0, 'd'},
+        {"year",    required_argument, 0, 'y'},
+        {"dataset", required_argument, 0, 'd'},
+        {"wp1",     required_argument, 0, 'w'},
+        {"wp2",     required_argument, 0, 'x'},
     };
-    while((opt = getopt_long(argc, argv, "y:d:", long_options, &option_index)) != -1)
+
+    while((opt = getopt_long(argc, argv, "y:d:w:x:", long_options, &option_index)) != -1)
     {
         switch(opt)
         {
-            case 'y': year    = optarg;            break;
-            case 'd': dataset = optarg;            break;
+            case 'y': year    = optarg; break;
+            case 'd': dataset = optarg; break;
+            case 'w': wp1     = optarg; break;
+            case 'x': wp2     = optarg; break;
         }
     }
 
     TH1::AddDirectory(false);
-    //std::vector<std::string> selections = {"histos/", "Njet7/", "Njet8/", "Njet9/", "Njet10/", "Njet11/", "Njet12/", "Njet13/"};
-    std::vector<std::string> selections = {"histos/"};    
+    //std::vector<std::string> selections = {"histos", "Njet7", "Njet8", "Njet9", "Njet10", "Njet11", "Njet12", "Njet13"};
+    std::vector<std::string> selections = {"histos"};    
 
     // ----------------
     // -- 2016 TTbar
     // ----------------
     std::vector<TaggerInfo> TTbar2016
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger92.root", "Resolved - 2016_TT - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger96.root", "Resolved - 2016_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP_" + wp1, wp1 },
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP_" + wp2, wp2},
+        //{"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/backup/3_TopTagger_JetsFilterTest_2020/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger96.root", "Resolved - 2016_TT - WP 0.96", "0.960"}, 
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016_TTbar_ResolvedTopTagger98.root", "Resolved - 2016_TT - WP 0.98", "0.980"},
     };
 
     // ----------------
@@ -244,8 +260,8 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2017 
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger92.root", "Resolved - 2017_TT - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger96.root", "Resolved - 2017_TT - WP 0.96", "0.960"}
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger96.root", "Resolved - 2017_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger98.root", "Resolved - 2017_TT - WP 0.98", "0.980"},
     };
 
     // ----------------
@@ -253,8 +269,8 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2018
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger92.root", "Resolved - 2018_TT - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger96.root", "Resolved - 2018_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger96.root", "Resolved - 2018p_TT - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TTbar_ResolvedTopTagger98.root", "Resolved - 2018_TT - WP 0.98", "0.980"},
     };
 
     // --------------
@@ -262,17 +278,19 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2016
     {
-      {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger92.root", "Resolved - 2016_QCD - WP 0.92", "0.920"},
-      {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger96.root", "Resolved - 2016_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTagger_beforeJetsMask_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98 - before jet filter", "0.980"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCDbar_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98 - after GoodJets_pt20 filter", "0.980"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger96.root", "Resolved - 2016_QCD - WP 0.96", "0.960"},
+        //{"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2016_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2016_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016_QCD_ResolvedTopTagger98.root", "Resolved - 2016_QCD - WP 0.98", "0.980"},
     };
-     
+
     // --------------
     // -- 2017 QCD
     // --------------
     std::vector<TaggerInfo> QCD2017
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger92.root", "Resolved - 2017_QCD - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger96.root", "Resolved - 2017_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger96.root", "Resolved - 2017_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2017_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger98.root", "Resolved - 2017_QCD - WP 0.98", "0.980"},
     };
 
     // --------------
@@ -280,25 +298,31 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2018
     {
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger92.root", "Resolved - 2018_QCD - WP 0.92", "0.920"},
-        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_MC_EfficienyCompNjets_ResolvedTTwp0.0_11thSlides_25.09.2019/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger96.root", "Resolved - 2018_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger96.root", "Resolved - 2018_QCD - WP 0.96", "0.960"},
+        {"/uscms_data/d3/semrat/CMSSW_9_3_3/src/Analyzer/Analyzer/test/condor/hadd_2018_fakeRateEfficiency_resolvedTopTaggerJetMaskTest_GoodJetsPt20_WP0.0_21.07.2020/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger98.root", "Resolved - 2018_QCD - WP 0.98", "0.980"},
     };
 
-    if (year == "2016") 
-        { runPlotter(TTbar2016, selections, "2016_TT_compareWP-92-96/"); }
 
-    else if (year == "2017")
-        { runPlotter(TTbar2017, selections, "2017_TT_compareWP-92-96/"); }
+    // 2016 TT & QCD
+    if (year == "2016" && dataset == "TT")
+        { runPlotter(TTbar2016, selections, "2016_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
-    else if (year == "2018")
-        { runPlotter(TTbar2018, selections, "2018_TT_compareWP-92-96/"); }
+    else if (year == "2016" && dataset == "QCD")
+        { runPlotter(QCD2016, selections, "2016_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
-    else if (year == "2016")
-        { runPlotter(QCD2016, selections, "2016_QCD_compareWP-92-96/"); }
+    // 2017 TT & QCD
+    else if (year == "2017" && dataset == "TT")
+        { runPlotter(TTbar2017, selections, "2017_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
-    else if (year == "2017")
-        { runPlotter(QCD2017, selections, "2017_QCD_compareWP-92-96/"); }
+    else if (year == "2017" && dataset == "QCD")
+        { runPlotter(QCD2017, selections, "2017_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }
 
-    else if (year == "2018")
-        { runPlotter(QCD2018, selections, "2018_QCD_compareWP-92-96/"); }
+    // 2018 TT & QCD
+    else if (year == "2018 "&& dataset == "TT")
+        { runPlotter(TTbar2018, selections, "2018_TT_compareWPs_" + wp1 + "_" + wp2 + "/"); }
+
+    else if (year == "2018" && dataset == "QCD")
+        { runPlotter(QCD2018, selections, "2018_QCD_compareWPs_" + wp1 + "_" + wp2 + "/"); }  
+
+
 }

@@ -14,7 +14,7 @@
 #include "TopTagger/TopTagger/interface/TopTaggerResults.h"
 
 #include "TopTagger/TopTagger/interface/TopObject.h"
-#include "TopTagger/CfgParser/include/TTException.h"
+#include "TopTagger/CfgParser/interface/TTException.h"
 
 #include "TH1.h"
 #include "TH2.h"

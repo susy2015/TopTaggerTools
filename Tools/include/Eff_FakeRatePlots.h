@@ -55,7 +55,7 @@ public:
   
     void ratioTH1F(std::string name, std::string fakerateVar, std::string Var, const char* file, std::string fakerate, std::string type, std::string xname, std::string yname, int join )
     {
-        TH1F* fakeRateVar = defineTH1F(file,fakerateVar); 
+        TH1F* fakeRateVar = defineTH1F(file,fakerateVar);
         TH1F* var         = defineTH1F(file,Var);
         fakeRateVar->Rebin(join);
         var->Rebin(join);
@@ -64,32 +64,33 @@ public:
         for(int i=0; i < fakeRate->GetSize(); i++)
         {
             double error = errorRatio(i,fakeRate,var);
-            double ratio = fakeRate->GetBinContent(i)/var->GetBinContent(i);      
+            double ratio = fakeRate->GetBinContent(i)/var->GetBinContent(i); 
             if(isinf(ratio)==1 || isnan(ratio)==1) ratio = 0;
             fakeRate->SetBinContent(i,ratio);
             fakeRate->SetBinError(i,error);
         }
-        fakeRate->SetTitle((type + "/" + fakerate).c_str());
+        //fakeRate->SetTitle((type + "/" + fakerate).c_str());
+        fakeRate->SetTitle( "Resolved Top Tagger" );
         fakeRate->GetXaxis()->SetTitle(xname.c_str());
         fakeRate->GetYaxis()->SetTitle(yname.c_str());
-        fakeRate->GetYaxis()->SetRangeUser(0.0, 1.2); //
+        fakeRate->GetYaxis()->SetRangeUser(0.0, 1.2); 
         fakeRate->SetStats(0);
         histos_.emplace_back(fakeRate);
         histoName_.emplace_back(type + "/" + fakerate);
-        outFile_.emplace_back(type + "/" + name);
+        outFile_.emplace_back(type + "/" + name + "/"); 
     }
 
     void makeTH1F(std::string name, const char* rootFile, std::string type, std::string wp)
     {
-        //ratioTH1F(name,  name + "fakerateMET_"+wp       ,name + "MET"               ,rootFile ,name + "fakerateMET"              ,type ,"MET (GeV)"     ,"Fakerate"  , 5);
-        ratioTH1F(name,  name + "fakerateNj_"+wp        ,name + "nJets"             ,rootFile ,name + "fakerateNjets"            ,type ,"N_{Jets}"      ,"Fakerate"  , 1);
-        //ratioTH1F(name,  name + "fakerateNb_"+wp        ,name + "nBJets"            ,rootFile ,name + "fakerateNbjets"           ,type ,"N_{BJets}"     ,"Fakerate"  , 1);    
-        //ratioTH1F(name,  name + "randomTopPt_"+wp       ,name + "randomTopCandPt"   ,rootFile ,name + "fakerateRandomTopPt"      ,type ,"P_{T} (GeV)"   ,"Fakerate"  , 5);
-        //ratioTH1F(name,  name + "randomTopMass_"+wp     ,name + "randomTopCandMass" ,rootFile ,name + "fakerateRandomTopMass"    ,type ,"Mass (GeV)"    ,"Fakerate"  , 1);
-        //ratioTH1F(name,  name + "randomTopEta_"+wp      ,name + "randomTopCandEta"  ,rootFile ,name + "fakerateRandomTopEta"     ,type ,"#eta"          ,"Fakerate"  , 2);   
-        //ratioTH1F(name,  name + "genTopMatchPtWP_"+wp   ,name + "genTopPt"          ,rootFile ,name + "efficiencyGenTopMatchPt"  ,type ,"P_{T} (GeV)"   ,"Efficiency", 5);
-        //ratioTH1F(name,  name + "genTopMatchMassWP_"+wp ,name + "genTopMass"        ,rootFile ,name + "efficiencyGenTopMatchMass",type ,"Mass (GeV)"    ,"Efficiency", 1);
-        //ratioTH1F(name,  name + "genTopMatchEtaWP_"+wp  ,name + "genTopEta"         ,rootFile ,name + "efficiencyGenTopMatchEta" ,type ,"#eta"          ,"Efficiency", 2);
+        //ratioTH1F(name, name + "/fakerateMET_"       + wp + name, name + "/MET"               + name, rootFile, name + "/fakerateMET"              , type ,"MET (GeV)"  , "Fakerate"  , 5);
+        ratioTH1F(name, name + "/fakerateNj_"        + wp + name, name + "/nJets_"            + name, rootFile, name + "/fakerateNjets"            , type ,"N_{Jets}"   , "Fakerate"  , 1);
+        //ratioTH1F(name, name + "/fakerateNb_"        + wp + name, name + "/nBJets"            + name, rootFile, name + "/fakerateNbjets"           , type ,"N_{BJets}"  , "Fakerate"  , 1);
+        //ratioTH1F(name, name + "/randomTopPt_"       + wp + name, name + "/randomTopCandPt"   + name, rootFile, name + "/fakerateRandomTopPt"      , type ,"P_{T} (GeV)", "Fakerate"  , 5);
+        //ratioTH1F(name, name + "/randomTopMass_"     + wp + name, name + "/randomTopCandMass" + name, rootFile, name + "/fakerateRandomTopMass"    , type ,"Mass (GeV)" , "Fakerate"  , 1);
+        //ratioTH1F(name, name + "/randomTopEta_"      + wp + name, name + "/randomTopCandEta"  + name, rootFile, name + "/fakerateRandomTopEta"     , type ,"#eta"       , "Fakerate"  , 2);
+        ratioTH1F(name, name + "/genTopMatchPtWP_"   + wp + name, name + "/genTopPt_"         + name, rootFile, name + "/efficiencyGenTopMatchPt"  , type ,"P_{T} (GeV)", "Efficiency", 5);
+        //ratioTH1F(name, name + "/genTopMatchMassWP_" + wp + name, name + "/genTopMass"        + name, rootFile, name + "/efficiencyGenTopMatchMass", type ,"Mass (GeV)" , "Efficiency", 1);
+        //ratioTH1F(name, name + "/genTopMatchEtaWP_"  + wp + name, name + "/genTopEta"         + name, rootFile, name + "/efficiencyGenTopMatchEta" , type ,"#eta"       , "Efficiency", 2);
     }
  
     Eff_FakeRatePlots(){}
