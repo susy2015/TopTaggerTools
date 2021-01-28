@@ -6,6 +6,7 @@
 #include "TPaveStats.h"
 #include <TLegend.h>
 #include <TCanvas.h>
+#include "TLatex.h"
 #include "TF1.h"
 
 #include <iostream>
@@ -70,7 +71,7 @@ public:
             fakeRate->SetBinError(i,error);
         }
         //fakeRate->SetTitle((type + "/" + fakerate).c_str());
-        fakeRate->SetTitle( "Resolved Top Tagger" );
+        //fakeRate->SetTitle( "Resolved Top Tagger" );
         fakeRate->GetXaxis()->SetTitle(xname.c_str());
         fakeRate->GetYaxis()->SetTitle(yname.c_str());
         fakeRate->GetYaxis()->SetRangeUser(0.0, 1.2); 
@@ -80,17 +81,15 @@ public:
         outFile_.emplace_back(type + "/" + name + "/"); 
     }
 
-    void makeTH1F(std::string name, const char* rootFile, std::string type, std::string wp)
+    void makeTH1F(std::string name, const char* rootFile, std::string type, std::string wp, std::string dataset)
     {
-        //ratioTH1F(name, name + "/fakerateMET_"       + wp + name, name + "/MET"               + name, rootFile, name + "/fakerateMET"              , type ,"MET (GeV)"  , "Fakerate"  , 5);
-        ratioTH1F(name, name + "/fakerateNj_"        + wp + name, name + "/nJets_"            + name, rootFile, name + "/fakerateNjets"            , type ,"N_{Jets}"   , "Fakerate"  , 1);
-        //ratioTH1F(name, name + "/fakerateNb_"        + wp + name, name + "/nBJets"            + name, rootFile, name + "/fakerateNbjets"           , type ,"N_{BJets}"  , "Fakerate"  , 1);
-        //ratioTH1F(name, name + "/randomTopPt_"       + wp + name, name + "/randomTopCandPt"   + name, rootFile, name + "/fakerateRandomTopPt"      , type ,"P_{T} (GeV)", "Fakerate"  , 5);
-        //ratioTH1F(name, name + "/randomTopMass_"     + wp + name, name + "/randomTopCandMass" + name, rootFile, name + "/fakerateRandomTopMass"    , type ,"Mass (GeV)" , "Fakerate"  , 1);
-        //ratioTH1F(name, name + "/randomTopEta_"      + wp + name, name + "/randomTopCandEta"  + name, rootFile, name + "/fakerateRandomTopEta"     , type ,"#eta"       , "Fakerate"  , 2);
-        ratioTH1F(name, name + "/genTopMatchPtWP_"   + wp + name, name + "/genTopPt_"         + name, rootFile, name + "/efficiencyGenTopMatchPt"  , type ,"P_{T} (GeV)", "Efficiency", 5);
-        //ratioTH1F(name, name + "/genTopMatchMassWP_" + wp + name, name + "/genTopMass"        + name, rootFile, name + "/efficiencyGenTopMatchMass", type ,"Mass (GeV)" , "Efficiency", 1);
-        //ratioTH1F(name, name + "/genTopMatchEtaWP_"  + wp + name, name + "/genTopEta"         + name, rootFile, name + "/efficiencyGenTopMatchEta" , type ,"#eta"       , "Efficiency", 2);
+        if (dataset == "TT")
+        {
+            ratioTH1F(name, name + "/genTopMatchPtWP_" + wp + name, name + "/genTopPt_" + name, rootFile, name + "/efficiencyGenTopMatchPt", type ,"p_{T} (GeV)", "Efficiency", 5);
+        } else
+        {
+             ratioTH1F(name, name + "/fakerateNj_"      + wp + name, name + "/nJets_"    + name, rootFile, name + "/fakerateNjets"          , type ,"N_{jets}"   , "Fakerate"  , 1);
+        } 
     }
  
     Eff_FakeRatePlots(){}
