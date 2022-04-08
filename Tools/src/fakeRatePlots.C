@@ -35,7 +35,7 @@ public:
 };
 
 void makePlots(const std::string& outFile, const std::string& name, TH1* simpleHist, TH1* mediumHist,
-               const std::string& dataSet, const std::string& simpleLeg = "WP 0.96", const std::string& mediumLeg = "WP 0.98", 
+               const std::string& dataSet, const std::string& simpleLeg = "WP 0.92", const std::string& mediumLeg = "WP 0.95", 
                const std::string& year = "2016")
 {
     //Define canvas and legend
@@ -254,21 +254,21 @@ int main(int argc, char *argv[])
     std::vector<std::string> selections = {"histos", "Njet7", "Njet8", "Njet9", "Njet10", "Njet11", "Njet12", "Njet12inc"};
 
     // -------------------
-    // -- 2016preAPV TTbar
+    // -- 2016preVFP TTbar
     // -------------------
-    std::vector<TaggerInfo> TTbar2016preAPV
+    std::vector<TaggerInfo> TTbar2016preVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preAPV_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preAPV_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preAPV_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preAPV_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     // --------------------
-    // -- 2016postAPV TTbar
+    // -- 2016postVFP TTbar
     // --------------------
-    std::vector<TaggerInfo> TTbar2016postAPV
+    std::vector<TaggerInfo> TTbar2016postVFP
     {                                 
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postAPV_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postAPV_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postAPV_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postAPV_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     // ----------------
@@ -290,20 +290,21 @@ int main(int argc, char *argv[])
     };
 
     // -----------------
-    // -- 2016preAPV QCD 
+    // -- 2016preVFP QCD 
     // -----------------
-    std::vector<TaggerInfo> QCD2016preAPV
+    std::vector<TaggerInfo> QCD2016preVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preAPV_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preAPV_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preAPV_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preAPV_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     // ------------------
-    // -- 2016postAPV QCD 
+    // -- 2016postVFP QCD 
     // ------------------
+    std::vector<TaggerInfo> QCD2016postVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postAPV_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postAPV_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/2016preVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postAPV_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postAPV_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     // --------------
@@ -324,19 +325,19 @@ int main(int argc, char *argv[])
         {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/1_AN_0L_2021_FakeRateEfficiency/hadd_2018pre_AN_ResolvedTopTagger_fakeRateEfficiency_18.01.2021/2018pre_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018pre_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
-    // 2016preAPV TT & QCD
-    if (year == "2016preAPV" && dataset == "TT")
-        { runPlotter(TTbar2016preAPV, selections, "2016preAPV_TT_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
+    // 2016preVFP TT & QCD
+    if (year == "2016preVFP" && dataset == "TT")
+        { runPlotter(TTbar2016preVFP, selections, "2016preVFP_TT_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
 
-    else if (year == "2016preAPV" && dataset == "QCD")
-        { runPlotter(QCD2016preAPV, selections, "2016preAPV_QCD_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
+    else if (year == "2016preVFP" && dataset == "QCD")
+        { runPlotter(QCD2016preVFP, selections, "2016preVFP_QCD_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
 
-    // 2016postAPV TT & QCD
-    if (year == "2016postAPV" && dataset == "TT")
-        { runPlotter(TTbar2016postAPV, selections, "2016postAPV_TT_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
+    // 2016postVFP TT & QCD
+    if (year == "2016postVFP" && dataset == "TT")
+        { runPlotter(TTbar2016postVFP, selections, "2016postVFP_TT_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
 
-    else if (year == "2016postAPV" && dataset == "QCD")
-        { runPlotter(QCD2016postAPV, selections, "2016postAPV_QCD_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
+    else if (year == "2016postVFP" && dataset == "QCD")
+        { runPlotter(QCD2016postVFP, selections, "2016postVFP_QCD_compareWPs_" + wp1 + "_" + wp2 + "/", year); }
 
     // 2017 TT & QCD
     else if (year == "2017" && dataset == "TT")

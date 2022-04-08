@@ -26,25 +26,25 @@ def main():
     # ---------------------------------
     # root path & years & histograms
     # --------------------------------- 
-    #basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/1_AN_0L_2021_FakeRateEfficiency/"
-    #basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/1_AN_0L_2022_newNewBaseline_FakeRateEfficiency/" # without btag SF
-    #basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016_AN_FullTopTagger_fakeRateEfficiency_30.12.2021/"
     basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/"
-
+    
     years = [
-        #"2016preAPV" ,
-        "2016postAPV",
+        #"2016preVFP" ,
+        "2016postVFP",
         #"2017" ,
         #"2018" ,
     ]
+    
     histnames = {
         "TT"  : "topDiscGenMatchWP_0.000histos" ,    
         "QCD" : "topDiscNotGenMatchWP_0.000histos" , 
     }
+    
     colors = {
         "TT"  : 6 ,
         "QCD" : 7 ,
     }
+    
     WPs = [
         0.92 ,
         0.95 ,
@@ -53,6 +53,7 @@ def main():
         0.98 ,
         0.99 ,
     ]
+    
     WP_colors = {
         0.92 : 46 ,
         0.95 : 40 ,
@@ -61,6 +62,7 @@ def main():
         0.98 : 30 ,
         0.99 : 41 ,
     }
+    
     label_size     = 0.033
     label_offset_x = 0.03 # 0.02
     label_offset_y = 0.05 # 0.04
@@ -80,11 +82,11 @@ def main():
             filename = basepath + year + "_" + histname + ".root"
             print_db("Opening file " + filename)
             f = ROOT.TFile.Open(filename, "READ")
-            print_db("Getting histogram " + filename + ":histos_old/" + histnames[histname])
-            hists[histname] = f.Get("histos_old/" + histnames[histname])
+            print_db("Getting histogram " + filename + ":histos/" + histnames[histname])
+            hists[histname] = f.Get("histos/" + histnames[histname])
             hists[histname].SetDirectory(gROOT)
             hists[histname].SetTitle("")
-            print_db("Normalizing histogram " + filename +":histos_old/" + histnames[histname])
+            print_db("Normalizing histogram " + filename +":histos/" + histnames[histname])
             scale = 1/(hists[histname].Integral())
             hists[histname].Scale(scale)
             f.Close()
@@ -135,11 +137,11 @@ def main():
             else:
                 print "ERROR: bin_num_TT =/= bin_num_QCD"
             points[WP] = ROOT.TMarker(arrays["QCD"][bin_num],arrays["TT"][bin_num],22)
-            # print efficiency and fake rate values for AN
-            #print "Year -------- : ", (year)
-            #print "WP        : ", (WP)
-            #print "Efficiency: ", (arrays["TT"][bin_num])
-            #print "Fake Rate : ", (arrays["QCD"][bin_num])
+            #print efficiency and fake rate values for AN
+            print "Year -------- : ", (year)
+            print "WP        : ", (WP)
+            print "Efficiency: ", (arrays["TT"][bin_num])
+            print "Fake Rate : ", (arrays["QCD"][bin_num])
             points[WP].SetMarkerSize(3) # 2
             points[WP].SetMarkerColor(WP_colors[WP])
             points[WP].Draw("SAME")
@@ -162,8 +164,6 @@ def main():
         mark.SetTextAlign(31)
         mark.DrawLatex(1 - ROOT.gPad.GetRightMargin(), 1 - (ROOT.gPad.GetTopMargin() - 0.017), year + " (13 TeV)")
 
-        #ROC.SaveAs("AN_0L_2021/RocPlots_WPs/" + year + "_ROC_WPs.pdf")
-        #ROC.SaveAs("AN_0L_2022/RocPlots_WPs/" + year + "_old_Baseline_FullTagger_ROC_WPs.pdf")
         ROC.SaveAs("2022_Test/RocPlots_WPs/" + year + "_ROC_WPs.pdf")
         #ROC.Close()
        
