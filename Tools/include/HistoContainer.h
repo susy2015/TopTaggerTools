@@ -2,12 +2,15 @@
 #define HISTOCONTAINER_H
 
 #include "TopTagger/TopTagger/interface/TopTaggerResults.h"
+#include "Framework/Framework/include/Utility.h"
 
 #include <vector>
 
 #include "Math/VectorUtil.h"
 #include "TH1.h"
 #include "TH2.h"
+#include "TH1D.h"
+#include "TH2D.h"
 #include "TRandom3.h"
 #include "TFile.h"
 
@@ -35,8 +38,8 @@ private:
     const bool* bestTopMassTopTag_;
     const bool* bestTopMassGenMatch_;
     const float* bestTopMassTopTagDisc_;
-    const std::vector<TLorentzVector>* cutMuVec_;
-    const std::vector<TLorentzVector>* cutElecVec_;
+    const std::vector<utility::LorentzVector>* cutMuVec_;
+    const std::vector<utility::LorentzVector>* cutElecVec_;
     const std::vector<TLorentzVector>* tightPhotonsVec_;
     const std::vector<TLorentzVector>* genTops_;
 
@@ -311,30 +314,26 @@ public:
         vtxSize_               = &tr.template getVar<int>("PV_npvs");
         cntCSVS_               = &tr.template getVar<int>("cntCSVS");
         ttr_                   =  tr.template getVar<TopTaggerResults*>("ttrMVA"); 
-        cntNJetsPt30Eta24_     = &tr.template getVar<int>("cntNJetsPt30Eta24");
-        jets_                  = &tr.template getVec<TLorentzVector>("jetsLVec");
-        lepton_                = &tr.template getVar<TLorentzVector>("lepton");
+        //cntNJetsPt30Eta24_     = &tr.template getVar<int>("cntNJetsPt30Eta24");
+        //jets_                  = &tr.template getVec<TLorentzVector>("jetsLVec");
+        //lepton_                = &tr.template getVar<TLorentzVector>("lepton");
         bestCandLV_            = &tr.template getVar<TLorentzVector>("bestTopMassLV");
         bestTopMass_           = &tr.template getVar<float>("bestTopMass");
         bestTopMassTopTag_     = &tr.template getVar<bool>("bestTopMassTopTag");
         bestTopMassGenMatch_   = &tr.template getVar<bool>("bestTopMassGenMatch");
         bestTopMassTopTagDisc_ = &tr.template getVar<float>("bestTopMassTopTagDisc");
 
-        cutMuVec_              = &tr.template getVec<TLorentzVector>("cutMuVec");
-        cutElecVec_            = &tr.template getVec<TLorentzVector>("cutElecVec");    
+        cutMuVec_              = &tr.template getVec<utility::LorentzVector>("cutMuVec");
+        cutElecVec_            = &tr.template getVec<utility::LorentzVector>("cutElecVec");    
         tightPhotonsVec_       = &tr.template getVec<TLorentzVector>("tightPhotons");  
         genTops_               = &tr.template getVec<TLorentzVector>("genTops");
     }
 
     void setStealthStopVar(const TUPLECLASS& tr)
     {
-        tr.registerDerivedVar("MET_float", float(tr.template getVar<double>("MET")));
-        tr.registerDerivedVar("METPhi_float", float(tr.template getVar<double>("METPhi")));
-        tr.registerDerivedVar("HT_float", float(tr.template getVar<double>("HT")));
-
-        met_                   = &tr.template getVar<float>("MET_float");
-        metphi_                = &tr.template getVar<float>("METPhi_float");
-        ht_                    = &tr.template getVar<float>("HT_float");
+        met_                   = &tr.template getVar<float>("MET");
+        metphi_                = &tr.template getVar<float>("METPhi");
+        ht_                    = &tr.template getVar<float>("HT");
         highestDisc_           = &tr.template getVar<float>("highestDisc");
         vtxSize_               = &tr.template getVar<int>("NVtx");
         cntCSVS_               = &tr.template getVar<int>("NGoodBJets_pt45");
@@ -348,8 +347,8 @@ public:
         bestTopMassGenMatch_   = &tr.template getVar<bool>("bestTopMassGenMatchCand");
         bestTopMassTopTagDisc_ = &tr.template getVar<float>("bestTopMassTopTagDisc");
 
-        cutMuVec_              = &tr.template getVec<TLorentzVector>("Muons");
-        cutElecVec_            = &tr.template getVec<TLorentzVector>("Electrons");
+        cutMuVec_              = &tr.template getVec<utility::LorentzVector>("Muons");
+        cutElecVec_            = &tr.template getVec<utility::LorentzVector>("Electrons");
         tightPhotonsVec_       = &tr.template getVec<TLorentzVector>("tightPhotons");
         genTops_               = &tr.template getVec<TLorentzVector>("hadtops");
     }
@@ -360,10 +359,10 @@ public:
 
         if(cutFlow_ == nullptr)
         {
-            cutFlow_       = bookHisto<TH1D>("cutFlow", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
-            cutFlowNoWgt_  = bookHisto<TH1D>("cutFlowNoWgt", cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
-            passCuts_      = bookHisto<TH1D>("passCuts", cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
-            passCutsNoWgt_ = bookHisto<TH1D>("passCutsNoWgt", cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
+            cutFlow_       = bookHisto<TH1D>("cutFlow"       + csName_, cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
+            cutFlowNoWgt_  = bookHisto<TH1D>("cutFlowNoWgt"  + csName_, cuts.size() + EXTRACUT, -0.5, cuts.size() + EXTRACUT - 0.5);
+            passCuts_      = bookHisto<TH1D>("passCuts"      + csName_, cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
+            passCutsNoWgt_ = bookHisto<TH1D>("passCutsNoWgt" + csName_, cuts.size(), -0.5 + EXTRACUT, cuts.size() + EXTRACUT - 0.5);
 
             cutFlow_->GetXaxis()->SetBinLabel(1, "all evt");
             cutFlowNoWgt_->GetXaxis()->SetBinLabel(1, "all evt");
