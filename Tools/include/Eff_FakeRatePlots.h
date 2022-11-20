@@ -62,6 +62,7 @@ public:
         var->Rebin(join);
 
         TH1F* fakeRate    = (TH1F*)fakeRateVar->Clone(fakerate.c_str());
+
         for(int i=0; i < fakeRate->GetSize(); i++)
         {
             double error = errorRatio(i,fakeRate,var);

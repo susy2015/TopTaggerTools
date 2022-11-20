@@ -26,17 +26,17 @@ def main():
     # ---------------------------------
     # root path & years & histograms
     # --------------------------------- 
-    basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_08.04.2022/"
+    basepath = "/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_YEAR_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/"
     
     years = [
-        #"2016preVFP" ,
+        "2016preVFP" ,
         "2016postVFP",
-        #"2017" ,
-        #"2018" ,
+        "2017" ,
+        "2018" ,
     ]
     
     histnames = {
-        "TT"  : "topDiscGenMatchWP_0.000histos" ,    
+        "TT"  : "topDiscGenMatchWP_0.000histos" ,   
         "QCD" : "topDiscNotGenMatchWP_0.000histos" , 
     }
     
@@ -51,16 +51,16 @@ def main():
         0.96 ,
         0.97 ,
         0.98 ,
-        0.99 ,
+        #0.99 ,
     ]
     
     WP_colors = {
-        0.92 : 46 ,
-        0.95 : 40 ,
-        0.96 : 38 ,
-        0.97 : 43 ,
-        0.98 : 30 ,
-        0.99 : 41 ,
+        0.92 : ROOT.TColor.GetColor("#cd5c5c"), #46 ,
+        0.95 : ROOT.TColor.GetColor("#b2e2e2"), #40 ,
+        0.96 : ROOT.TColor.GetColor("#66c2a4"), #38 ,
+        0.97 : ROOT.TColor.GetColor("#2ca25f"), #43 ,
+        0.98 : ROOT.TColor.GetColor("#00441b"), #30 ,
+        #0.99 : 41 ,
     }
     
     label_size     = 0.033
@@ -79,7 +79,7 @@ def main():
         # ------------------------------------------------     
         for histname in histnames:
             print_db("Processing type " + histname)
-            filename = basepath + year + "_" + histname + ".root"
+            filename = basepath.replace("YEAR", year) + year + "_" + histname + ".root"
             print_db("Opening file " + filename)
             f = ROOT.TFile.Open(filename, "READ")
             print_db("Getting histogram " + filename + ":histos/" + histnames[histname])
@@ -158,13 +158,14 @@ def main():
         mark.DrawLatex(ROOT.gPad.GetLeftMargin(), 1 - (ROOT.gPad.GetTopMargin() - 0.017), "CMS")
         mark.SetTextSize(0.040)
         mark.SetTextFont(52)
-        mark.DrawLatex(ROOT.gPad.GetLeftMargin() + 0.13, 1 - (ROOT.gPad.GetTopMargin() - 0.017), "Preliminary")
+        mark.DrawLatex(ROOT.gPad.GetLeftMargin() + 0.13, 1 - (ROOT.gPad.GetTopMargin() - 0.017), " Work in Progress")
         mark.SetTextSize(0.040)
         mark.SetTextFont(42)
         mark.SetTextAlign(31)
         mark.DrawLatex(1 - ROOT.gPad.GetRightMargin(), 1 - (ROOT.gPad.GetTopMargin() - 0.017), year + " (13 TeV)")
 
-        ROC.SaveAs("2022_Test/RocPlots_WPs/" + year + "_ROC_WPs.pdf")
+        #ROC.SaveAs("../../fakeRateEfficiencyPlots/Run2UL_DeepCSV_Nov2022/" + year + "_ROC_WPs.pdf")
+        ROC.SaveAs("Run2UL_DeepCSV_Nov2022/" + year + "_ROC_WPs.pdf")
         #ROC.Close()
        
  
