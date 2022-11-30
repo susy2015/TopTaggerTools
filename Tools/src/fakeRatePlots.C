@@ -109,7 +109,7 @@ void makePlots(const std::string& outFile, const std::string& name, TH1* simpleH
     mark.DrawLatex(gPad->GetLeftMargin(), 1 - (gPad->GetTopMargin() - 0.017), "CMS");
     mark.SetTextSize(0.040);
     mark.SetTextFont(52);
-    mark.DrawLatex(gPad->GetLeftMargin() + 0.1, 1 - (gPad->GetTopMargin() - 0.017), "Preliminary");
+    mark.DrawLatex(gPad->GetLeftMargin() + 0.1, 1 - (gPad->GetTopMargin() - 0.017), "Work in Progress");
     mark.SetTextSize(0.040);
     mark.SetTextFont(42);
     mark.SetTextAlign(31);
@@ -418,17 +418,17 @@ int main(int argc, char *argv[])
     // -------------------
     std::vector<TaggerInfo> TTbar2016preVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> TTbar2016preVFPThesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -437,17 +437,17 @@ int main(int argc, char *argv[])
     // --------------------
     std::vector<TaggerInfo> TTbar2016postVFP
     {                                 
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> TTbar2016postVFPThesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -456,17 +456,17 @@ int main(int argc, char *argv[])
     // ----------------
     std::vector<TaggerInfo> TTbar2017 
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset}, 
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset}, 
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/EfficiencyFakeRatePlots_2017_TTbar_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> TTbar2017Thesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -475,17 +475,17 @@ int main(int argc, char *argv[])
     // -------------------
     std::vector<TaggerInfo> TTbar2018
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TT_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TT_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},        
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TT_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/EfficiencyFakeRatePlots_2018_TT_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},        
     };
 
     std::vector<TaggerInfo> TTbar2018Thesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_TT.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -494,17 +494,17 @@ int main(int argc, char *argv[])
     // -----------------
     std::vector<TaggerInfo> QCD2016preVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016preVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> QCD2016preVFPThesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016preVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016preVFP_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -513,17 +513,17 @@ int main(int argc, char *argv[])
     // ------------------
     std::vector<TaggerInfo> QCD2016postVFP
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2016postVFP_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> QCD2016postVFPThesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2016postVFP_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2016postVFP_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -533,17 +533,17 @@ int main(int argc, char *argv[])
     // --------------
     std::vector<TaggerInfo> QCD2017
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset}, 
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2017_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset}, 
     };
 
     std::vector<TaggerInfo> QCD2017Thesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2017_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2017_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2017_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
@@ -552,17 +552,17 @@ int main(int argc, char *argv[])
     // -----------------
     std::vector<TaggerInfo> QCD2018
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset}, 
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger.root", "WP_" + wp1, wp1, dataset}, 
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/EfficiencyFakeRatePlots_2018_QCD_ResolvedTopTagger.root", "WP_" + wp2, wp2, dataset},
     };
 
     std::vector<TaggerInfo> QCD2018Thesis
     {
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
-        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_2018_ResolvedTopTagger_fakeRateEfficiency_withDeepCSV_17.11.2022/2018_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/junk.root", "WP_0.92", "0.920", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/junk.root", "WP_0.95", "0.950", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/junk.root", "WP_0.96", "0.960", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/junk.root", "WP_0.97", "0.970", dataset},
+        {"/uscms_data/d3/semrat/SUSY/CMSSW_11_2_0_pre5/src/Analyzer/Analyzer/test/condor/hadd_Run2UL_ResolvedTopTagger_fakeRateEfficiency_withDeepFlavor/2018_QCD.root", "outputRoot/junk.root", "WP_0.98", "0.980", dataset},
 
     };
 
